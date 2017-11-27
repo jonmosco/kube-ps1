@@ -8,6 +8,13 @@ Inspired by several tools used to simplify usage of kubectl
 
 ![prompt](img/screenshot.png)
 
+## Requirements
+
+This prompt assumes you have the kubectl command line utility installed.  It
+can be obtained here:
+
+[Install and Set up kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
 ## Prompt Structure
 
 The prompt layout is:
@@ -21,7 +28,20 @@ The prompt layout is:
 1. Clone this repository
 2. Source the kube-prompt.sh in your ~./.zshrc or your ~/.bashrc
 
+ZSH:
 ```
-source path/k8s-prompt.sh
-PROMPT='$(kube-prompt)'
+source path/kube-prompt.sh
+PROMPT='$(kube_prompt)'
 ```
+
+Bash:
+```
+source path/kube-prompt.sh
+PS1='[\u@\h \W$(kube_prompt)]\$ '
+```
+
+## Colors
+
+The colors are of my opinion.  Blue was used as the prefix indicating the
+prompts function.  Red was chosen as the cluster name to stand out, and cyan
+for the namespace.  These can of course be changed.
