@@ -33,17 +33,30 @@ kube_prompt_colorize () {
 
 }
 
+kube_prompt_platform () {
+
+  if [[ -f $(which oc) && -x $(which oc) ]]; then
+    prompt_binary="oc"
+    prompt_label="ocp"
+  else
+    prompt_binary="kubectl"
+    prompt_label="k8s"
+  fi
+}
+
 kube_prompt () {
 
   # source our colors
   kube_prompt_colorize
+  # source prompt platform
+  kube_prompt_platform
 
   K8S_PROMPT_PREFIX="("
-  K8S_PROMPT_LABEL="k8s"
+  K8S_PROMPT_LABEL="${prompt_label}"
   K8S_PROMPT_SEPERATOR="|"
-  K8S_PROMPT_CLUSTER="$(kubectl config view --minify  --output 'jsonpath={..CurrentContext}')"
+  K8S_PROMPT_CLUSTER="$(${prompt_binary} config view --minify  --output 'jsonpath={..CurrentContext}')"
   K8S_PROMPT_DIVIDER=":"
-  K8S_PROMPT_NAMESPACE="$(kubectl config view --minify  --output 'jsonpath={..namespace}')"
+  K8S_PROMPT_NAMESPACE="$(${prompt_binary} config view --minify  --output 'jsonpath={..namespace}')"
   K8S_PROMPT_SUFFIX=")"
 
   K8S_PROMPT="$K8S_PROMPT_PREFIX${reset_color}"
