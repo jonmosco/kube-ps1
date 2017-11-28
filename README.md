@@ -31,7 +31,7 @@ The prompt layout is:
 ZSH:
 ```
 source path/kube-prompt.sh
-PROMPT='$(kube_prompt)'
+PROMPT='$(kube_prompt) '
 ```
 
 Bash:
