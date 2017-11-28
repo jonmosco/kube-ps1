@@ -20,8 +20,12 @@ can be obtained here:
 The prompt layout is:
 
 ```
-(k8s|<cluster>:<namespace>)
+(<platform>|<cluster>:<namespace>)
 ```
+
+Supported platforms:
+* k8s - Kubernetes
+* ocp - OpenShift
 
 ## Install
 
