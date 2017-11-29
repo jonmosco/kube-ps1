@@ -50,21 +50,21 @@ PS1='[\u@\h \W$(kube_prompt)]\$ '
 
 ## Colors
 
-The colors are of my opinion.  Blue was used as the prefix indicating the
-prompts function.  Red was chosen as the cluster name to stand out, and cyan
+The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
+color as closely as possible. Red was chosen as the cluster name to stand out, and cyan
 for the namespace.  These can of course be changed.
 
 ## Customization
 
-The default settings can be overriden in ~/.bashrc or ~/.zshrc
+The default settings can be overridden in ~/.bashrc or ~/.zshrc
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PROMPT_DEFAULT` | `true` | Default settings for the prompt |
 | `KUBE_PROMPT_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PROMPT_DEFAULT_LABEL` | `⎈ ` | Default prompt symbol |
-| `KUBE_PROMPT_SEPERATOR` | `\|` | Seperator between symbol and cluster name |
+| `KUBE_PROMPT_SEPERATOR` | `\|` | Separator between symbol and cluster name |
 | `KUBE_PROMPT_PLATFORM` | `kubectl` | Cluster type and binary to use |
-| `KUBE_PROMPT_DIVIDER` | `:` | Seperator between cluster and namespace |
+| `KUBE_PROMPT_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PROMPT_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PROMPT_DEFAULT_LABEL_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
