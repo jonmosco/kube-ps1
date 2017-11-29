@@ -6,7 +6,7 @@ context and the namespace.
 
 Inspired by several tools used to simplify usage of kubectl
 
-![prompt](img/screenshot.png)
+![prompt](img/screenshot2.png)
 
 ## Requirements
 
@@ -49,3 +49,5 @@ PS1='[\u@\h \W$(kube_prompt)]\$ '
 The colors are of my opinion.  Blue was used as the prefix indicating the
 prompts function.  Red was chosen as the cluster name to stand out, and cyan
 for the namespace.  These can of course be changed.
+
+## Customization
