@@ -17,6 +17,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Default values for the prompt
+# Override these values in ~/.zshrc or ~/.bashrc
+KUBE_PROMPT_DEFAULT="${KUBE_PROMPT_DEFAULT:=true}"
+KUBE_PROMPT_PREFIX="("
+KUBE_PROMPT_DEFAULT_LABEL="${KUBE_PROMPT_DEFAULT_LABEL:="⎈ "}"
+KUBE_PROMPT_DEFAULT_LABEL_IMG="${KUBE_PROMPT_DEFAULT_LABEL_IMG:=false}"
+KUBE_PROMPT_SEPERATOR="|"
+KUBE_PROMPT_PLATFORM="${KUBE_PROMPT_PLATFORM:="kubectl"}"
+KUBE_PROMPT_DIVIDER=":"
+KUBE_PROMPT_SUFFIX=")"
+
 kube_prompt_colorize () {
 
   if [[ -n "${ZSH_VERSION-}" ]]; then
@@ -33,40 +44,58 @@ kube_prompt_colorize () {
 
 }
 
-kube_prompt_platform () {
-
-  if [[ -f $(which oc) && -x $(which oc) ]]; then
-    prompt_binary="oc"
-    prompt_label="ocp"
-  else
-    prompt_binary="kubectl"
-    prompt_label="k8s"
-  fi
+# Test for our binary
+kube_binary () {
+  command -v "$1" > /dev/null 2>&1
 }
 
+kube_prompt_context_ns () {
+
+  if [[ "${KUBE_PROMPT_DEFAULT}" == true ]]; then
+    local KUBE_BINARY="${KUBE_PROMPT_PLATFORM}"
+  elif [[ "${KUBE_PROMPT_DEFAULT}" == false ]] && [[ "${KUBE_PROMPT_PLATFORM}" == "kubectl" ]];then
+    local KUBE_BINARY="kubectl"
+  elif [[ "${KUBE_PROMPT_PLATFORM}" == "oc" ]]; then
+    local KUBE_BINARY="oc"
+  fi
+
+  KUBE_PROMPT_CLUSTER="$(${KUBE_BINARY} config view --minify  --output 'jsonpath={..CurrentContext}')"
+  KUBE_PROMPT_NAMESPACE="$(${KUBE_BINARY} config view --minify  --output 'jsonpath={..namespace}')"
+
+}
+
+kube_prompt_label () {
+
+  [[ "${KUBE_PROMPT_DEFAULT_LABEL_IMG}" == false ]] && return
+
+  if [[ "${KUBE_PROMPT_DEFAULT_LABEL_IMG}" == true ]]; then
+    local KUBE_LABEL="☸️ "
+  fi
+
+  KUBE_PROMPT_DEFAULT_LABEL="${KUBE_LABEL}"
+
+}
+
+# Build our prompt
 kube_prompt () {
 
   # source our colors
   kube_prompt_colorize
-  # source prompt platform
-  kube_prompt_platform
 
-  K8S_PROMPT_PREFIX="("
-  K8S_PROMPT_LABEL="${prompt_label}"
-  K8S_PROMPT_SEPERATOR="|"
-  K8S_PROMPT_CLUSTER="$(${prompt_binary} config view --minify  --output 'jsonpath={..CurrentContext}')"
-  K8S_PROMPT_DIVIDER=":"
-  K8S_PROMPT_NAMESPACE="$(${prompt_binary} config view --minify  --output 'jsonpath={..namespace}')"
-  K8S_PROMPT_SUFFIX=")"
+  # source out symbol
+  kube_prompt_label
 
-  K8S_PROMPT="$K8S_PROMPT_PREFIX${reset_color}"
-  K8S_PROMPT+="${blue}$K8S_PROMPT_LABEL"
-  K8S_PROMPT+="${reset_color}$K8S_PROMPT_SEPERATOR"
-  K8S_PROMPT+="${red}$K8S_PROMPT_CLUSTER${reset_color}"
-  K8S_PROMPT+="$K8S_PROMPT_DIVIDER"
-  K8S_PROMPT+="${cyan}$K8S_PROMPT_NAMESPACE${reset_color}"
-  K8S_PROMPT+="$K8S_PROMPT_SUFFIX"
+  # source the context and namespace
+  kube_prompt_context_ns
 
-  echo "$K8S_PROMPT"
+  KUBE_PROMPT="$KUBE_PROMPT_PREFIX${reset_color}"
+  KUBE_PROMPT+="${blue}$KUBE_PROMPT_DEFAULT_LABEL"
+  KUBE_PROMPT+="${reset_color}$KUBE_PROMPT_SEPERATOR"
+  KUBE_PROMPT+="${red}$KUBE_PROMPT_CLUSTER${reset_color}"
+  KUBE_PROMPT+="$KUBE_PROMPT_DIVIDER"
+  KUBE_PROMPT+="${cyan}$KUBE_PROMPT_NAMESPACE${reset_color}"
+  KUBE_PROMPT+="$KUBE_PROMPT_SUFFIX"
+
+  echo "$KUBE_PROMPT"
 
 }
