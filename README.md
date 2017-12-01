@@ -8,6 +8,8 @@ Inspired by several tools used to simplify usage of kubectl
 
 ![prompt](img/screenshot2.png)
 
+![prompt demo](img/kube-prompt.gif)
+
 ## Requirements
 
 The default prompt assumes you have the kubectl command line utility installed.  It
@@ -18,6 +20,13 @@ can be obtained here:
 If using this with OpenShift, the oc tool needs installed.  It can be obtained from here:
 
 [OC Client Tools](https://www.openshift.org/download.html)
+
+## Helper utilities
+
+There are several great tools that make using kubectl very enjoyable.
+
+[kubectx and kubenx](https://github.com/ahmetb/kubectx) are great utilities for
+fast switching between clusters and namespaces.
 
 ## Prompt Structure
 
