@@ -6,9 +6,9 @@ context and the namespace.
 
 Inspired by several tools used to simplify usage of kubectl
 
-![prompt](img/screenshot2.png)
+![prompt](img/screenshot.png)
 
-![prompt demo](img/kube-prompt.gif)
+![prompt demo](img/kube-ps1.gif)
 
 ## Requirements
 
@@ -43,18 +43,18 @@ Supported platforms:
 ## Install
 
 1. Clone this repository
-2. Source the kube-prompt.sh in your ~./.zshrc or your ~/.bashrc
+2. Source the kube-ps1.sh in your ~./.zshrc or your ~/.bashrc
 
 ZSH:
 ```
-source path/kube-prompt.sh
-PROMPT='$(kube_prompt) '
+source path/kube-ps1.sh
+PROMPT='$(kube-ps1) '
 ```
 
 Bash:
 ```
-source path/kube-prompt.sh
-PS1='[\u@\h \W$(kube_prompt)]\$ '
+source path/kube-ps1.sh
+PS1='[\u@\h \W$(kube-ps1)]\$ '
 ```
 
 ## Colors
@@ -69,11 +69,11 @@ The default settings can be overridden in ~/.bashrc or ~/.zshrc
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
-| `KUBE_PROMPT_DEFAULT` | `true` | Default settings for the prompt |
-| `KUBE_PROMPT_PREFIX` | `(` | Prompt opening character  |
-| `KUBE_PROMPT_DEFAULT_LABEL` | `⎈ ` | Default prompt symbol |
-| `KUBE_PROMPT_SEPERATOR` | `\|` | Separator between symbol and cluster name |
-| `KUBE_PROMPT_PLATFORM` | `kubectl` | Cluster type and binary to use |
-| `KUBE_PROMPT_DIVIDER` | `:` | Separator between cluster and namespace |
-| `KUBE_PROMPT_SUFFIX` | `)` | Prompt closing character |
-| `KUBE_PROMPT_DEFAULT_LABEL_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
+| `KUBE_PS1_DEFAULT` | `true` | Default settings for the prompt |
+| `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
+| `KUBE_PS1_DEFAULT_LABEL` | `⎈ ` | Default prompt symbol |
+| `KUBE_PS1_SEPERATOR` | `\|` | Separator between symbol and cluster name |
+| `KUBE_PS1_PLATFORM` | `kubectl` | Cluster type and binary to use |
+| `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
+| `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
+| `KUBE_PS1_DEFAULT_LABEL_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
