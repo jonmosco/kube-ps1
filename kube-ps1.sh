@@ -17,6 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+date "+%S.%N"
+
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_DEFAULT="${KUBE_PS1_DEFAULT:=true}"
@@ -99,3 +101,5 @@ kube_ps1 () {
   echo "$KUBE_PS1"
 
 }
+
+date "+%S.%N"

@@ -7,6 +7,7 @@ context and the namespace.
 Inspired by several tools used to simplify usage of kubectl
 
 ![prompt](img/screenshot.png)
+![prompt](img/screenshot2.png)
 
 ![prompt demo](img/kube-ps1.gif)
 
