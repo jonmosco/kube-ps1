@@ -80,13 +80,13 @@ kube_prompt_label () {
 kube_ps1 () {
 
   # source our colors
-  kube_prompt_colorize
+  kube_ps1_colorize
 
   # source out symbol
-  kube_prompt_label
+  kube_ps1_label
 
   # source the context and namespace
-  kube_prompt_context_ns
+  kube_ps1_context_ns
 
   KUBE_PROMPT="$KUBE_PS1_PREFIX${reset_color}"
   KUBE_PROMPT+="${blue}$KUBE_PS1_DEFAULT_LABEL"
