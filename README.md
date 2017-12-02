@@ -8,7 +8,7 @@ Inspired by several tools used to simplify usage of kubectl
 
 ![prompt](img/screenshot.png)
 
-![prompt2](img/screenshot2.png)
+![prompt2](img/screenshot-img.png)
 
 ![prompt demo](img/kube-ps1.gif)
 
