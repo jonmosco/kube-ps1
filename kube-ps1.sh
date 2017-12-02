@@ -88,13 +88,13 @@ kube_ps1 () {
   # source the context and namespace
   kube_ps1_context_ns
 
-  KUBE_PROMPT="$KUBE_PS1_PREFIX${reset_color}"
-  KUBE_PROMPT+="${blue}$KUBE_PS1_DEFAULT_LABEL"
-  KUBE_PROMPT+="${reset_color}$KUBE_PS1_SEPERATOR"
-  KUBE_PROMPT+="${red}$KUBE_PS1_CLUSTER${reset_color}"
-  KUBE_PROMPT+="$KUBE_PS1_DIVIDER"
-  KUBE_PROMPT+="${cyan}$KUBE_PS1_NAMESPACE${reset_color}"
-  KUBE_PROMPT+="$KUBE_PS1_SUFFIX"
+  KUBE_PS1="$KUBE_PS1_PREFIX${reset_color}"
+  KUBE_PS1+="${blue}$KUBE_PS1_DEFAULT_LABEL"
+  KUBE_PS1+="${reset_color}$KUBE_PS1_SEPERATOR"
+  KUBE_PS1+="${red}$KUBE_PS1_CLUSTER${reset_color}"
+  KUBE_PS1+="$KUBE_PS1_DIVIDER"
+  KUBE_PS1+="${cyan}$KUBE_PS1_NAMESPACE${reset_color}"
+  KUBE_PS1+="$KUBE_PS1_SUFFIX"
 
   echo "$KUBE_PS1"
 
