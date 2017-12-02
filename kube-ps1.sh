@@ -64,7 +64,7 @@ kube_ps1_context_ns () {
 
 }
 
-kube_prompt_label () {
+kube_ps1_label () {
 
   [[ "${KUBE_PS1_DEFAULT_LABEL_IMG}" == false ]] && return
 
