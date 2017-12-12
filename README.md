@@ -50,12 +50,12 @@ Supported platforms:
 ZSH:
 ```
 source path/kube-ps1.sh
-PROMPT='$(kube-ps1) '
+PROMPT='$(kube_ps1) '
 ```
 
 Bash:
 ```
-source path/kube_ps1.sh
+source path/kube-ps1.sh
 PS1='[\u@\h \W$(kube_ps1)]\$ '
 ```
 
