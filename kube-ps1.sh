@@ -59,8 +59,8 @@ kube_ps1_context_ns () {
     local KUBE_BINARY="oc"
   fi
 
-  KUBE_PS1_CLUSTER="$(${KUBE_BINARY} config view --minify  --output 'jsonpath={..CurrentContext}')"
-  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify  --output 'jsonpath={..namespace}')"
+  KUBE_PS1_CLUSTER="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..CurrentContext}')"
+  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
 
 }
 
