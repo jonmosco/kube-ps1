@@ -60,8 +60,12 @@ kube_ps1_context_ns () {
   fi
 
   KUBE_PS1_CLUSTER="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..CurrentContext}')"
-  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
 
+  if [[ $(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}') ]]; then
+    KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
+  else
+    KUBE_PS1_NAMESPACE="default"
+  fi
 }
 
 kube_ps1_label () {
