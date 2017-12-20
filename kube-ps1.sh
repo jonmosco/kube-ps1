@@ -44,11 +44,6 @@ kube_ps1_colorize () {
 
 }
 
-# Test for our binary
-kube_binary () {
-  command -v "$1" > /dev/null 2>&1
-}
-
 kube_ps1_context_ns () {
 
   if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
@@ -59,7 +54,7 @@ kube_ps1_context_ns () {
     local KUBE_BINARY="oc"
   fi
 
-  KUBE_PS1_CLUSTER="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..CurrentContext}')"
+  KUBE_PS1_CLUSTER="$(kubectl config view | grep current-context | awk '{ print $NF }' | awk -F '.' '{ print $1 }')"
 
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
@@ -77,11 +72,11 @@ kube_ps1_label () {
 
 }
 
+# source our colors
+kube_ps1_colorize
+
 # Build our prompt
 kube_ps1 () {
-
-  # source our colors
-  kube_ps1_colorize
 
   # source out symbol
   kube_ps1_label
