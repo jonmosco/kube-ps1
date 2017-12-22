@@ -17,6 +17,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Debug
+[[ -n $DEBUG ]] && set -x
+
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_DEFAULT="${KUBE_PS1_DEFAULT:=true}"
@@ -27,37 +30,38 @@ KUBE_PS1_SEPERATOR="|"
 KUBE_PS1_PLATFORM="${KUBE_PS1_PLATFORM:="kubectl"}"
 KUBE_PS1_DIVIDER=":"
 KUBE_PS1_SUFFIX=")"
+KUBE_PS1_UNAME=$(uname)
+KUBE_PS1_LAST_TIME=0
 
-kube_ps1_colorize () {
+# Set our shell options.  The goal here is to have this working on both bash
+# and zsh
+if command -v add-zsh-hook >/dev/null 2>&1; then
+  KUBE_PS1_SHELL="zsh"
+else
+  KUBE_PS1_SHELL="bash"
+fi
 
-  if [[ -n "${ZSH_VERSION-}" ]]; then
-    blue="%F{blue}"
-    reset_color="%f"
-    red="%F{red}"
-    cyan="%F{cyan}"
-  else
-    blue="\[\e[0;34m\]"
-    reset_color="\[\e[0m\]"
-    red="\[\e[0;31m\]"
-    cyan="\[\e[0;36m\]"
-  fi
+_kube_ps1_shell_settings() {
 
-}
+  case "${KUBE_PS1_SHELL}" in
+    "zsh")
+      setopt PROMPT_SUBST
+      add-zsh-hook precmd _kube_ps1_load
+      zmodload zsh/stat
+      reset_color="%f"
+      blue="%F{blue}"
+      red="%F{red}"
+      cyan="%F{cyan}"
+      ;;
+    "bash")
+      reset_color=$(tput sgr0)
+      blue=$(tput setaf 4)
+      red=$(tput setaf 1)
+      cyan=$(tput setaf 6)
+      PROMPT_COMMAND=_kube_ps1_load
+      ;;
+  esac
 
-kube_ps1_context_ns () {
-
-  if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
-    local KUBE_BINARY="${KUBE_PS1_PLATFORM}"
-  elif [[ "${KUBE_PS1_DEFAULT}" == false ]] && [[ "${KUBE_PS1_PLATFORM}" == "kubectl" ]];then
-    local KUBE_BINARY="kubectl"
-  elif [[ "${KUBE_PS1_PLATFORM}" == "oc" ]]; then
-    local KUBE_BINARY="oc"
-  fi
-
-  KUBE_PS1_CLUSTER="$(kubectl config view | grep current-context | awk '{ print $NF }' | awk -F '.' '{ print $1 }')"
-
-  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
-  KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
 }
 
 kube_ps1_label () {
@@ -72,22 +76,76 @@ kube_ps1_label () {
 
 }
 
-# source our colors
-kube_ps1_colorize
+_kube_ps1_split() {
+  type setopt >/dev/null 2>&1 && setopt SH_WORD_SPLIT
+  local IFS=$1
+  # shellcheck disable=SC2086
+  echo $2
+}
+
+_kube_ps1_file_newer_than() {
+
+  local mtime
+  local file=$1
+  local check_time=$2
+
+  if [[ "${KUBE_PS1_SHELL}" = "zsh" ]]; then
+    mtime=$(stat +mtime "${file}")
+  elif [ x"$KUBE_PS1_UNAME" = x"Linux" ]; then
+    mtime=$(stat -c %y "${file}")
+  else
+    mtime=$(stat -f %m "$file")
+  fi
+
+  [ "${mtime}" -gt "${check_time}" ]
+
+}
+
+_kube_ps1_load() {
+
+  for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
+    # TODO: check existence of $conf
+    if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
+      _kube_ps1_get_context_ns
+      return
+    fi
+  done
+
+}
+
+_kube_ps1_get_context_ns() {
+
+  KUBE_PS1_LAST_TIME=$(date +%s)
+
+  if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
+    local KUBE_BINARY="${KUBE_PS1_PLATFORM}"
+  elif [[ "${KUBE_PS1_DEFAULT}" == false ]] && [[ "${KUBE_PS1_PLATFORM}" == "kubectl" ]];then
+    local KUBE_BINARY="kubectl"
+  elif [[ "${KUBE_PS1_PLATFORM}" == "oc" ]]; then
+    local KUBE_BINARY="oc"
+  fi
+
+  KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
+  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
+
+  # Set namespace to default if it is not defined
+  KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
+
+}
+
+# Set shell options
+_kube_ps1_shell_settings
+
+# source our symbol
+kube_ps1_label
 
 # Build our prompt
 kube_ps1 () {
 
-  # source out symbol
-  kube_ps1_label
-
-  # source the context and namespace
-  kube_ps1_context_ns
-
-  KUBE_PS1="$KUBE_PS1_PREFIX${reset_color}"
+  KUBE_PS1="${reset_color}$KUBE_PS1_PREFIX"
   KUBE_PS1+="${blue}$KUBE_PS1_DEFAULT_LABEL"
   KUBE_PS1+="${reset_color}$KUBE_PS1_SEPERATOR"
-  KUBE_PS1+="${red}$KUBE_PS1_CLUSTER${reset_color}"
+  KUBE_PS1+="${red}$KUBE_PS1_CONTEXT${reset_color}"
   KUBE_PS1+="$KUBE_PS1_DIVIDER"
   KUBE_PS1+="${cyan}$KUBE_PS1_NAMESPACE${reset_color}"
   KUBE_PS1+="$KUBE_PS1_SUFFIX"

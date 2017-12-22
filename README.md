@@ -35,7 +35,7 @@ fast switching between clusters and namespaces.
 The prompt layout is:
 
 ```
-(<platform>|<cluster>:<namespace>)
+(<logo>|<cluster>:<namespace>)
 ```
 
 Supported platforms:
@@ -79,3 +79,7 @@ The default settings can be overridden in ~/.bashrc or ~/.zshrc
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_DEFAULT_LABEL_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
+
+## Contributors
+
+Jared Yanovich
