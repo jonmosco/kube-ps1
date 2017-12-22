@@ -58,7 +58,11 @@ _kube_ps1_shell_settings() {
       blue=$(tput setaf 4)
       red=$(tput setaf 1)
       cyan=$(tput setaf 6)
-      PROMPT_COMMAND=_kube_ps1_load
+      if [ -z "$PROMPT_COMMAND" ]; then
+        PROMPT_COMMAND=_kube_ps1_load
+      else
+        PROMPT_COMMAND="$PROMPT_COMMAND;_kube_ps1_load"
+      fi
       ;;
   esac
 
