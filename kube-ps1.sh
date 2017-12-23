@@ -105,7 +105,7 @@ _kube_ps1_file_newer_than() {
     mtime=$(stat -f %m "$file")
   fi
 
-  [ "${mtime}" -gt "${check_time}" ]
+  [[ "${mtime}" -gt "${check_time}" ]]
 
 }
 
