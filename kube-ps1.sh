@@ -20,6 +20,10 @@
 # Debug
 [[ -n $DEBUG ]] && set -x
 
+# kubectl will read the environment variable $KUBECONFIG
+# otherwise set it to ~/.kube/config
+KUBECONFIG="${KUBECONFIG:=$HOME/.kube/config}"
+
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_DEFAULT="${KUBE_PS1_DEFAULT:=true}"
@@ -106,6 +110,7 @@ _kube_ps1_file_newer_than() {
 }
 
 _kube_ps1_load() {
+
 
   for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
     # TODO: check existence of $conf
