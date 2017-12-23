@@ -100,7 +100,7 @@ _kube_ps1_file_newer_than() {
   if [[ "${KUBE_PS1_SHELL}" = "zsh" ]]; then
     mtime=$(stat +mtime "${file}")
   elif [ x"$KUBE_PS1_UNAME" = x"Linux" ]; then
-    mtime=$(stat -c %y "${file}")
+    mtime=$(stat -c %Y "${file}")
   else
     mtime=$(stat -f %m "$file")
   fi
