@@ -46,7 +46,6 @@ else
 fi
 
 _kube_ps1_shell_settings() {
-
   case "${KUBE_PS1_SHELL}" in
     "zsh")
       setopt PROMPT_SUBST
@@ -69,7 +68,6 @@ _kube_ps1_shell_settings() {
       fi
       ;;
   esac
-
 }
 
 kube_ps1_label () {
@@ -110,8 +108,6 @@ _kube_ps1_file_newer_than() {
 }
 
 _kube_ps1_load() {
-
-
   for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
     # TODO: check existence of $conf
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
@@ -119,11 +115,11 @@ _kube_ps1_load() {
       return
     fi
   done
-
 }
 
 _kube_ps1_get_context_ns() {
 
+  # Set the command time
   KUBE_PS1_LAST_TIME=$(date +%s)
 
   if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
@@ -136,7 +132,6 @@ _kube_ps1_get_context_ns() {
 
   KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
-
   # Set namespace to default if it is not defined
   KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
 
