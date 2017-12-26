@@ -56,7 +56,7 @@ PROMPT='$(kube_ps1) '
 Bash:
 ```
 source path/kube-ps1.sh
-PS1='[\u@\h \W$(kube_ps1)]\$ '
+PS1='[\u@\h \W\[$(kube_ps1)\]]\$ '
 ```
 
 ## Colors
