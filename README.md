@@ -38,10 +38,6 @@ The prompt layout is:
 (<logo>|<cluster>:<namespace>)
 ```
 
-Supported platforms:
-* k8s - Kubernetes
-* ocp - OpenShift
-
 ## Install
 
 1. Clone this repository
