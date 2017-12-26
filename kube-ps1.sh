@@ -67,7 +67,6 @@ _kube_ps1_shell_settings() {
 }
 
 kube_ps1_label () {
-
   [[ "${KUBE_PS1_DEFAULT_LABEL_IMG}" == false ]] && return
 
   if [[ "${KUBE_PS1_DEFAULT_LABEL_IMG}" == true ]]; then
@@ -75,7 +74,6 @@ kube_ps1_label () {
   fi
 
   KUBE_PS1_DEFAULT_LABEL="${KUBE_LABEL}"
-
 }
 
 _kube_ps1_split() {
@@ -86,7 +84,6 @@ _kube_ps1_split() {
 }
 
 _kube_ps1_file_newer_than() {
-
   local mtime
   local file=$1
   local check_time=$2
@@ -100,7 +97,6 @@ _kube_ps1_file_newer_than() {
   fi
 
   [ "${mtime}" -gt "${check_time}" ]
-
 }
 
 _kube_ps1_load() {
@@ -118,7 +114,6 @@ _kube_ps1_load() {
 }
 
 _kube_ps1_get_context_ns() {
-
   # Set the command time
   KUBE_PS1_LAST_TIME=$(date +%s)
 
@@ -134,7 +129,6 @@ _kube_ps1_get_context_ns() {
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   # Set namespace to default if it is not defined
   KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
-
 }
 
 # Set shell options
@@ -145,7 +139,6 @@ kube_ps1_label
 
 # Build our prompt
 kube_ps1 () {
-
   KUBE_PS1="${reset_color}$KUBE_PS1_PREFIX"
   KUBE_PS1+="${blue}$KUBE_PS1_DEFAULT_LABEL"
   KUBE_PS1+="${reset_color}$KUBE_PS1_SEPERATOR"
@@ -155,5 +148,4 @@ kube_ps1 () {
   KUBE_PS1+="$KUBE_PS1_SUFFIX"
 
   echo "${KUBE_PS1}"
-
 }
