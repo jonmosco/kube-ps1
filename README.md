@@ -45,17 +45,15 @@ The prompt layout is:
 
 ZSH:
 ```
-source path/kube-ps1.sh zsh
+source path/kube-ps1.sh
 PROMPT='$(kube_ps1) '
 ```
 
 Bash:
 ```
-source path/kube-ps1.sh bash
+source path/kube-ps1.sh
 PS1='[\u@\h \W\[$(kube_ps1)\]]\$ '
 ```
-
-NOTE: The argument when sourcing is the shell being used.
 
 ## Colors
 

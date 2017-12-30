@@ -33,20 +33,10 @@ KUBE_PS1_SUFFIX=")"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
 
-# Set our shell options.  The goal here is to have this working on both bash
-# and zsh
-# TODO: put this in a _usage() function
-if [ $# -eq 0 ]; then
-  echo "$0 [shell]"
-  echo "[shell] = bash or zsh"
-  exit 1
-elif [[ "$1" = "zsh" ]]; then
+if [ "${ZSH_VERSION}" ]; then
   KUBE_PS1_SHELL="zsh"
-elif [[ "$1" = "bash" ]]; then
+elif [ "${BASH_VERSION}" ]; then
   KUBE_PS1_SHELL="bash"
-else
-  echo "$1 is an unsupported option"
-  exit 1
 fi
 
 _kube_ps1_shell_settings() {
@@ -141,15 +131,6 @@ _kube_ps1_get_context_ns() {
 
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   # Set namespace to default if it is not defined
-  KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
-}
-
-_kube_context() {
-  KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
-}
-
-_kube_namespace() {
-  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
 }
 
