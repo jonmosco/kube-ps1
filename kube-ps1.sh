@@ -35,7 +35,7 @@ KUBE_PS1_LAST_TIME=0
 
 # Set our shell options.  The goal here is to have this working on both bash
 # and zsh
-if command -v add-zsh-hook >/dev/null 2>&1; then
+if [[ "${SHELL}" =~ zsh ]]; then
   KUBE_PS1_SHELL="zsh"
 else
   KUBE_PS1_SHELL="bash"
@@ -79,7 +79,6 @@ kube_ps1_label () {
 _kube_ps1_split() {
   type setopt >/dev/null 2>&1 && setopt SH_WORD_SPLIT
   local IFS=$1
-  # shellcheck disable=SC2086
   echo $2
 }
 
@@ -105,8 +104,8 @@ _kube_ps1_load() {
   : "${KUBECONFIG:=$HOME/.kube/config}"
 
   for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
-    # TODO: check existence of $conf
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
+      # TODO: Test here for these values being set
       _kube_ps1_get_context_ns
       return
     fi
@@ -125,9 +124,24 @@ _kube_ps1_get_context_ns() {
     local KUBE_BINARY="oc"
   fi
 
+  # TODO: Check that each of these get set
   KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
+  if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
+    echo "kubectl context is not set"
+    exit 1
+  fi
+
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   # Set namespace to default if it is not defined
+  KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
+}
+
+_kube_context() {
+  KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
+}
+
+_kube_namespace() {
+  KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
   KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
 }
 

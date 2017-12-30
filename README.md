@@ -2,7 +2,7 @@ Kubernetes prompt for bash and zsh
 ==================================
 
 A Kubernetes (k8s) bash and zsh prompt that displays the current cluster
-context and the namespace.
+context and namespace.
 
 Inspired by several tools used to simplify usage of kubectl
 
@@ -14,8 +14,8 @@ Inspired by several tools used to simplify usage of kubectl
 
 ## Requirements
 
-The default prompt assumes you have the kubectl command line utility installed.  It
-can be obtained here:
+The default prompt assumes you have the kubectl command line utility installed.
+It can be obtained here:
 
 [Install and Set up kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
