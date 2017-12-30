@@ -35,10 +35,18 @@ KUBE_PS1_LAST_TIME=0
 
 # Set our shell options.  The goal here is to have this working on both bash
 # and zsh
-if [[ "${SHELL}" =~ zsh ]]; then
+# TODO: put this in a _usage() function
+if [ $# -eq 0 ]; then
+  echo "$0 [shell]"
+  echo "[shell] = bash or zsh"
+  exit 1
+elif [[ "$1" = "zsh" ]]; then
   KUBE_PS1_SHELL="zsh"
-else
+elif [[ "$1" = "bash" ]]; then
   KUBE_PS1_SHELL="bash"
+else
+  echo "$1 is an unsupported option"
+  exit 1
 fi
 
 _kube_ps1_shell_settings() {
