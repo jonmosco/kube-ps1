@@ -43,6 +43,7 @@ _kube_ps1_shell_settings() {
   case "${KUBE_PS1_SHELL}" in
     "zsh")
       setopt PROMPT_SUBST
+      autoload -U add-zsh-hook
       add-zsh-hook precmd _kube_ps1_load
       zmodload zsh/stat
       reset_color="%f"
@@ -122,7 +123,6 @@ _kube_ps1_get_context_ns() {
     local KUBE_BINARY="oc"
   fi
 
-  # TODO: Check that each of these get set
   KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
     echo "kubectl context is not set"
