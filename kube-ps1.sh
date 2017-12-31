@@ -126,7 +126,7 @@ _kube_ps1_get_context_ns() {
   KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
     echo "kubectl context is not set"
-    exit 1
+    return 1
   fi
 
   KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
