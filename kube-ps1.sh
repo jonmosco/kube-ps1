@@ -33,6 +33,7 @@ KUBE_PS1_DIVIDER=":"
 KUBE_PS1_SUFFIX=")"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
+KUBE_PS1_DISABLE_PATH="$HOME/.kube/kube-ps1/disabled"
 
 if [ "${ZSH_VERSION}" ]; then
   KUBE_PS1_SHELL="zsh"
@@ -145,8 +146,19 @@ _kube_ps1_shell_settings
 # source our symbol
 kube_ps1_label
 
+kubeon() {
+  rm -rf "$KUBE_PS1_DISABLE_PATH"
+}
+
+kubeoff() {
+  mkdir -p "$(dirname $KUBE_PS1_DISABLE_PATH)"
+  touch "$KUBE_PS1_DISABLE_PATH"
+}
+
 # Build our prompt
 kube_ps1() {
+  [ -f "$KUBE_PS1_DISABLE_PATH" ] && return
+
   KUBE_PS1="${reset_color}$KUBE_PS1_PREFIX"
   KUBE_PS1+="${blue}$KUBE_PS1_DEFAULT_LABEL"
   KUBE_PS1+="${reset_color}$KUBE_PS1_SEPERATOR"

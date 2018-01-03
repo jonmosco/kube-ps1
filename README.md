@@ -55,6 +55,11 @@ The prompt layout is:
 (<logo>|<cluster>:<namespace>)
 ```
 
+## Enabling/Disabling
+
+If you want to stop showing Kubernetes status on your prompt string temporarily
+run `kubeoff`. You can enable it again by running `kubeon`.
+
 ## Colors
 
 The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
@@ -80,4 +85,5 @@ the following environment variables:
 
 ## Contributors
 
+* [Ahmet Alp Balkan](https://github/com/ahmetb)
 * Jared Yanovich
