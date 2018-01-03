@@ -117,7 +117,7 @@ _kube_ps1_binary() {
   if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
     local KUBE_PS1_BINARY="${KUBE_PS1_BINARY}"
   elif [[ "${KUBE_PS1_DEFAULT}" == false ]] && [[ "${KUBE_PS1_BINARY}" == "kubectl" ]];then
-    local KUBE_BINARY="kubectl"
+    local KUBE_PS1_BINARY="kubectl"
   elif [[ "${KUBE_PS1_BINARY}" == "oc" ]]; then
     local KUBE_PS1_BINARY="oc"
   fi
