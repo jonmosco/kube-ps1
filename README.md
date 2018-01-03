@@ -55,7 +55,6 @@ The prompt layout is:
 (<logo>|<cluster>:<namespace>)
 ```
 
-
 ## Colors
 
 The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
@@ -70,6 +69,7 @@ the following environment variables:
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PS1_DEFAULT` | `true` | Default settings for the prompt |
+| `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_DEFAULT_LABEL` | `⎈ ` | Default prompt symbol |
 | `KUBE_PS1_SEPERATOR` | `\|` | Separator between symbol and cluster name |
@@ -80,4 +80,4 @@ the following environment variables:
 
 ## Contributors
 
-Jared Yanovich
+* Jared Yanovich
