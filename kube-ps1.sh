@@ -23,17 +23,17 @@
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_DEFAULT="${KUBE_PS1_DEFAULT:=true}"
+KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
+KUBE_PS1_BINARY="${KUBE_PS1_PLATFORM:="kubectl"}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:=true}"
-KUBE_PS1_PREFIX="("
+KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_DEFAULT_LABEL="${KUBE_PS1_DEFAULT_LABEL:="⎈ "}"
 KUBE_PS1_DEFAULT_LABEL_IMG="${KUBE_PS1_DEFAULT_LABEL_IMG:=false}"
+KUBE_PS1_LAST_TIME=0
+KUBE_PS1_PREFIX="("
 KUBE_PS1_SEPERATOR="|"
-KUBE_PS1_PLATFORM="${KUBE_PS1_PLATFORM:="kubectl"}"
 KUBE_PS1_DIVIDER=":"
 KUBE_PS1_SUFFIX=")"
-KUBE_PS1_UNAME=$(uname)
-KUBE_PS1_LAST_TIME=0
-KUBE_PS1_DISABLE_PATH="$HOME/.kube/kube-ps1/disabled"
 
 if [ "${ZSH_VERSION}" ]; then
   KUBE_PS1_SHELL="zsh"
@@ -113,28 +113,32 @@ _kube_ps1_load() {
   done
 }
 
+_kube_ps1_binary() {
+  if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
+    local KUBE_PS1_BINARY="${KUBE_PS1_BINARY}"
+  elif [[ "${KUBE_PS1_DEFAULT}" == false ]] && [[ "${KUBE_PS1_BINARY}" == "kubectl" ]];then
+    local KUBE_BINARY="kubectl"
+  elif [[ "${KUBE_PS1_BINARY}" == "oc" ]]; then
+    local KUBE_PS1_BINARY="oc"
+  fi
+
+  KUBE_PS1_BINARY="${KUBE_PS1_BINARY}"
+}
+
 # TODO: Break this function apart:
 #       one for context and one for namespace
 _kube_ps1_get_context_ns() {
   # Set the command time
   KUBE_PS1_LAST_TIME=$(date +%s)
 
-  if [[ "${KUBE_PS1_DEFAULT}" == true ]]; then
-    local KUBE_BINARY="${KUBE_PS1_PLATFORM}"
-  elif [[ "${KUBE_PS1_DEFAULT}" == false ]] && [[ "${KUBE_PS1_PLATFORM}" == "kubectl" ]];then
-    local KUBE_BINARY="kubectl"
-  elif [[ "${KUBE_PS1_PLATFORM}" == "oc" ]]; then
-    local KUBE_BINARY="oc"
-  fi
-
-  KUBE_PS1_CONTEXT="$(${KUBE_BINARY} config current-context)"
+  KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
     echo "kubectl context is not set"
     return 1
   fi
 
   if [[ "${KUBE_PS1_NS_ENABLE}" = true ]]; then
-    KUBE_PS1_NAMESPACE="$(${KUBE_BINARY} config view --minify --output 'jsonpath={..namespace}')"
+    KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}')"
     # Set namespace to default if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
   fi
@@ -147,17 +151,17 @@ _kube_ps1_shell_settings
 kube_ps1_label
 
 kubeon() {
-  rm -rf "$KUBE_PS1_DISABLE_PATH"
+  rm -rf "${KUBE_PS1_DISABLE_PATH}"
 }
 
 kubeoff() {
   mkdir -p "$(dirname $KUBE_PS1_DISABLE_PATH)"
-  touch "$KUBE_PS1_DISABLE_PATH"
+  touch "${KUBE_PS1_DISABLE_PATH}"
 }
 
 # Build our prompt
 kube_ps1() {
-  [ -f "$KUBE_PS1_DISABLE_PATH" ] && return
+  [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
 
   KUBE_PS1="${reset_color}$KUBE_PS1_PREFIX"
   KUBE_PS1+="${blue}$KUBE_PS1_DEFAULT_LABEL"
