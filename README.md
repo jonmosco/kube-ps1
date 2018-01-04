@@ -73,15 +73,16 @@ the following environment variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
-| `KUBE_PS1_DEFAULT` | `true` | Default settings for the prompt |
+| `KUBE_PS1_BINARY_DEFAULT` | `true` | Set default binary to `kubectl` |
+| `KUBE_PS1_BINARY` | `kubectl` | Cluster type and binary to use |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
-| `KUBE_PS1_DEFAULT_LABEL` | `⎈ ` | Default prompt symbol |
-| `KUBE_PS1_SEPERATOR` | `\|` | Separator between symbol and cluster name |
-| `KUBE_PS1_PLATFORM` | `kubectl` | Cluster type and binary to use |
+| `KUBE_PS1_LABEL_ENABLE` | `true ` | Display the prompt symbol |
+| `KUBE_PS1_LABEL_DEFAULT` | `⎈ ` | Default prompt symbol |
+| `KUBE_PS1_LABEL_USE_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
+| `KUBE_PS1_SEPARATOR` | `\|` | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
-| `KUBE_PS1_DEFAULT_LABEL_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
 
 ## Contributors
 
