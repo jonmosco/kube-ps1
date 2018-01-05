@@ -42,7 +42,6 @@ elif [ "${BASH_VERSION}" ]; then
   KUBE_PS1_SHELL="bash"
 fi
 
-# TODO: Make the colors have the KUBE_PS1_ prefix
 _kube_ps1_shell_settings() {
   case "${KUBE_PS1_SHELL}" in
     "zsh")
@@ -50,16 +49,17 @@ _kube_ps1_shell_settings() {
       autoload -U add-zsh-hook
       add-zsh-hook precmd _kube_ps1_load
       zmodload zsh/stat
-      reset_color="%f"
-      blue="%F{blue}"
-      red="%F{red}"
-      cyan="%F{cyan}"
+      KUBE_PS1_RESET_COLOR="%f"
+      KUBE_PS1_LABEL_COLOR="%F{blue}"
+      KUBE_PS1_CTX_COLOR="%F{red}"
+      KUBE_PS1_NS_COLOR="%F{cyan}"
       ;;
     "bash")
-      reset_color=$(tput sgr0)
-      blue=$(tput setaf 4)
-      red=$(tput setaf 1)
-      cyan=$(tput setaf 6)
+      # TODO: dont use tput
+      KUBE_PS1_RESET_COLOR=$(tput sgr0)
+      KUBE_PS1_LABEL_COLOR=$(tput setaf 4)
+      KUBE_PS1_CTX_COLOR=$(tput setaf 1)
+      KUBE_PS1_NS_COLOR=$(tput setaf 6)
         # TODO: only add it if it's not there
         PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_load"
       ;;
@@ -160,17 +160,23 @@ kubeoff() {
 kube_ps1() {
   [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
 
-  KUBE_PS1="${reset_color}$KUBE_PS1_PREFIX"
+  # Prefix
+  KUBE_PS1="${KUBE_PS1_RESET_COLOR}${KUBE_PS1_PREFIX}"
+  # Label
   if [[ "${KUBE_PS1_LABEL_ENABLE}" == true ]]; then
-    KUBE_PS1+="${blue}$KUBE_PS1_LABEL"
-    KUBE_PS1+="${reset_color}$KUBE_PS1_SEPARATOR"
+    KUBE_PS1+="${KUBE_PS1_LABEL_COLOR}${KUBE_PS1_LABEL}"
+    KUBE_PS1+="${KUBE_PS1_RESET_COLOR}${KUBE_PS1_SEPARATOR}"
   fi
-  KUBE_PS1+="${red}$KUBE_PS1_CONTEXT${reset_color}"
+  # Cluster Context
+  KUBE_PS1+="${KUBE_PS1_CTX_COLOR}${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    KUBE_PS1+="$KUBE_PS1_DIVIDER"
-    KUBE_PS1+="${cyan}$KUBE_PS1_NAMESPACE${reset_color}"
+    # Divider between context and namespace
+    KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    KUBE_PS1+="${KUBE_PS1_NS_COLOR}$KUBE_PS1_NAMESPACE${KUBE_PS1_RESET_COLOR}"
   fi
-  KUBE_PS1+="$KUBE_PS1_SUFFIX"
+  # Suffix
+  KUBE_PS1+="${KUBE_PS1_SUFFIX}"
 
   echo "${KUBE_PS1}"
 }

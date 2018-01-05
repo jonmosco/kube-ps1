@@ -60,12 +60,6 @@ The prompt layout is:
 If you want to stop showing Kubernetes status on your prompt string temporarily
 run `kubeoff`. You can enable it again by running `kubeon`.
 
-## Colors
-
-The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
-color as closely as possible. Red was chosen as the cluster name to stand out, and cyan
-for the namespace.  These can of course be changed.
-
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
@@ -83,6 +77,18 @@ the following environment variables:
 | `KUBE_PS1_SEPARATOR` | `\|` | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
+
+## Colors
+
+The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
+color as closely as possible. Red was chosen as the cluster name to stand out, and cyan
+for the namespace.  These can of course be changed.
+
+| Variable | Default | Meaning |
+| :------- | :-----: | ------- |
+| `KUBE_PS1_LABEL_COLOR` | `blue` | Set default color of the k8s image |
+| `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
+| `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
 
 ## Contributors
 
