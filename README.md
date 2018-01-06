@@ -15,12 +15,12 @@ Inspired by several tools used to simplify usage of `kubectl`.
 ## Installing
 
 1. Clone this repository
-2. Source the kube-ps1.sh in your `~./.zshrc` or your ~/.bashrc
+2. Source the kube-ps1.sh in your `~/.zshrc` or your ~/.bashrc
 
 For Zsh:
 ```sh
 source /path/to/kube-ps1.sh
-PROMPT='$(kube_ps1) $PROMPT'
+PROMPT='$(kube_ps1)'$PROMPT
 ```
 
 For Bash:
