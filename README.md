@@ -80,9 +80,9 @@ the following environment variables:
 
 ## Colors
 
-The colors are of my opinion. Blue was used as the prefix to match the Kubernetes
-color as closely as possible. Red was chosen as the cluster name to stand out, and cyan
-for the namespace.  These can of course be changed.
+The colors are of my opinion. Blue was used for the label to match the Kubernetes
+color as closely as possible. Red was chosen as the cluster name to stand out,
+and cyan for the namespace.  These can of course be changed:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
