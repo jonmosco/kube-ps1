@@ -22,7 +22,6 @@
 
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
-# after sourcing this file
 KUBE_PS1_BINARY_DEFAULT="${KUBE_PS1_DEFAULT:-true}"
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-"kubectl"}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
@@ -32,10 +31,10 @@ KUBE_PS1_LABEL_ENABLE="${KUBE_PS1_LABEL_ENABLE:-true}"
 KUBE_PS1_LABEL_DEFAULT="${KUBE_PS1_LABEL_DEFAULT:-"⎈ "}"
 KUBE_PS1_LABEL_USE_IMG="${KUBE_PS1_LABEL_USE_IMG:-false}"
 KUBE_PS1_LAST_TIME=0
-KUBE_PS1_PREFIX="("
-KUBE_PS1_SEPARATOR="|"
-KUBE_PS1_DIVIDER=":"
-KUBE_PS1_SUFFIX=")"
+KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX:-"("}"
+KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR:-"|"}"
+KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER:-":"}"
+KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX:-")"}"
 
 if [ "${ZSH_VERSION}" ]; then
   KUBE_PS1_SHELL="zsh"

@@ -63,7 +63,7 @@ run `kubeoff`. You can enable it again by running `kubeon`.
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
-the following environment variables after sourcing kube-ps1.sh:
+the following environment variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
