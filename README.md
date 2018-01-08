@@ -25,8 +25,8 @@ PROMPT='$(kube_ps1)'$PROMPT
 
 For Bash:
 ```sh
-source /path/tokube-ps1.sh
-PS1='[\u@\h \W\[$(kube_ps1)\]]\$ $PS1'
+source /path/to/kube-ps1.sh
+PS1="[\u@\h \W \[$(kube_ps1)\]]\$ "
 ```
 
 ## Requirements
@@ -63,7 +63,7 @@ run `kubeoff`. You can enable it again by running `kubeon`.
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
-the following environment variables:
+the following environment variables after sourcing kube-ps1.sh:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |

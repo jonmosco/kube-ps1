@@ -22,6 +22,7 @@
 
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
+# after sourcing this file
 KUBE_PS1_BINARY_DEFAULT="${KUBE_PS1_DEFAULT:-true}"
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-"kubectl"}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
@@ -55,13 +56,19 @@ _kube_ps1_shell_settings() {
       KUBE_PS1_NS_COLOR="%F{cyan}"
       ;;
     "bash")
-      # TODO: dont use tput
-      KUBE_PS1_RESET_COLOR=$(tput sgr0)
-      KUBE_PS1_LABEL_COLOR=$(tput setaf 4)
-      KUBE_PS1_CTX_COLOR=$(tput setaf 1)
-      KUBE_PS1_NS_COLOR=$(tput setaf 6)
-        # TODO: only add it if it's not there
-        PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_load"
+      if tput setaf 1 &> /dev/null; then
+        KUBE_PS1_RESET_COLOR="$(tput sgr0)"
+        KUBE_PS1_LABEL_COLOR="$(tput setaf 33)"
+        KUBE_PS1_CTX_COLOR="$(tput setaf 1)"
+        KUBE_PS1_NS_COLOR="$(tput setaf 37)"
+      else
+        KUBE_PS1_RESET_COLOR="$(printf '\e[0m')"
+        KUBE_PS1_LABEL_COLOR="$(printf '\e[0;34m')"
+        KUBE_PS1_CTX_COLOR="$(printf '\e[31m')"
+        KUBE_PS1_NS_COLOR="$(printf '\e[0;36m')"
+       fi
+      # TODO: only add it if it's not there
+      PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_load"
       ;;
   esac
 }
@@ -161,7 +168,8 @@ kube_ps1() {
   [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
 
   # Prefix
-  KUBE_PS1="${KUBE_PS1_RESET_COLOR}${KUBE_PS1_PREFIX}"
+  # KUBE_PS1="${KUBE_PS1_RESET_COLOR}${KUBE_PS1_PREFIX}"
+  KUBE_PS1="${KUBE_PS1_PREFIX}"
   # Label
   if [[ "${KUBE_PS1_LABEL_ENABLE}" == true ]]; then
     KUBE_PS1+="${KUBE_PS1_LABEL_COLOR}${KUBE_PS1_LABEL}"
@@ -176,7 +184,8 @@ kube_ps1() {
     KUBE_PS1+="${KUBE_PS1_NS_COLOR}$KUBE_PS1_NAMESPACE${KUBE_PS1_RESET_COLOR}"
   fi
   # Suffix
-  KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  # KUBE_PS1+="${KUBE_PS1_SUFFIX}${KUBE_PS1_RESET_COLOR}"
+  KUBE_PS1+="${KUBE_PS1_RESET_COLOR}${KUBE_PS1_SUFFIX}"
 
   echo "${KUBE_PS1}"
 }
