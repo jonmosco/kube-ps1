@@ -50,23 +50,22 @@ _kube_ps1_shell_settings() {
       add-zsh-hook precmd _kube_ps1_load
       zmodload zsh/stat
       KUBE_PS1_RESET_COLOR="%f"
-      KUBE_PS1_LABEL_COLOR="%F{blue}"
-      KUBE_PS1_CTX_COLOR="%F{red}"
-      KUBE_PS1_NS_COLOR="%F{cyan}"
+      KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-"%F{blue}"}"
+      KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-"%F{red}"}"
+      KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-"%F{cyan}"}"
       ;;
     "bash")
       if tput setaf 1 &> /dev/null; then
         KUBE_PS1_RESET_COLOR="$(tput sgr0)"
-        KUBE_PS1_LABEL_COLOR="$(tput setaf 33)"
-        KUBE_PS1_CTX_COLOR="$(tput setaf 1)"
-        KUBE_PS1_NS_COLOR="$(tput setaf 37)"
+        KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-"$(tput setaf 33)"}"
+        KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-"$(tput setaf 1)"}"
+        KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-"$(tput setaf 37)"}"
       else
         KUBE_PS1_RESET_COLOR="$(printf '\e[0m')"
-        KUBE_PS1_LABEL_COLOR="$(printf '\e[0;34m')"
-        KUBE_PS1_CTX_COLOR="$(printf '\e[31m')"
-        KUBE_PS1_NS_COLOR="$(printf '\e[0;36m')"
+        KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:="$(printf '\e[0;34m')"}"
+        KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-"$(printf '\e[31m')"}"
+        KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-"$(printf '\e[0;36m')"}"
        fi
-      # TODO: only add it if it's not there
       PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_load"
       ;;
   esac

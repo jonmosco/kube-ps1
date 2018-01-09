@@ -15,7 +15,7 @@ Inspired by several tools used to simplify usage of `kubectl`.
 ## Installing
 
 1. Clone this repository
-2. Source the kube-ps1.sh in your `~/.zshrc` or your ~/.bashrc
+2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
 For Zsh:
 ```sh
@@ -92,5 +92,5 @@ and cyan for the namespace.  These can of course be changed:
 
 ## Contributors
 
-* [Ahmet Alp Balkan](https://github/com/ahmetb)
+* [Ahmet Alp Balkan](https://github.com/ahmetb)
 * Jared Yanovich
