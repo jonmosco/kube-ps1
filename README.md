@@ -82,7 +82,8 @@ the following environment variables:
 
 The colors are of my opinion. Blue was used for the label to match the Kubernetes
 color as closely as possible. Red was chosen as the cluster name to stand out,
-and cyan for the namespace.  These can of course be changed:
+and cyan for the namespace.  These can of course be changed. Set the variable
+to a null string ("") if you do not want color:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
