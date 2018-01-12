@@ -72,8 +72,8 @@ the following environment variables:
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_LABEL_ENABLE` | `true ` | Display the prompt symbol |
-| `KUBE_PS1_LABEL_DEFAULT` | `⎈ ` | Default prompt symbol |
-| `KUBE_PS1_LABEL_USE_IMG` | `false` | Use Kubernetes img as the label: ☸️  |
+| `KUBE_PS1_LABEL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
+| `KUBE_PS1_LABEL_USE_IMG` | `false` | Use Kubernetes img as the label: ☸️   Unicode `\u2638` |
 | `KUBE_PS1_SEPARATOR` | `\|` | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |

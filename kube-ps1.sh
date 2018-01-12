@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2017 Jon Mosco
+# Copyright 2018 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LABEL_ENABLE="${KUBE_PS1_LABEL_ENABLE:-true}"
 # If needed, the unicode sequence for this symbol is \u2388
+# This symbol needs testing on more terminals
 KUBE_PS1_LABEL_DEFAULT="${KUBE_PS1_LABEL_DEFAULT:-⎈ }"
 KUBE_PS1_LABEL_USE_IMG="${KUBE_PS1_LABEL_USE_IMG:-false}"
 KUBE_PS1_LAST_TIME=0
@@ -83,6 +84,7 @@ _kube_ps1_colors() {
   esac
 }
 
+# TODO: Test that the dependencies are met
 _kube_ps1_binary() {
   if [[ "${KUBE_PS1_BINARY_DEFAULT}" == true ]]; then
     local KUBE_PS1_BINARY="${KUBE_PS1_BINARY_DEFAULT}"
@@ -131,10 +133,14 @@ _kube_ps1_load() {
   : "${KUBECONFIG:=$HOME/.kube/config}"
 
   for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
-    if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
-      # TODO: Test here for these values being set
-      _kube_ps1_get_context_ns
-      return
+    if [[ -z "${conf}" ]]; then
+      echo "Error: kubectl configuration files not found"
+      return 1
+    else
+      if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
+        _kube_ps1_get_context_ns
+        return
+      fi
     fi
   done
 }
