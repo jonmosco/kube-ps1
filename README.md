@@ -6,10 +6,8 @@ on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
 
 Inspired by several tools used to simplify usage of `kubectl`.
 
-Default configuration:
 ![prompt](img/screenshot.png)
 
-Helm Image:
 ![prompt2](img/screenshot-img.png)
 
 ![prompt demo](img/kube-ps1.gif)
