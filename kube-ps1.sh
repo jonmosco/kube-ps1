@@ -29,18 +29,18 @@ KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LABEL_ENABLE="${KUBE_PS1_LABEL_ENABLE:-true}"
 # If needed, the unicode sequence for this symbol is \u2388
-# This symbol needs testing on more terminals
 KUBE_PS1_LABEL_DEFAULT="${KUBE_PS1_LABEL_DEFAULT:-⎈ }"
 KUBE_PS1_LABEL_USE_IMG="${KUBE_PS1_LABEL_USE_IMG:-false}"
 KUBE_PS1_LAST_TIME=0
-KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX:-(}"
+# https://github.com/jonmosco/kube-ps1/issues/21
+KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR:-|}"
-KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER:-:}"
-KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX:-)}"
+KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
+KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
-if [ "${ZSH_VERSION}" ]; then
+if [ "${ZSH_VERSION-}" ]; then
   KUBE_PS1_SHELL="zsh"
-elif [ "${BASH_VERSION}" ]; then
+elif [ "${BASH_VERSION-}" ]; then
   KUBE_PS1_SHELL="bash"
 fi
 
@@ -95,6 +95,10 @@ _kube_ps1_binary() {
   KUBE_PS1_BINARY="${KUBE_PS1_BINARY}"
 }
 
+# TODO: Test that terminal is unicode capable
+#       If not, provide either a string like k8s, or
+#       disable the label alltogether
+# [[ "$(locale -k LC_CTYPE | sed -n 's/^charmap="\(.*\)"/\1/p')" == *"UTF-8"* ]]
 kube_ps1_label() {
   [[ "${KUBE_PS1_LABEL_ENABLE}" == false ]] && return
 

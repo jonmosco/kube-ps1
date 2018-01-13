@@ -6,8 +6,10 @@ on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
 
 Inspired by several tools used to simplify usage of `kubectl`.
 
+Default configuration:
 ![prompt](img/screenshot.png)
 
+Helm Image:
 ![prompt2](img/screenshot-img.png)
 
 ![prompt demo](img/kube-ps1.gif)
@@ -26,7 +28,7 @@ PROMPT='$(kube_ps1)'$PROMPT
 For Bash:
 ```sh
 source /path/to/kube-ps1.sh
-PS1="[\u@\h \W \[$(kube_ps1)\]]\$ "
+PS1="[\u@\h \W \$(kube_ps1)]\$ "
 ```
 
 ## Requirements
