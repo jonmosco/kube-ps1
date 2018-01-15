@@ -96,12 +96,21 @@ and cyan for the namespace.  These can of course be changed:
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
 
-### ZSH
+#### ZSH
 
 In zsh, names are only usable for the following colors: `black, red,
 green, yellow, blue, magenta, cyan, and white`.
 
-### Bash
+#### Bash
+
+For bash, the appropriate escape sequences must be used in place of the color
+names.  The default colors assigned have the following escape sequences:
+
+```
+blue: \e[34m
+red:  \e[31m
+cyan: \e[36m
+```
 
 ## Contributors
 
