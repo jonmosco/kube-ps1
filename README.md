@@ -49,7 +49,7 @@ fast switching between clusters and namespaces.
 
 ## Prompt Structure
 
-The prompt layout is:
+The default prompt layout is:
 
 ```
 (<logo>|<cluster>:<namespace>)
@@ -78,18 +78,30 @@ the following environment variables:
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 
+To disable a feature, set it to an empty string:
+
+```
+KUBE_PS1_SEPARATOR=''
+```
+
 ## Colors
 
 The colors are of my opinion. Blue was used for the label to match the Kubernetes
 color as closely as possible. Red was chosen as the cluster name to stand out,
-and cyan for the namespace.  These can of course be changed. Set the variable
-to a null string ("") if you do not want color:
+and cyan for the namespace.  These can of course be changed:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
-| `KUBE_PS1_LABEL_COLOR` | `blue` | Set default color of the k8s image |
+| `KUBE_PS1_LABEL_COLOR` | `blue` | Set default color of the Kubernetes label |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
+
+### ZSH
+
+In zsh, names are only usable for the following colors: `black, red,
+green, yellow, blue, magenta, cyan, and white`.
+
+### Bash
 
 ## Contributors
 

@@ -26,16 +26,20 @@ KUBE_PS1_BINARY_DEFAULT="${KUBE_PS1_DEFAULT:-true}"
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
-KUBE_PS1_UNAME=$(uname)
-KUBE_PS1_LABEL_ENABLE="${KUBE_PS1_LABEL_ENABLE:-true}"
-# If needed, the Unicode sequence for this symbol is \u2388
+KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX:=(}"
+KUBE_PS1_LABEL_ENABLE="${KUBE_PS1_LABEL_ENABLE:=true}"
 KUBE_PS1_LABEL_DEFAULT="${KUBE_PS1_LABEL_DEFAULT:-⎈ }"
 KUBE_PS1_LABEL_USE_IMG="${KUBE_PS1_LABEL_USE_IMG:-false}"
-KUBE_PS1_LAST_TIME=0
-KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
+KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER:-:}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
-KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
-KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
+KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX:=)}"
+KUBE_PS1_UNAME=$(uname)
+KUBE_PS1_LAST_TIME=0
+
+# TODO: Document Color defs for bash
+KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-blue}"
+KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-red}"
+KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-cyan}"
 
 if [ "${ZSH_VERSION-}" ]; then
   KUBE_PS1_SHELL="zsh"
@@ -57,30 +61,43 @@ _kube_ps1_shell_settings() {
   esac
 }
 
+# TODO: bash: document colors and methods for customizing
 _kube_ps1_colors() {
+  local LABEL_COLOR
+  local CTX_COLOR
+  local NS_COLOR
+
   case "${KUBE_PS1_SHELL}" in
     "zsh")
+      KUBE_PS1_COLOR_OPEN="%{"
+      KUBE_PS1_COLOR_CLOSE="%}"
       KUBE_PS1_RESET_COLOR="%f"
-      KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-%F{blue}}"
-      KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-%F{red}}"
-      KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-%F{cyan}}"
+
+      LABEL_COLOR="$fg[${KUBE_PS1_LABEL_COLOR}]"
+      CTX_COLOR="$fg[${KUBE_PS1_CTX_COLOR}]"
+      NS_COLOR="$fg[${KUBE_PS1_NS_COLOR}]"
       ;;
     "bash")
       KUBE_PS1_COLOR_OPEN=$'\001'
       KUBE_PS1_COLOR_CLOSE=$'\002'
       if tput setaf 1 &> /dev/null; then
         KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}$(tput sgr0)${KUBE_PS1_COLOR_CLOSE}"
-        KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-${KUBE_PS1_COLOR_OPEN}$(tput setaf 33)${KUBE_PS1_COLOR_CLOSE}}"
-        KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-${KUBE_PS1_COLOR_OPEN}$(tput setaf 1)${KUBE_PS1_COLOR_CLOSE}}"
-        KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-${KUBE_PS1_COLOR_OPEN}$(tput setaf 37)${KUBE_PS1_COLOR_CLOSE}}"
+        LABEL_COLOR="$(tput setaf 33)"
+        CTX_COLOR="$(tput setaf 1)"
+        NS_COLOR="$(tput setaf 37)"
       else
         KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}$(echo -e '\033[0m')${KUBE_PS1_COLOR_CLOSE}"
-        KUBE_PS1_LABEL_COLOR="${KUBE_PS1_LABEL_COLOR:-${KUBE_PS1_COLOR_OPEN}$(echo -e '\033[0;34m')${KUBE_PS1_COLOR_CLOSE}}"
-        KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-${KUBE_PS1_COLOR_OPEN}$(echo -e '\033[31m')${KUBE_PS1_COLOR_CLOSE}}"
-        KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-${KUBE_PS1_COLOR_OPEN}$(echo -e '\033[0;36m')${KUBE_PS1_COLOR_CLOSE}}"
+        LABEL_COLOR="$(echo -e '\033[0;34m')"
+        CTX_COLOR="$(echo -e '\033[31m')"
+        NS_COLOR="$(echo -e '\033[0;36m')"
       fi
       ;;
   esac
+
+  # Draw the colors for each shell
+  _KUBE_PS1_LABEL_COLOR="${KUBE_PS1_COLOR_OPEN}${LABEL_COLOR}${KUBE_PS1_COLOR_CLOSE}"
+  _KUBE_PS1_CTX_COLOR="${KUBE_PS1_COLOR_OPEN}${CTX_COLOR}${KUBE_PS1_COLOR_CLOSE}"
+  _KUBE_PS1_NS_COLOR="${KUBE_PS1_COLOR_OPEN}${NS_COLOR}${KUBE_PS1_COLOR_CLOSE}"
 }
 
 # TODO: Test that the dependencies are met
@@ -94,7 +111,7 @@ _kube_ps1_binary() {
   KUBE_PS1_BINARY="${KUBE_PS1_BINARY}"
 }
 
-# TODO: Test that terminal is unicode capable
+# TODO: Test that terminal is Unicode capable
 #       If not, provide either a string like k8s, or
 #       disable the label altogether
 # [[ "$(locale -k LC_CTYPE | sed -n 's/^charmap="\(.*\)"/\1/p')" == *"UTF-8"* ]]
@@ -178,6 +195,8 @@ kube_ps1_label
 
 kubeon() {
   rm -rf "${KUBE_PS1_DISABLE_PATH}"
+  # _kube_ps1_load
+  kube_ps1
 }
 
 kubeoff() {
@@ -191,17 +210,23 @@ kube_ps1() {
 
   # Prefix
   KUBE_PS1="${KUBE_PS1_PREFIX}"
+
   # Label
   if [[ "${KUBE_PS1_LABEL_ENABLE}" == true ]]; then
-    KUBE_PS1+="${KUBE_PS1_LABEL_COLOR}${KUBE_PS1_LABEL}${KUBE_PS1_RESET_COLOR}"
-    KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
+    KUBE_PS1+="${_KUBE_PS1_LABEL_COLOR}${KUBE_PS1_LABEL}${KUBE_PS1_RESET_COLOR}"
+    if [[ "${KUBE_PS1_SEPARATOR}" == '' ]]; then
+      unset KUBE_PS1_SEPARATOR
+    else
+      KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
+    fi
   fi
+
   # Cluster Context
-  KUBE_PS1+="${KUBE_PS1_CTX_COLOR}${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  KUBE_PS1+="${_KUBE_PS1_CTX_COLOR}${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     KUBE_PS1+="${KUBE_PS1_DIVIDER}"
-    KUBE_PS1+="${KUBE_PS1_NS_COLOR}${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="${_KUBE_PS1_NS_COLOR}${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
   fi
   # Suffix
   KUBE_PS1+="${KUBE_PS1_SUFFIX}"
