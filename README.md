@@ -68,13 +68,13 @@ the following environment variables:
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PS1_BINARY_DEFAULT` | `true` | Set default binary to `kubectl` |
-| `KUBE_PS1_BINARY` | `kubectl` | Cluster type and binary to use |
+| `KUBE_PS1_BINARY` | `kubectl` | Kubernetes binary to use |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
-| `KUBE_PS1_LABEL_ENABLE` | `true ` | Display the prompt symbol |
-| `KUBE_PS1_LABEL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
-| `KUBE_PS1_LABEL_USE_IMG` | `false` | Use Kubernetes img as the label: ☸️   Unicode `\u2638` |
-| `KUBE_PS1_SEPARATOR` | `\|` | Separator between symbol and cluster name |
+| `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol |
+| `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
+| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | Use Kubernetes img as the symbol: ☸️   Unicode `\u2638` |
+| `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 
@@ -86,13 +86,13 @@ KUBE_PS1_SEPARATOR=''
 
 ## Colors
 
-The colors are of my opinion. Blue was used for the label to match the Kubernetes
-color as closely as possible. Red was chosen as the cluster name to stand out,
-and cyan for the namespace.  These can of course be changed:
+The colors are of my opinion. Blue was used for the default symbol to match the
+Kubernetes color as closely as possible. Red was chosen as the cluster name to
+stand out, and cyan for the namespace.  These can of course be changed:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
-| `KUBE_PS1_LABEL_COLOR` | `blue` | Set default color of the Kubernetes label |
+| `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
 
