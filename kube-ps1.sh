@@ -112,18 +112,22 @@ _kube_ps1_binary() {
   echo "${KUBE_PS1_BINARY}"
 }
 
-# TODO: Test that terminal is Unicode capable
-#       If not, provide either a string like k8s, or
-#       disable the label altogether
-# [[ "$(locale -k LC_CTYPE | sed -n 's/^charmap="\(.*\)"/\1/p')" == *"UTF-8"* ]]
 _kube_ps1_symbol() {
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
-    local KUBE_PS1_SYMBOL_DEFAULT="☸️ "
+  # TODO: Use builtin regexp
+  if [[ "$(locale -k LC_CTYPE | sed -n 's/^charmap="\(.*\)"/\1/p')" == *"UTF-8"* ]]; then
+    local _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
+    local _KUBE_PS1_SYMBOL_IMG="☸️ "
+  else
+    local _KUBE_PS1_SYMBOL_DEFAULT="k8s"
   fi
 
-  KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
+  if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
+    KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_IMG}"
+  else
+    KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_DEFAULT}"
+  fi
 }
 
 _kube_ps1_split() {
@@ -170,6 +174,7 @@ _kube_ps1_load() {
 #       one for context and one for namespace
 _kube_ps1_get_context_ns() {
   # Set the command time
+  # TODO: Use a builtin instead of date
   KUBE_PS1_LAST_TIME=$(date +%s)
 
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context)"
