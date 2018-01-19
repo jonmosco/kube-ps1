@@ -54,11 +54,11 @@ _kube_ps1_shell_settings() {
     "zsh")
       setopt PROMPT_SUBST
       autoload -U add-zsh-hook
-      add-zsh-hook precmd _kube_ps1_load
+      add-zsh-hook precmd _kube_ps1_update_cache
       zmodload zsh/stat
       ;;
     "bash")
-      PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_load"
+      PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_update_cache"
       ;;
   esac
 }
@@ -152,20 +152,14 @@ _kube_ps1_file_newer_than() {
   [ "${mtime}" -gt "${check_time}" ]
 }
 
-_kube_ps1_load() {
+_kube_ps1_update_cache() {
   # kubectl will read the environment variable $KUBECONFIG
   # otherwise set it to ~/.kube/config
-  : "${KUBECONFIG:=$HOME/.kube/config}"
-
-  for conf in $(_kube_ps1_split : "${KUBECONFIG}"); do
-    if [[ -z "${conf}" ]]; then
-      echo "Error: kubectl configuration files not found"
-      return 1
-    else
-      if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
-        _kube_ps1_get_context_ns
-        return
-      fi
+  for conf in $(_kube_ps1_split : "${KUBECONFIG:-$HOME/.kube/config}"); do
+    [[ -r "${conf}" ]] || continue
+    if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
+      _kube_ps1_get_context_ns
+      return
     fi
   done
 }
@@ -175,6 +169,7 @@ _kube_ps1_load() {
 _kube_ps1_get_context_ns() {
   # Set the command time
   # TODO: Use a builtin instead of date
+  # KUBE_PS1_LAST_TIME=$(printf %t)
   KUBE_PS1_LAST_TIME=$(date +%s)
 
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context)"

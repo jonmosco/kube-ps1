@@ -69,14 +69,17 @@ the following environment variables:
 | :------- | :-----: | ------- |
 | `KUBE_PS1_BINARY_DEFAULT` | `true` | Set default binary to `kubectl` |
 | `KUBE_PS1_BINARY` | `kubectl` | Kubernetes binary to use |
-| `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace |
+| `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
-| `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol |
+| `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
 | `KUBE_PS1_SYMBOL_USE_IMG` | `false` | Use Kubernetes img as the symbol: ☸️   Unicode `\u2638` |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
+
+For terminals that do not support UTF-8, the symbol will be replaced with the
+string `k8s`.
 
 To disable a feature, set it to an empty string:
 
