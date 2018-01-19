@@ -34,9 +34,9 @@ declare -p KUBE_PS1_DIVIDER &> /dev/null || KUBE_PS1_DIVIDER=":"
 declare -p KUBE_PS1_SUFFIX &> /dev/null || KUBE_PS1_SUFFIX=")"
 
 # Default colors
-KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR:-blue}"
-KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-red}"
-KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-cyan}"
+declare -p KUBE_PS1_SYMBOL_COLOR &> /dev/null || KUBE_PS1_SYMBOL_COLOR="blue"
+declare -p KUBE_PS1_CTX_COLOR &> /dev/null || KUBE_PS1_CTX_COLOR="red"
+declare -p KUBE_PS1_NS_COLOR &> /dev/null || KUBE_PS1_NS_COLOR="cyan"
 
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_UNAME=$(uname)
@@ -115,8 +115,8 @@ _kube_ps1_binary() {
 _kube_ps1_symbol() {
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  # TODO: Use builtin regexp
-  if [[ "$(locale -k LC_CTYPE | sed -n 's/^charmap="\(.*\)"/\1/p')" == *"UTF-8"* ]]; then
+  # TODO: Test if LANG is not set
+  if [[ $LANG =~ UTF-?8$ ]]; then
     local _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
     local _KUBE_PS1_SYMBOL_IMG="☸️ "
   else

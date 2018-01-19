@@ -52,7 +52,7 @@ fast switching between clusters and namespaces.
 The default prompt layout is:
 
 ```
-(<logo>|<cluster>:<namespace>)
+(<symbol>|<cluster>:<namespace>)
 ```
 
 ## Enabling/Disabling
@@ -86,15 +86,19 @@ KUBE_PS1_SEPARATOR=''
 
 ## Colors
 
-The colors are of my opinion. Blue was used for the default symbol to match the
-Kubernetes color as closely as possible. Red was chosen as the cluster name to
-stand out, and cyan for the namespace.  These can of course be changed:
+The default colors are set with the following environment variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
+
+Blue was used for the default symbol to match the Kubernetes color as closely
+as possible. Red was chosen as the cluster name to stand out, and cyan for the
+namespace.
+
+Set the variable to a null string if you do not want color.
 
 #### ZSH
 
@@ -104,9 +108,16 @@ green, yellow, blue, magenta, cyan, and white`.
 #### Bash
 
 For bash, the appropriate escape sequences must be used in place of the color
-names.  The default colors assigned have the following escape sequences:
+names.  The default colors assigned have the following escape ANSI escape
+sequences and tput capabilities:
 
 ```
+tput:
+blue: $(tput setaf 33)
+red: $(tput setaf 1)
+cyan: $(tput setaf 37)
+
+ANSI:
 blue: \e[34m
 red:  \e[31m
 cyan: \e[36m
