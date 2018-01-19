@@ -226,7 +226,11 @@ kube_ps1() {
   fi
 
   # Suffix
-  KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  if [[ -n "${KUBE_PS1_SUFFIX}" ]]; then
+    KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  else
+    KUBE_PS1+="${KUBE_PS1_RESET_COLOR}"
+  fi
 
   echo "${KUBE_PS1}"
 }
