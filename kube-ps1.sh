@@ -28,10 +28,10 @@ KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT:-⎈ }"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
-declare -p KUBE_PS1_PREFIX &> /dev/null || KUBE_PS1_PREFIX="("
-declare -p KUBE_PS1_SEPARATOR &> /dev/null || KUBE_PS1_SEPARATOR="|"
-declare -p KUBE_PS1_DIVIDER &> /dev/null || KUBE_PS1_DIVIDER=":"
-declare -p KUBE_PS1_SUFFIX &> /dev/null || KUBE_PS1_SUFFIX=")"
+KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
+KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
+KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
+KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
 # Default colors
 declare -p KUBE_PS1_SYMBOL_COLOR &> /dev/null || KUBE_PS1_SYMBOL_COLOR="blue"
@@ -64,6 +64,7 @@ _kube_ps1_shell_settings() {
 }
 
 _kube_ps1_colors() {
+
   local SYMBOL_COLOR
   local CTX_COLOR
   local NS_COLOR
@@ -72,11 +73,12 @@ _kube_ps1_colors() {
     "zsh")
       KUBE_PS1_COLOR_OPEN="%{"
       KUBE_PS1_COLOR_CLOSE="%}"
-      KUBE_PS1_RESET_COLOR="%f"
+      # KUBE_PS1_RESET_COLOR="%f"
+      KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}%f${KUBE_PS1_COLOR_CLOSE}"
 
-      SYMBOL_COLOR="$fg[${KUBE_PS1_SYMBOL_COLOR}]"
-      CTX_COLOR="$fg[${KUBE_PS1_CTX_COLOR}]"
-      NS_COLOR="$fg[${KUBE_PS1_NS_COLOR}]"
+      SYMBOL_COLOR="%F{${KUBE_PS1_SYMBOL_COLOR}}"
+      CTX_COLOR="%F{${KUBE_PS1_CTX_COLOR}}"
+      NS_COLOR="%F{${KUBE_PS1_NS_COLOR}}"
       ;;
     "bash")
       KUBE_PS1_COLOR_OPEN=$'\001'
@@ -118,7 +120,7 @@ _kube_ps1_symbol() {
   # TODO: Test if LANG is not set
   if [[ $LANG =~ UTF-?8$ ]]; then
     local _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
-    local _KUBE_PS1_SYMBOL_IMG="☸️ "
+    local _KUBE_PS1_SYMBOL_IMG="☸ "
   else
     local _KUBE_PS1_SYMBOL_DEFAULT="k8s"
   fi
@@ -208,12 +210,20 @@ kube_ps1() {
   [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
 
   # Prefix
-  KUBE_PS1="${KUBE_PS1_PREFIX}"
+  if [[ -n "${KUBE_PS1_PREFIX}" ]]; then
+    KUBE_PS1="${KUBE_PS1_PREFIX}"
+  fi
 
   # Label
   if [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
-    KUBE_PS1+="${_KUBE_PS1_SYMBOL_COLOR}${KUBE_PS1_SYMBOL}${KUBE_PS1_RESET_COLOR}"
-    KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
+    if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
+      KUBE_PS1+="${KUBE_PS1_SYMBOL}"
+    else
+      KUBE_PS1+="${_KUBE_PS1_SYMBOL_COLOR}${KUBE_PS1_SYMBOL}${KUBE_PS1_RESET_COLOR}"
+    fi
+    if [[ -n "${KUBE_PS1_SEPARATOR}" ]]; then
+      KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
+    fi
   fi
 
   # Cluster Context
@@ -221,12 +231,16 @@ kube_ps1() {
 
   # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    if [[ -n "${KUBE_PS1_DIVIDER}" ]]; then
+      KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    fi
     KUBE_PS1+="${_KUBE_PS1_NS_COLOR}${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Suffix
-  KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  if [[ -n "${KUBE_PS1_SUFFIX}" ]]; then
+    KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  fi
 
   echo "${KUBE_PS1}"
 }
