@@ -25,7 +25,7 @@
 KUBE_PS1_BINARY_DEFAULT="${KUBE_PS1_BINARY_DEFAULT:-true}"
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
-KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT:-⎈ }"
+KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
@@ -58,7 +58,7 @@ _kube_ps1_shell_settings() {
       zmodload zsh/stat
       ;;
     "bash")
-      PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_update_cache"
+      PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
       ;;
   esac
 }
@@ -68,12 +68,13 @@ _kube_ps1_colors() {
   local SYMBOL_COLOR
   local CTX_COLOR
   local NS_COLOR
+  local KUBE_PS1_COLOR_OPEN
+  local KUBE_PS1_COLOR_CLOSE
 
   case "${KUBE_PS1_SHELL}" in
     "zsh")
       KUBE_PS1_COLOR_OPEN="%{"
       KUBE_PS1_COLOR_CLOSE="%}"
-      # KUBE_PS1_RESET_COLOR="%f"
       KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}%f${KUBE_PS1_COLOR_CLOSE}"
 
       SYMBOL_COLOR="%F{${KUBE_PS1_SYMBOL_COLOR}}"
@@ -120,7 +121,7 @@ _kube_ps1_symbol() {
   # TODO: Test if LANG is not set
   if [[ $LANG =~ UTF-?8$ ]]; then
     local _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
-    local _KUBE_PS1_SYMBOL_IMG="☸ "
+    local _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
   else
     local _KUBE_PS1_SYMBOL_DEFAULT="k8s"
   fi
@@ -197,7 +198,7 @@ _kube_ps1_colors
 _kube_ps1_symbol
 
 kubeon() {
-  rm -rf "${KUBE_PS1_DISABLE_PATH}"
+  rm -f "${KUBE_PS1_DISABLE_PATH}"
 }
 
 kubeoff() {
@@ -209,9 +210,11 @@ kubeoff() {
 kube_ps1() {
   [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
 
+  local KUBE_PS1
+
   # Prefix
   if [[ -n "${KUBE_PS1_PREFIX}" ]]; then
-    KUBE_PS1="${KUBE_PS1_PREFIX}"
+    KUBE_PS1+="${KUBE_PS1_PREFIX}"
   fi
 
   # Label

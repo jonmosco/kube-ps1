@@ -128,6 +128,25 @@ red:  \e[31m
 cyan: \e[36m
 ```
 
+### Bug Reports and shell configuration
+
+Due to the vast ways of customizing the shell, please try the prompt with a
+minimal configuration before submitting a bug report.
+
+This can be done as follows for each shell before loading kube-ps1:
+
+Bash:
+```
+bash --norc
+```
+
+Zsh:
+```
+zsh -f
+or
+zsh --no-rcs
+```
+
 ## Contributors
 
 * [Ahmet Alp Balkan](https://github.com/ahmetb)
