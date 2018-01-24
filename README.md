@@ -96,8 +96,11 @@ The default colors are set with the following environment variables:
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
+| `KUBE_PS1_BG_COLOR` | `null` | Set default color of the prompt background * |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
+
+* Currently only works on zsh.  Bash support is being worked on
 
 Blue was used for the default symbol to match the Kubernetes color as closely
 as possible. Red was chosen as the cluster name to stand out, and cyan for the

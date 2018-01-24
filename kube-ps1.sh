@@ -34,9 +34,10 @@ KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
 # Default colors
-declare -p KUBE_PS1_SYMBOL_COLOR &> /dev/null || KUBE_PS1_SYMBOL_COLOR="blue"
-declare -p KUBE_PS1_CTX_COLOR &> /dev/null || KUBE_PS1_CTX_COLOR="red"
-declare -p KUBE_PS1_NS_COLOR &> /dev/null || KUBE_PS1_NS_COLOR="cyan"
+KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR:-blue}"
+KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-red}"
+KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-cyan}"
+KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_UNAME=$(uname)
@@ -66,17 +67,21 @@ _kube_ps1_shell_settings() {
 _kube_ps1_colors() {
 
   local SYMBOL_COLOR
+  local BG_COLOR
   local CTX_COLOR
   local NS_COLOR
+  local KUBE_PS1_BG_CLOSE
   local KUBE_PS1_COLOR_OPEN
   local KUBE_PS1_COLOR_CLOSE
 
   case "${KUBE_PS1_SHELL}" in
     "zsh")
+      KUBE_PS1_BG_CLOSE="%k"
       KUBE_PS1_COLOR_OPEN="%{"
       KUBE_PS1_COLOR_CLOSE="%}"
       KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}%f${KUBE_PS1_COLOR_CLOSE}"
 
+      BG_COLOR="%K{${KUBE_PS1_BG_COLOR}}"
       SYMBOL_COLOR="%F{${KUBE_PS1_SYMBOL_COLOR}}"
       CTX_COLOR="%F{${KUBE_PS1_CTX_COLOR}}"
       NS_COLOR="%F{${KUBE_PS1_NS_COLOR}}"
@@ -99,6 +104,8 @@ _kube_ps1_colors() {
   esac
 
   # Draw the colors for each shell
+  _KUBE_PS1_BG_COLOR="${KUBE_PS1_COLOR_OPEN}${BG_COLOR}${KUBE_PS1_COLOR_CLOSE}"
+  _KUBE_PS1_BG_COLOR_CLOSE="${KUBE_PS1_COLOR_OPEN}${KUBE_PS1_BG_CLOSE}${KUBE_PS1_COLOR_CLOSE}"
   _KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_COLOR_OPEN}${SYMBOL_COLOR}${KUBE_PS1_COLOR_CLOSE}"
   _KUBE_PS1_CTX_COLOR="${KUBE_PS1_COLOR_OPEN}${CTX_COLOR}${KUBE_PS1_COLOR_CLOSE}"
   _KUBE_PS1_NS_COLOR="${KUBE_PS1_COLOR_OPEN}${NS_COLOR}${KUBE_PS1_COLOR_CLOSE}"
@@ -175,14 +182,14 @@ _kube_ps1_get_context_ns() {
   # KUBE_PS1_LAST_TIME=$(printf %t)
   KUBE_PS1_LAST_TIME=$(date +%s)
 
-  KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context)"
+  KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
-    echo "kubectl context is not set"
+    echo "kubectl current-context is not set"
     return 1
   fi
 
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}')"
+    KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
     # Set namespace to default if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
   fi
@@ -212,12 +219,17 @@ kube_ps1() {
 
   local KUBE_PS1
 
+  # Background Color
+  if [[ -n "${KUBE_PS1_BG_COLOR}" ]]; then
+    KUBE_PS1+="${_KUBE_PS1_BG_COLOR}"
+  fi
+
   # Prefix
   if [[ -n "${KUBE_PS1_PREFIX}" ]]; then
     KUBE_PS1+="${KUBE_PS1_PREFIX}"
   fi
 
-  # Label
+  # Symbol
   if [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
     if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_SYMBOL}"
@@ -243,6 +255,11 @@ kube_ps1() {
   # Suffix
   if [[ -n "${KUBE_PS1_SUFFIX}" ]]; then
     KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  fi
+
+  # Close Background color if defined
+  if [[ -n "${KUBE_PS1_BG_COLOR}" ]]; then
+    KUBE_PS1+="${_KUBE_PS1_BG_COLOR_CLOSE}"
   fi
 
   echo "${KUBE_PS1}"
