@@ -65,7 +65,6 @@ _kube_ps1_shell_settings() {
 }
 
 _kube_ps1_colors() {
-
   local SYMBOL_COLOR
   local BG_COLOR
   local CTX_COLOR
@@ -91,6 +90,8 @@ _kube_ps1_colors() {
       KUBE_PS1_COLOR_CLOSE=$'\002'
       if tput setaf 1 &> /dev/null; then
         KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}$(tput sgr0)${KUBE_PS1_COLOR_CLOSE}"
+        BG_COLOR="$(tput setab 7)"
+        KUBE_PS1_BG_CLOSE="${KUBE_PS1_COLOR_OPEN}$(tput sgr0)${KUBE_PS1_COLOR_CLOSE}"
         SYMBOL_COLOR="$(tput setaf 33)"
         CTX_COLOR="$(tput setaf 1)"
         NS_COLOR="$(tput setaf 37)"
@@ -184,11 +185,10 @@ _kube_ps1_get_context_ns() {
 
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
-    echo "kubectl current-context is not set"
-    return 1
-  fi
-
-  if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
+    KUBE_PS1_CONTEXT="N/A"
+    KUBE_PS1_NAMESPACE="N/A"
+    return
+  elif [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
     # Set namespace to default if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
@@ -215,7 +215,7 @@ kubeoff() {
 
 # Build our prompt
 kube_ps1() {
-  [ -f "${KUBE_PS1_DISABLE_PATH}" ] && return
+  [[ -f "${KUBE_PS1_DISABLE_PATH}" ]] && return
 
   local KUBE_PS1
 

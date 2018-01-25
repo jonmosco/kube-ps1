@@ -57,6 +57,12 @@ The default prompt layout is:
 (<symbol>|<cluster>:<namespace>)
 ```
 
+If the current-context is not set, kube-ps1 will return the following:
+
+```
+(<symbol>|N/A:N/A)
+```
+
 ## Enabling/Disabling
 
 If you want to stop showing Kubernetes status on your prompt string temporarily
