@@ -81,7 +81,7 @@ the following environment variables:
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
-| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | Use Kubernetes img as the symbol: ☸️   Unicode `\u2638` |
+| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | Use  ☸️  ,  Unicode `\u2638` as the prompt symbol |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |

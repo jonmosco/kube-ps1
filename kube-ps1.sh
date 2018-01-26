@@ -39,9 +39,11 @@ KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-red}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 
+KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
+
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -96,10 +98,10 @@ _kube_ps1_colors() {
         CTX_COLOR="$(tput setaf 1)"
         NS_COLOR="$(tput setaf 37)"
       else
-        KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}$(echo -e '\033[0m')${KUBE_PS1_COLOR_CLOSE}"
-        SYMBOL_COLOR="$(echo -e '\033[0;34m')"
-        CTX_COLOR="$(echo -e '\033[31m')"
-        NS_COLOR="$(echo -e '\033[0;36m')"
+        KUBE_PS1_RESET_COLOR=${KUBE_PS1_COLOR_OPEN}$'\033[0m'${KUBE_PS1_COLOR_CLOSE}
+        SYMBOL_COLOR=$'\033[0;34m'
+        CTX_COLOR=$'\033[31m'
+        NS_COLOR=$'\033[0;36m'
       fi
       ;;
   esac
@@ -164,9 +166,16 @@ _kube_ps1_file_newer_than() {
 }
 
 _kube_ps1_update_cache() {
+  if [[ "${KUBECONFIG}" != "${KUBE_PS1_KUBECONFIG_CACHE}" ]]; then
+    KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
+    _kube_ps1_get_context_ns
+    return
+  fi
+
   # kubectl will read the environment variable $KUBECONFIG
   # otherwise set it to ~/.kube/config
   for conf in $(_kube_ps1_split : "${KUBECONFIG:-$HOME/.kube/config}"); do
+    # for conf in $(_kube_ps1_split : "${KUBE_PS1_KUBECONFIG_CACHE}"); do
     [[ -r "${conf}" ]] || continue
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
       _kube_ps1_get_context_ns
