@@ -66,7 +66,16 @@ If the current-context is not set, kube-ps1 will return the following:
 ## Enabling/Disabling
 
 If you want to stop showing Kubernetes status on your prompt string temporarily
-run `kubeoff`. You can enable it again by running `kubeon`.
+run `kubeoff`. To disable the prompt for all shell sessions, run `kubeoff -g`.
+You can enable it again in the current shell by running `kubeon`, and globally
+with `kubeon -g`.
+
+```
+kubeon     : turn on kube-ps1 status for this shell
+kubeon -g  : turn on kube-ps1 status globally
+kubeoff    : turn off kube-ps1 status for this shell
+kubeoff -g : turn off kube-ps1 status globally
+```
 
 ## Customization
 
@@ -81,7 +90,7 @@ the following environment variables:
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
-| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | Use  ☸️  ,  Unicode `\u2638` as the prompt symbol |
+| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | ☸️  ,  Unicode `\u2638` as the prompt symbol |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |

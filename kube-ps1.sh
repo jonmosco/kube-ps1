@@ -166,6 +166,10 @@ _kube_ps1_file_newer_than() {
 }
 
 _kube_ps1_update_cache() {
+  [[ -n "${KUBE_PS1_TOGGLE}" ]] && return
+  [[ -f "${KUBE_PS1_DISABLE_PATH}" ]] && return
+
+  local conf
   if [[ "${KUBECONFIG}" != "${KUBE_PS1_KUBECONFIG_CACHE}" ]]; then
     KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
     _kube_ps1_get_context_ns
@@ -175,7 +179,6 @@ _kube_ps1_update_cache() {
   # kubectl will read the environment variable $KUBECONFIG
   # otherwise set it to ~/.kube/config
   for conf in $(_kube_ps1_split : "${KUBECONFIG:-$HOME/.kube/config}"); do
-    # for conf in $(_kube_ps1_split : "${KUBE_PS1_KUBECONFIG_CACHE}"); do
     [[ -r "${conf}" ]] || continue
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
       _kube_ps1_get_context_ns
@@ -213,17 +216,67 @@ _kube_ps1_colors
 # Set symbol
 _kube_ps1_symbol
 
+_kube_toggle_on_usage() {
+  cat <<"EOF"
+Toggle kube-ps1 prompt on
+
+Usage: kubeon [-g | --global] [-h | --help]
+
+With no arguments, turn off kube-ps1 status for this shell instance (default).
+
+  -g --global  turn on kube-ps1 status globally
+  -h --help    print this message
+EOF
+}
+
+_kube_toggle_off_usage() {
+  cat <<"EOF"
+Toggle kube-ps1 prompt off
+
+Usage: kubeoff [-g | --global] [-h | --help]
+
+With no arguments, turn off kube-ps1 status for this shell instance (default).
+
+  -g --global turn off kube-ps1 status globally
+  -h --help   print this message
+EOF
+}
+
 kubeon() {
-  rm -f "${KUBE_PS1_DISABLE_PATH}"
+  if [[ "$#" -eq 0 ]]; then
+    unset KUBE_PS1_TOGGLE
+  elif [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+    _kube_toggle_on_usage
+  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
+    rm -f "${KUBE_PS1_DISABLE_PATH}"
+  elif [[ "${1}" != '-g' && "${1}" != '--global' ]]; then
+    echo -e "error: unrecognized flag ${1}\\n"
+   _kube_toggle_on_usage
+  else
+    _kube_toggle_on_usage
+    return
+  fi
 }
 
 kubeoff() {
-  mkdir -p "$(dirname $KUBE_PS1_DISABLE_PATH)"
-  touch "${KUBE_PS1_DISABLE_PATH}"
+  if [[ "$#" -eq 0 ]]; then
+    export KUBE_PS1_TOGGLE=off
+  elif [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+    _kube_toggle_off_usage
+  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
+    mkdir -p "$(dirname $KUBE_PS1_DISABLE_PATH)"
+    touch "${KUBE_PS1_DISABLE_PATH}"
+  elif [[ "${1}" != '-g' && "${1}" != '--global' ]]; then
+    echo -e "error: unrecognized flag ${1}\\n"
+    _kube_toggle_off_usage
+  else
+    return
+  fi
 }
 
 # Build our prompt
 kube_ps1() {
+  [[ -n "${KUBE_PS1_TOGGLE}" ]] && return
   [[ -f "${KUBE_PS1_DISABLE_PATH}" ]] && return
 
   local KUBE_PS1
