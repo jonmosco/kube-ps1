@@ -22,7 +22,6 @@
 
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
-KUBE_PS1_BINARY_DEFAULT="${KUBE_PS1_BINARY_DEFAULT:-true}"
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
@@ -32,18 +31,14 @@ KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
-
-# Default colors
-KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR:-blue}"
-KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR:-red}"
-KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR:-cyan}"
+KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
+KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
+KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
-
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
-
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -66,63 +61,167 @@ _kube_ps1_shell_settings() {
   esac
 }
 
-_kube_ps1_colors() {
-  local SYMBOL_COLOR
-  local BG_COLOR
-  local CTX_COLOR
-  local NS_COLOR
-  local KUBE_PS1_BG_CLOSE
-  local KUBE_PS1_COLOR_OPEN
-  local KUBE_PS1_COLOR_CLOSE
-
-  case "${KUBE_PS1_SHELL}" in
-    "zsh")
-      KUBE_PS1_BG_CLOSE="%k"
-      KUBE_PS1_COLOR_OPEN="%{"
-      KUBE_PS1_COLOR_CLOSE="%}"
-      KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}%f${KUBE_PS1_COLOR_CLOSE}"
-
-      BG_COLOR="%K{${KUBE_PS1_BG_COLOR}}"
-      SYMBOL_COLOR="%F{${KUBE_PS1_SYMBOL_COLOR}}"
-      CTX_COLOR="%F{${KUBE_PS1_CTX_COLOR}}"
-      NS_COLOR="%F{${KUBE_PS1_NS_COLOR}}"
-      ;;
-    "bash")
-      KUBE_PS1_COLOR_OPEN=$'\001'
-      KUBE_PS1_COLOR_CLOSE=$'\002'
-      if tput setaf 1 &> /dev/null; then
-        KUBE_PS1_RESET_COLOR="${KUBE_PS1_COLOR_OPEN}$(tput sgr0)${KUBE_PS1_COLOR_CLOSE}"
-        BG_COLOR="$(tput setab 7)"
-        KUBE_PS1_BG_CLOSE="${KUBE_PS1_COLOR_OPEN}$(tput sgr0)${KUBE_PS1_COLOR_CLOSE}"
-        SYMBOL_COLOR="$(tput setaf 33)"
-        CTX_COLOR="$(tput setaf 1)"
-        NS_COLOR="$(tput setaf 37)"
-      else
-        KUBE_PS1_RESET_COLOR=${KUBE_PS1_COLOR_OPEN}$'\033[0m'${KUBE_PS1_COLOR_CLOSE}
-        SYMBOL_COLOR=$'\033[0;34m'
-        CTX_COLOR=$'\033[31m'
-        NS_COLOR=$'\033[0;36m'
-      fi
-      ;;
-  esac
-
-  # Draw the colors for each shell
-  _KUBE_PS1_BG_COLOR="${KUBE_PS1_COLOR_OPEN}${BG_COLOR}${KUBE_PS1_COLOR_CLOSE}"
-  _KUBE_PS1_BG_COLOR_CLOSE="${KUBE_PS1_COLOR_OPEN}${KUBE_PS1_BG_CLOSE}${KUBE_PS1_COLOR_CLOSE}"
-  _KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_COLOR_OPEN}${SYMBOL_COLOR}${KUBE_PS1_COLOR_CLOSE}"
-  _KUBE_PS1_CTX_COLOR="${KUBE_PS1_COLOR_OPEN}${CTX_COLOR}${KUBE_PS1_COLOR_CLOSE}"
-  _KUBE_PS1_NS_COLOR="${KUBE_PS1_COLOR_OPEN}${NS_COLOR}${KUBE_PS1_COLOR_CLOSE}"
+_kube_ps1_color_fg() {
+  local ESC_OPEN
+  local ESC_CLOSE
+  if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
+    ESC_OPEN="%{"
+    ESC_CLOSE="%}"
+    case "${1}" in
+      black|red|green|yellow|blue|cyan|white|magenta)
+        echo "${ESC_OPEN}%F{$1}${ESC_CLOSE}";;
+      [0-9]|[0-9][0-9]|[0-9][0-2][0-5])
+        echo "${ESC_OPEN}%F{$1}${ESC_CLOSE}";;
+      reset_color|"")
+        echo "${ESC_OPEN}%f${ESC_CLOSE}";;
+      *)
+        echo "${ESC_OPEN}%f${ESC_CLOSE}";;
+    esac
+  elif [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
+    ESC_OPEN=$'\001'
+    ESC_CLOSE=$'\002'
+    # TODO: Cache these results for faster lookup
+    if tput setaf 1 &> /dev/null; then
+      case "${1}" in
+        black)
+          echo "${ESC_OPEN}$(tput setaf 0)${ESC_CLOSE}";;
+        red)
+          echo "${ESC_OPEN}$(tput setaf 1)${ESC_CLOSE}";;
+        green)
+          echo "${ESC_OPEN}$(tput setaf 2)${ESC_CLOSE}";;
+        yellow)
+          echo "${ESC_OPEN}$(tput setaf 3)${ESC_CLOSE}";;
+        blue)
+          echo "${ESC_OPEN}$(tput setaf 4)${ESC_CLOSE}";;
+        magenta)
+          echo "${ESC_OPEN}$(tput setaf 5)${ESC_CLOSE}";;
+        cyan)
+          echo "${ESC_OPEN}$(tput setaf 6)${ESC_CLOSE}";;
+        white)
+          echo "${ESC_OPEN}$(tput setaf 7)${ESC_CLOSE}";;
+        reset_color|"")
+          echo ${ESC_OPEN}$'\033[39m'${ESC_CLOSE};;
+        [0-9]|[0-9][0-9]|[0-9][0-2][0-5])
+          echo "${ESC_OPEN}$(tput setaf ${1})${ESC_CLOSE}";;
+        *)
+          echo ${ESC_OPEN}$'\033[39m'${ESC_CLOSE};;
+      esac
+    else
+      case "${1}" in
+        black)
+          echo ${ESC_OPEN}$'\033[30m'${ESC_CLOSE};;
+        red)
+          echo ${ESC_OPEN}$'\033[31m'${ESC_CLOSE};;
+        green)
+          echo ${ESC_OPEN}$'\033[32m'${ESC_CLOSE};;
+        yellow)
+          echo ${ESC_OPEN}$'\033[33m'${ESC_CLOSE};;
+        blue)
+          echo ${ESC_OPEN}$'\033[34m'${ESC_CLOSE};;
+        magenta)
+          echo ${ESC_OPEN}$'\033[35m'${ESC_CLOSE};;
+        cyan)
+          echo ${ESC_OPEN}$'\033[36m'${ESC_CLOSE};;
+        white)
+          echo ${ESC_OPEN}$'\033[37m'${ESC_CLOSE};;
+        9[0-7])
+          echo ${ESC_OPEN}$'\033['${1}m${ESC_CLOSE};;
+        reset_color|"")
+          echo ${ESC_OPEN}$'\033[39m'${ESC_CLOSE};;
+        *)
+          echo ${ESC_OPEN}$'\033[39m'${ESC_CLOSE};;
+      esac
+    fi
+  fi
 }
 
-# TODO: Test that the dependencies are met
-_kube_ps1_binary() {
-  if [[ "${KUBE_PS1_BINARY_DEFAULT}" == true ]]; then
-    local KUBE_PS1_BINARY="${KUBE_PS1_BINARY_DEFAULT}"
-  elif [[ "${KUBE_PS1_BINARY_DEFAULT}" == false ]] && [[ "${KUBE_PS1_BINARY}" == "oc" ]];then
-    local KUBE_PS1_BINARY="oc"
+_kube_ps1_color_bg() {
+  local ESC_OPEN
+  local ESC_CLOSE
+  if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
+    ESC_OPEN="%{"
+    ESC_CLOSE="%}"
+    case "${1}" in
+      black|red|green|yellow|blue|cyan|white|magenta)
+        echo "${ESC_OPEN}%K{$1}${ESC_CLOSE}";;
+      [0-9]|[0-9][0-9]|[0-9][0-2][0-5])
+        echo "${ESC_OPEN}%K{$1}${ESC_CLOSE}";;
+      bg_close)
+        echo "${ESC_OPEN}%k${ESC_CLOSE}";;
+      *)
+        echo "${ESC_OPEN}%K${ESC_CLOSE}";;
+    esac
+  elif [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
+    ESC_OPEN=$'\001'
+    COLOR_CLOSE=$'\002'
+    if tput setaf 1 &> /dev/null; then
+      case "${1}" in
+        black)
+          echo "${ESC_OPEN}$(tput setab 0)${ESC_CLOSE}";;
+        red)
+          echo "${ESC_OPEN}$(tput setab 1)${ESC_CLOSE}";;
+        green)
+          echo "${ESC_OPEN}$(tput setab 2)${ESC_CLOSE}";;
+        yellow)
+          echo "${ESC_OPEN}$(tput setab 3)${ESC_CLOSE}";;
+        blue)
+          echo "${ESC_OPEN}$(tput setab 4)${ESC_CLOSE}";;
+        magenta)
+          echo "${ESC_OPEN}$(tput setab 5)${ESC_CLOSE}";;
+        cyan)
+          echo "${ESC_OPEN}$(tput setab 6)${ESC_CLOSE}";;
+        white)
+          echo "${ESC_OPEN}$(tput setab 7)${ESC_CLOSE}";;
+        [0-9]|[0-9][0-9]|[0-9][0-2][0-5])
+          echo "${ESC_OPEN}$(tput setab ${1})${ESC_CLOSE}";;
+        bg_close)
+          echo "${ESC_OPEN}$(tput sgr 0)${ESC_CLOSE}";;
+        *)
+          echo "${ESC_OPEN}$(tput sgr 0)${ESC_CLOSE}";;
+      esac
+    else
+      case "${1}" in
+        black)
+          echo ${ESC_OPEN}$'\033[40m'${ESC_CLOSE};;
+        red)
+          echo ${ESC_OPEN}$'\033[41m'${ESC_CLOSE};;
+        green)
+          echo ${ESC_OPEN}$'\033[42m'${COLOR_CLOSE};;
+        yellow)
+          echo ${ESC_OPEN}$'\033[43m'${ESC_CLOSE};;
+        blue)
+          echo ${ESC_OPEN}$'\033[44m'${ESC_CLOSE};;
+        magenta)
+          echo ${ESC_OPEN}$'\033[45m'${ESC_CLOSE};;
+        cyan)
+          echo ${ESC_OPEN}$'\033[46m'${ESC_CLOSE};;
+        white)
+          echo ${ESC_OPEN}$'\033[47m'${ESC_CLOSE};;
+        10[0-7])
+          echo ${ESC_OPEN}$'\033['${1}m${ESC_CLOSE};;
+        bg_close)
+          echo ${ESC_OPEN}$'\033[0m'${ESC_CLOSE};;
+        *)
+          echo ${ESC_OPEN}$'\033[0m'${ESC_CLOSE};;
+      esac
+    fi
+  fi
+}
+
+_kube_ps1_set_colors() {
+  if [[ -n "${KUBE_PS1_BG_COLOR}" ]]; then
+    _KUBE_PS1_BG_COLOR="$(_kube_ps1_color_bg $KUBE_PS1_BG_COLOR)"
+    _KUBE_PS1_BG_COLOR_CLOSE="$(_kube_ps1_color_bg bg_close)"
   fi
 
-  echo "${KUBE_PS1_BINARY}"
+  _KUBE_PS1_RESET_COLOR="$(_kube_ps1_color_fg reset_color)"
+  _KUBE_PS1_SYMBOL_COLOR="$(_kube_ps1_color_fg $KUBE_PS1_SYMBOL_COLOR)"
+  _KUBE_PS1_CTX_COLOR="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)"
+  _KUBE_PS1_NS_COLOR="$(_kube_ps1_color_fg $KUBE_PS1_NS_COLOR)"
+}
+
+_kube_ps1_binary_check() {
+  command -v $1 >/dev/null
 }
 
 _kube_ps1_symbol() {
@@ -170,6 +269,7 @@ _kube_ps1_update_cache() {
   [[ -f "${KUBE_PS1_DISABLE_PATH}" ]] && return
 
   local conf
+
   if [[ "${KUBECONFIG}" != "${KUBE_PS1_KUBECONFIG_CACHE}" ]]; then
     KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
     _kube_ps1_get_context_ns
@@ -195,6 +295,12 @@ _kube_ps1_get_context_ns() {
   # KUBE_PS1_LAST_TIME=$(printf %t)
   KUBE_PS1_LAST_TIME=$(date +%s)
 
+  if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
+    KUBE_PS1_CONTEXT="BINARY-N/A"
+    KUBE_PS1_NAMESPACE="N/A"
+    return
+  fi
+
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
     KUBE_PS1_CONTEXT="N/A"
@@ -202,7 +308,7 @@ _kube_ps1_get_context_ns() {
     return
   elif [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
-    # Set namespace to default if it is not defined
+    # Set namespace to 'default' if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
   fi
 }
@@ -211,7 +317,7 @@ _kube_ps1_get_context_ns() {
 _kube_ps1_shell_settings
 
 # Set colors
-_kube_ps1_colors
+_kube_ps1_set_colors
 
 # Set symbol
 _kube_ps1_symbol
@@ -251,7 +357,7 @@ kubeon() {
     rm -f "${KUBE_PS1_DISABLE_PATH}"
   elif [[ "${1}" != '-g' && "${1}" != '--global' ]]; then
     echo -e "error: unrecognized flag ${1}\\n"
-   _kube_toggle_on_usage
+    _kube_toggle_on_usage
   else
     _kube_toggle_on_usage
     return
@@ -282,36 +388,31 @@ kube_ps1() {
   local KUBE_PS1
 
   # Background Color
-  if [[ -n "${KUBE_PS1_BG_COLOR}" ]]; then
-    KUBE_PS1+="${_KUBE_PS1_BG_COLOR}"
-  fi
+  [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="${_KUBE_PS1_BG_COLOR}"
 
-  # Prefix
   if [[ -n "${KUBE_PS1_PREFIX}" ]]; then
     KUBE_PS1+="${KUBE_PS1_PREFIX}"
   fi
 
-  # Symbol
   if [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
     if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_SYMBOL}"
     else
-      KUBE_PS1+="${_KUBE_PS1_SYMBOL_COLOR}${KUBE_PS1_SYMBOL}${KUBE_PS1_RESET_COLOR}"
+      KUBE_PS1+="${_KUBE_PS1_SYMBOL_COLOR}${KUBE_PS1_SYMBOL}${_KUBE_PS1_RESET_COLOR}"
     fi
     if [[ -n "${KUBE_PS1_SEPARATOR}" ]]; then
       KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
     fi
   fi
 
-  # Cluster Context
-  KUBE_PS1+="${_KUBE_PS1_CTX_COLOR}${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  KUBE_PS1+="${_KUBE_PS1_CTX_COLOR}${KUBE_PS1_CONTEXT}${_KUBE_PS1_RESET_COLOR}"
 
   # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     if [[ -n "${KUBE_PS1_DIVIDER}" ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
     fi
-    KUBE_PS1+="${_KUBE_PS1_NS_COLOR}${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="${_KUBE_PS1_NS_COLOR}${KUBE_PS1_NAMESPACE}${_KUBE_PS1_RESET_COLOR}"
   fi
 
   # Suffix
@@ -320,9 +421,7 @@ kube_ps1() {
   fi
 
   # Close Background color if defined
-  if [[ -n "${KUBE_PS1_BG_COLOR}" ]]; then
-    KUBE_PS1+="${_KUBE_PS1_BG_COLOR_CLOSE}"
-  fi
+  [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="${_KUBE_PS1_BG_COLOR_CLOSE}"
 
   echo "${KUBE_PS1}"
 }
