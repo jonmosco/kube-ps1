@@ -153,7 +153,7 @@ _kube_ps1_color_bg() {
     esac
   elif [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
     ESC_OPEN=$'\001'
-    COLOR_CLOSE=$'\002'
+    ESC_CLOSE=$'\002'
     if tput setaf 1 &> /dev/null; then
       case "${1}" in
         black)
