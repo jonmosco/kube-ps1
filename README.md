@@ -136,14 +136,19 @@ Blue was used for the default symbol to match the Kubernetes color as closely
 as possible. Red was chosen as the cluster name to stand out, and cyan for the
 namespace.
 
-Set the variable to a null string `""` if you do not want color.
+Set the variable to a null string if you do not want color for each
+prompt section:
+
+```
+KUBE_PS1_CTX_COLOR=""
+```
 
 Names are usable for the following colors:
 `black, red, green, yellow, blue, magenta, cyan, and white`.
 
-The appropriate escape sequences must be used in place of the color
-names.  The default colors assigned have the following escape ANSI escape
-sequences and tput capabilities:
+The appropriate color code and escape sequences must be used in place of the
+color names.  The default colors assigned have the following escape ANSI
+escape sequences and tput capabilities:
 
 ```
 tput:
