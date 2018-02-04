@@ -44,6 +44,9 @@ KUBE_PS1_LAST_TIME=0
 if [ "${ZSH_VERSION-}" ]; then
   KUBE_PS1_SHELL="zsh"
 elif [ "${BASH_VERSION-}" ]; then
+  if ((BASH_VERSINFO[0] < 4)); then
+    return
+  fi
   KUBE_PS1_SHELL="bash"
 fi
 
@@ -227,12 +230,24 @@ _kube_ps1_binary_check() {
 _kube_ps1_symbol() {
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  # TODO: Test if LANG is not set
-  if [[ $LANG =~ UTF-?8$ ]]; then
-    local _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
-    local _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+  local _KUBE_PS1_SYMBOL_IMG
+  local _KUBE_PS1_SYMBOL_DEFAULT
+
+  # TODO: Test terminal capabilitie
+  #       Bash only supports \u \U since 4.2
+  if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
+    if ((BASH_VERSINFO[0] < 4)); then
+      _KUBE_PS1_SYMBOL_DEFAULT=$'\xE2\x8E\x88 '
+      _KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
+    else
+      _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
+      _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+    fi
+  elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
+    _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
+    _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
   else
-    local _KUBE_PS1_SYMBOL_DEFAULT="k8s"
+    _KUBE_PS1_SYMBOL_DEFAULT="k8s"
   fi
 
   if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then

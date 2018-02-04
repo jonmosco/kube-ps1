@@ -34,7 +34,7 @@ PS1="[\u@\h \W \$(kube_ps1)]\$ "
 ## Requirements
 
 The default prompt assumes you have the `kubectl` command line utility installed.
-It can be obtained here:
+Official installation instructions and binaries are available:
 
 [Install and Set up kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
@@ -146,9 +146,9 @@ KUBE_PS1_CTX_COLOR=""
 Names are usable for the following colors:
 `black, red, green, yellow, blue, magenta, cyan, and white`.
 
-The appropriate color code and escape sequences must be used in place of the
+The appropriate color codes and escape sequences must be used in place of the
 color names.  The default colors assigned have the following escape ANSI
-escape sequences and tput capabilities:
+escape sequences and tput capabilities depending on your terminal capabilities:
 
 ```
 tput:
