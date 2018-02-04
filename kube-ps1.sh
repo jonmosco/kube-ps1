@@ -44,9 +44,6 @@ KUBE_PS1_LAST_TIME=0
 if [ "${ZSH_VERSION-}" ]; then
   KUBE_PS1_SHELL="zsh"
 elif [ "${BASH_VERSION-}" ]; then
-  if ((BASH_VERSINFO[0] < 4)); then
-    return
-  fi
   KUBE_PS1_SHELL="bash"
 fi
 
@@ -233,7 +230,7 @@ _kube_ps1_symbol() {
   local _KUBE_PS1_SYMBOL_IMG
   local _KUBE_PS1_SYMBOL_DEFAULT
 
-  # TODO: Test terminal capabilitie
+  # TODO: Test terminal capabilities
   #       Bash only supports \u \U since 4.2
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
     if ((BASH_VERSINFO[0] < 4)); then
