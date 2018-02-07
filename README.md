@@ -102,7 +102,7 @@ the following environment variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
-| `KUBE_PS1_BINARY` | `kubectl` | Kubernetes binary to use |
+| `KUBE_PS1_BINARY` | `kubectl` | Default Kubernetes binary to use |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
