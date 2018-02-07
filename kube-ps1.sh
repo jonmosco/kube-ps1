@@ -202,7 +202,6 @@ _kube_ps1_symbol() {
     KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_DEFAULT}"
   fi
 
-  # echo "${_KUBE_PS1_SYMBOL_COLOR}${KUBE_PS1_SYMBOL}${_KUBE_PS1_RESET_COLOR}"
   echo "${KUBE_PS1_SYMBOL}"
 }
 
