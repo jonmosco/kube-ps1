@@ -54,6 +54,7 @@ _kube_ps1_shell_settings() {
       autoload -U add-zsh-hook
       add-zsh-hook precmd _kube_ps1_update_cache
       zmodload zsh/stat
+      zmodload zsh/datetime
       ;;
     "bash")
       PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
@@ -254,9 +255,15 @@ _kube_ps1_update_cache() {
 #       one for context and one for namespace
 _kube_ps1_get_context_ns() {
   # Set the command time
-  # TODO: Use a builtin instead of date
-  # KUBE_PS1_LAST_TIME=$(printf %t)
-  KUBE_PS1_LAST_TIME=$(date +%s)
+  if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
+    if ((BASH_VERSINFO[0] < 4)); then
+      KUBE_PS1_LAST_TIME=$(date +%s)
+    else
+      KUBE_PS1_LAST_TIME=$(printf '%(%s)T')
+    fi
+  elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
+    KUBE_PS1_LAST_TIME=$EPOCHSECONDS
+  fi
 
   if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
     KUBE_PS1_CONTEXT="BINARY-N/A"
