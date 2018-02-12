@@ -183,12 +183,12 @@ _kube_ps1_symbol() {
   # TODO: Test terminal capabilities
   #       Bash only supports \u \U since 4.2
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
-    if ((BASH_VERSINFO[0] < 4)); then
-      _KUBE_PS1_SYMBOL_DEFAULT=$'\xE2\x8E\x88 '
-      _KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
-    else
+    if ((BASH_VERSINFO[0] >= 4)); then
       _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
       _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+    else
+      _KUBE_PS1_SYMBOL_DEFAULT=$'\xE2\x8E\x88 '
+      _KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
     fi
   elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
@@ -256,10 +256,10 @@ _kube_ps1_update_cache() {
 _kube_ps1_get_context_ns() {
   # Set the command time
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
-    if ((BASH_VERSINFO[0] < 4)); then
-      KUBE_PS1_LAST_TIME=$(date +%s)
-    else
+    if ((BASH_VERSINFO[0] >= 4)); then
       KUBE_PS1_LAST_TIME=$(printf '%(%s)T')
+    else
+      KUBE_PS1_LAST_TIME=$(date +%s)
     fi
   elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     KUBE_PS1_LAST_TIME=$EPOCHSECONDS
