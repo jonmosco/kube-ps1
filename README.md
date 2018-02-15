@@ -89,7 +89,7 @@ You can enable it again in the current shell by running `kubeon`, and globally
 with `kubeon -g`.
 
 ```
-kubeon     : turn on kube-ps1 status for this shell
+kubeon     : turn on kube-ps1 status for this shell.  Takes presedense over global for current session
 kubeon -g  : turn on kube-ps1 status globally
 kubeoff    : turn off kube-ps1 status for this shell
 kubeoff -g : turn off kube-ps1 status globally
