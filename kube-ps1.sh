@@ -194,6 +194,12 @@ _kube_ps1_update_cache() {
     return
   fi
 
+  if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
+    KUBE_PS1_CONTEXT="BINARY-N/A"
+    KUBE_PS1_NAMESPACE="N/A"
+    return
+  fi
+
   local conf
 
   if [[ "${KUBECONFIG}" != "${KUBE_PS1_KUBECONFIG_CACHE}" ]]; then
@@ -225,12 +231,6 @@ _kube_ps1_get_context_ns() {
     fi
   elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     KUBE_PS1_LAST_TIME=$EPOCHSECONDS
-  fi
-
-  if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
-    KUBE_PS1_CONTEXT="BINARY-N/A"
-    KUBE_PS1_NAMESPACE="N/A"
-    return
   fi
 
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
