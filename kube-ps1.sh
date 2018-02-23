@@ -47,7 +47,9 @@ elif [ "${BASH_VERSION-}" ]; then
   KUBE_PS1_SHELL="bash"
 fi
 
-_kube_ps1_shell_settings() {
+_kube_ps1_init() {
+  [[ -f "${KUBE_PS1_DISABLE_PATH}" ]] && KUBE_PS1_ENABLED=off
+
   case "${KUBE_PS1_SHELL}" in
     "zsh")
       setopt PROMPT_SUBST
@@ -186,7 +188,7 @@ _kube_ps1_symbol() {
   # [[ "$LC_CTYPE $LC_ALL" =~ "UTF" && $TERM != "linux" ]]
   #       Bash only supports \u \U since 4.2
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
-    if ((BASH_VERSINFO[0] >= 4)); then
+    if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
       _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
       _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
     else
@@ -222,29 +224,27 @@ _kube_ps1_file_newer_than() {
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(stat +mtime "${file}")
-  elif [ x"$KUBE_PS1_UNAME" = x"Linux" ]; then
+  elif [[ "$KUBE_PS1_UNAME" == "Linux" ]]; then
     mtime=$(stat -c %Y "${file}")
   else
     mtime=$(stat -f %m "$file")
   fi
 
-  [ "${mtime}" -gt "${check_time}" ]
+  [[ "${mtime}" -gt "${check_time}" ]]
 }
 
 _kube_ps1_update_cache() {
-  local conf
-
-  if ! _kube_ps1_enabled; then
-    return
-  fi
+  [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
 
   if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
+    # No ability to fetch context/namespace; display N/A.
     KUBE_PS1_CONTEXT="BINARY-N/A"
     KUBE_PS1_NAMESPACE="N/A"
     return
   fi
 
   if [[ "${KUBECONFIG}" != "${KUBE_PS1_KUBECONFIG_CACHE}" ]]; then
+    # User changed KUBECONFIG; unconditionally refetch.
     KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
     _kube_ps1_get_context_ns
     return
@@ -252,7 +252,8 @@ _kube_ps1_update_cache() {
 
   # kubectl will read the environment variable $KUBECONFIG
   # otherwise set it to ~/.kube/config
-  for conf in $(_kube_ps1_split : "${KUBECONFIG:-$HOME/.kube/config}"); do
+  local conf
+  for conf in $(_kube_ps1_split : "${KUBECONFIG:-${HOME}/.kube/config}"); do
     [[ -r "${conf}" ]] || continue
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
       _kube_ps1_get_context_ns
@@ -287,8 +288,8 @@ _kube_ps1_get_context_ns() {
   fi
 }
 
-# Set shell options
-_kube_ps1_shell_settings
+# Set kube-ps1 shell defaults
+_kube_ps1_init
 
 _kubeon_usage() {
   cat <<"EOF"
@@ -317,48 +318,37 @@ EOF
 }
 
 kubeon() {
-  if [[ "$#" -eq 0 ]]; then
-    KUBE_PS1_ENABLED=on
-  elif [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
     _kubeon_usage
   elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
-    rm -f "${KUBE_PS1_DISABLE_PATH}"
-  else
+    rm -f -- "${KUBE_PS1_DISABLE_PATH}"
+  elif [[ "$#" -ne 0 ]]; then
     echo -e "error: unrecognized flag ${1}\\n"
     _kubeon_usage
     return
   fi
+
+  KUBE_PS1_ENABLED=on
 }
 
 kubeoff() {
-  if [[ "$#" -eq 0 ]]; then
-    KUBE_PS1_ENABLED=off
-  elif [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
     _kubeoff_usage
   elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
-    mkdir -p "$(dirname $KUBE_PS1_DISABLE_PATH)"
-    touch "${KUBE_PS1_DISABLE_PATH}"
-  else
-    echo -e "error: unrecognized flag ${1}\\n"
+    mkdir -p -- "$(dirname "${KUBE_PS1_DISABLE_PATH}")"
+    touch -- "${KUBE_PS1_DISABLE_PATH}"
+  elif [[ $# -ne 0 ]]; then
+    echo "error: unrecognized flag ${1}" >&2
     _kubeoff_usage
     return
   fi
-}
 
-_kube_ps1_enabled() {
-  if [[ "${KUBE_PS1_ENABLED}" == "on" ]]; then
-    :
-  elif [[ "${KUBE_PS1_ENABLED}" == "off" ]] || [[ -f "${KUBE_PS1_DISABLE_PATH}" ]]; then
-    return 1
-  fi
-  return 0
+  KUBE_PS1_ENABLED=off
 }
 
 # Build our prompt
 kube_ps1() {
-  if ! _kube_ps1_enabled; then
-    return
-  fi
+  [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
 
   local KUBE_PS1
   local KUBE_PS1_RESET_COLOR="$(_kube_ps1_color_fg reset_color)"

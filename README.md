@@ -19,6 +19,13 @@ Inspired by several tools used to simplify usage of `kubectl`.
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
+This project is now available in brew ports!
+
+```
+$ brew update
+$ brew install kube-ps1
+```
+
 For Zsh:
 ```sh
 source /path/to/kube-ps1.sh
@@ -138,31 +145,20 @@ Blue was used for the default symbol to match the Kubernetes color as closely
 as possible. Red was chosen as the cluster name to stand out, and cyan for the
 namespace.
 
-Set the variable to a null string if you do not want color for each
+Set the variable to an empty string if you do not want color for each
 prompt section:
 
 ```
-KUBE_PS1_CTX_COLOR=""
+KUBE_PS1_CTX_COLOR=''
 ```
 
 Names are usable for the following colors:
-`black, red, green, yellow, blue, magenta, cyan, and white`.
-
-The appropriate color codes and escape sequences must be used in place of the
-color names.  The default colors assigned have the following escape ANSI
-escape sequences and tput capabilities depending on your terminal capabilities:
 
 ```
-tput:
-blue: $(tput setaf 33)
-red: $(tput setaf 1)
-cyan: $(tput setaf 37)
-
-ANSI:
-blue: \e[34m
-red:  \e[31m
-cyan: \e[36m
+black, red, green, yellow, blue, magenta, cyan
 ```
+
+256 colors are available by specifying the numerical value.
 
 ### Bug Reports and shell configuration
 
