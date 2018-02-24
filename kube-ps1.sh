@@ -24,7 +24,7 @@
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
-KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
+KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT:-\u2388 }"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
@@ -179,33 +179,25 @@ _kube_ps1_binary_check() {
 _kube_ps1_symbol() {
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  local _KUBE_PS1_SYMBOL_IMG
-  local _KUBE_PS1_SYMBOL_DEFAULT
-
-  # TODO: Test terminal capabilities
-  #       If LANG is set to POSIX, the hex will
-  #       work.
-  # [[ "$LC_CTYPE $LC_ALL" =~ "UTF" && $TERM != "linux" ]]
-  #       Bash only supports \u \U since 4.2
-  if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
-    if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
-      _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
-      _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
-    else
-      _KUBE_PS1_SYMBOL_DEFAULT=$'\xE2\x8E\x88 '
-      _KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
-    fi
-  elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    _KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT}"
-    _KUBE_PS1_SYMBOL_IMG=$'\u2638 '
-  else
-    _KUBE_PS1_SYMBOL_DEFAULT="k8s"
-  fi
+  case "${KUBE_PS1_SHELL}" in
+    bash)
+      if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
+        KUBE_PS1_SYMBOL=$'\u2388 '
+        KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+      else
+        KUBE_PS1_SYMBOL=$'\xE2\x8E\x88 '
+        KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
+      fi
+      ;;
+    zsh)
+      KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
+      KUBE_PS1_SYMBOL_IMG="\u2638 ";;
+    *)
+      KUBE_PS1_SYMBOL="k8s"
+  esac
 
   if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
-    KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_IMG}"
-  else
-    KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_DEFAULT}"
+    KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_IMG}"
   fi
 
   echo "${KUBE_PS1_SYMBOL}"
