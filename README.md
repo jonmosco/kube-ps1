@@ -158,7 +158,8 @@ Names are usable for the following colors:
 black, red, green, yellow, blue, magenta, cyan
 ```
 
-256 colors are available by specifying the numerical value.
+256 colors are available by specifying the numerical value as the variable
+argument.
 
 ### Bug Reports and shell configuration
 
