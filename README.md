@@ -22,17 +22,18 @@ This project is now available in brew ports!
 $ brew update
 $ brew install kube-ps1
 ```
+*** From Source ***
 
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
-For Zsh:
+Zsh:
 ```sh
 source /path/to/kube-ps1.sh
 PROMPT='$(kube_ps1)'$PROMPT
 ```
 
-For Bash:
+Bash:
 ```sh
 source /path/to/kube-ps1.sh
 PS1="[\u@\h \W \$(kube_ps1)]\$ "
