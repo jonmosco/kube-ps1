@@ -244,7 +244,7 @@ _kube_ps1_get_context_ns() {
     KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
     # Set namespace to 'default' if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
-    # If default is not desired, unset in that case
+    # If default is not desired, empty string in that case
     if [[ "${KUBE_PS1_NS_DEFAULT_ENABLE}" == false && "${KUBE_PS1_NAMESPACE}" == "default" ]]; then
       KUBE_PS1_NAMESPACE=""
     fi
