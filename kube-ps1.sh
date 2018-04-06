@@ -39,6 +39,8 @@ KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
+KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
+KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -235,6 +237,11 @@ _kube_ps1_get_context_ns() {
   fi
 
   KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
+
+  if [[ ! -z "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
+    KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
+  fi
+
   if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
     KUBE_PS1_CONTEXT="N/A"
     KUBE_PS1_NAMESPACE="N/A"
@@ -243,6 +250,11 @@ _kube_ps1_get_context_ns() {
     KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
     # Set namespace to 'default' if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
+
+    if [[ ! -z "${KUBE_PS1_NAMESPACE_FUNCTION}" ]]; then
+        KUBE_PS1_NAMESPACE=$($KUBE_PS1_NAMESPACE_FUNCTION $KUBE_PS1_NAMESPACE)
+    fi
+
   fi
 }
 

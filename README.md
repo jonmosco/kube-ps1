@@ -127,6 +127,8 @@ the following environment variables:
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
+| `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
+| `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.
@@ -167,6 +169,37 @@ black, red, green, yellow, blue, magenta, cyan
 
 256 colors are available by specifying the numerical value as the variable
 argument.
+
+## Customize display of cluster name and namespace
+
+You can change how the cluster name and namespace are displayed using the `KUBE_PS1_CLUSTER_FUNCTION` and `KUBE_PS1_NAMESPACE_FUNCTION` variables respectively.
+
+For the following examples let's assume the following:
+
+cluster name: `sandbox.k8s.example.com`
+namespace: `alpha`
+
+If you're using domain style cluster names, your prompt will get quite long very quickly. Let's say you only want to display the first portion of the cluster name (`sandbox`), you could do that by adding the following:
+
+```
+function get_cluster_short() {
+  echo "$1" | cut -d . -f1
+}
+
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+```
+
+The same pattern can be followed to customize the display of the namespace. Let's say you would prefer the namespace to be displayed in all uppercase (`ALPHA`), here's one way you could do that:
+
+```
+function get_namespace_upper() {
+    echo "$1" | tr '[:lower:]' '[:upper:]'
+}
+
+export KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_upper
+```
+
+In both cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
 
 ### Bug Reports and shell configuration
 
