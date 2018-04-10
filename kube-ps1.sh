@@ -37,7 +37,6 @@ KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
-KUBE_PS1_UNAME=$(uname)
 KUBE_PS1_LAST_TIME=0
 
 # Determine our shell
@@ -182,9 +181,11 @@ _kube_ps1_file_newer_than() {
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(stat +mtime "${file}")
-  elif [[ "$KUBE_PS1_UNAME" == "Linux" ]]; then
+  elif stat -c "%s" /dev/null &> /dev/null; then
+    # GNU stat
     mtime=$(stat -c %Y "${file}")
   else
+    # BSD stat
     mtime=$(stat -f %m "$file")
   fi
 
