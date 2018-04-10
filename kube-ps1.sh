@@ -181,9 +181,11 @@ _kube_ps1_file_newer_than() {
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(stat +mtime "${file}")
-  elif ! (/usr/bin/stat --version &> /dev/null); then
+  elif stat -c "%s" /dev/null &> /dev/null; then
+    # GNU stat
     mtime=$(stat -c %Y "${file}")
   else
+    # BSD stat
     mtime=$(stat -f %m "$file")
   fi
 
