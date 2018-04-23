@@ -62,8 +62,8 @@ _kube_ps1_init() {
       zmodload zsh/datetime
       ;;
     "bash")
-      _KUBE_PS1_OPEN_ESC=$'\001'
-      _KUBE_PS1_CLOSE_ESC=$'\002'
+      _KUBE_PS1_OPEN_ESC="\["
+      _KUBE_PS1_CLOSE_ESC="\]"
       _KUBE_PS1_DEFAULT_BG=$'\033[49m'
       _KUBE_PS1_DEFAULT_FG=$'\033[39m'
       PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
