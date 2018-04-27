@@ -36,7 +36,7 @@ PROMPT='$(kube_ps1)'$PROMPT
 Bash:
 ```sh
 source /path/to/kube-ps1.sh
-PS1="[\u@\h \W \$(kube_ps1)]\$ "
+PS1='[\u@\h \W $(kube_ps1)]\$ '
 ```
 
 ## Requirements
