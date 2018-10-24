@@ -24,7 +24,8 @@
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
-KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT:-\u2388 }"
+KUBE_PS1_SYMBOL_BUILT_IN=$'\u2338'
+KUBE_PS1_SYMBOL_DEFAULT="${KUBE_PS1_SYMBOL_DEFAULT:-${KUBE_PS1_SYMBOL_BUILT_IN} }"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
@@ -147,7 +148,7 @@ _kube_ps1_symbol() {
   case "${KUBE_PS1_SHELL}" in
     bash)
       if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
-        KUBE_PS1_SYMBOL=$'\u2388 '
+        KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
         KUBE_PS1_SYMBOL_IMG=$'\u2638 '
       else
         KUBE_PS1_SYMBOL=$'\xE2\x8E\x88 '
