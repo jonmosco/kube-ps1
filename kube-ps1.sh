@@ -308,6 +308,7 @@ kubeoff() {
 # Build our prompt
 kube_ps1() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
+  [[ -z "${KUBE_PS1_CONTEXT}" ]] && return
 
   local KUBE_PS1
   local KUBE_PS1_RESET_COLOR="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_FG}${_KUBE_PS1_CLOSE_ESC}"
