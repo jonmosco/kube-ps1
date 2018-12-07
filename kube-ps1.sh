@@ -180,6 +180,29 @@ _kube_ps1_file_newer_than() {
   local file=$1
   local check_time=$2
 
+  if readlink -f /dev/null &> /dev/null; then
+    #GNU readlink
+    file="$(readlink -f ${file})"
+  else
+    # BSD readlink
+    local phys_dir
+    local current_dir="$(pwd -P)"
+
+    cd "$(dirname ${file})"
+    file="$(basename ${file})"
+
+    # iterate along a sequence of symlinks until it finds an actual file.
+    while [[ -L "${file}" ]]; do
+      file="$(readlink ${file})"
+      cd "$(dirname ${file})"
+      file="$(basename ${file})"
+    done
+
+    phys_dir="$(pwd -P)"
+    file="${phys_dir}/${file}"
+    cd "${current_dir}"
+  fi
+
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(stat +mtime "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
