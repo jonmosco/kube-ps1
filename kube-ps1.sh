@@ -181,13 +181,13 @@ _kube_ps1_file_newer_than() {
   local check_time=$2
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    mtime=$(stat +mtime "${file}")
+    mtime=$(stat -L +mtime "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
-    mtime=$(stat -c %Y "${file}")
+    mtime=$(stat -L -c %Y "${file}")
   else
     # BSD stat
-    mtime=$(stat -f %m "$file")
+    mtime=$(stat -L -f %m "$file")
   fi
 
   [[ "${mtime}" -gt "${check_time}" ]]
