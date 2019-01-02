@@ -16,13 +16,15 @@ Inspired by several tools used to simplify usage of `kubectl`.
 
 ## Installing
 
-This project is now available in brew ports!
+### MacOS
+
+Homebrew package manager:
 
 ```
 $ brew update
 $ brew install kube-ps1
 ```
-**From Source**
+### From Source
 
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
