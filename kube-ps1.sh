@@ -58,7 +58,7 @@ _kube_ps1_init() {
       setopt PROMPT_SUBST
       autoload -U add-zsh-hook
       add-zsh-hook precmd _kube_ps1_update_cache
-      zmodload zsh/stat
+      zmodload -F zsh/stat b:zstat
       zmodload zsh/datetime
       ;;
     "bash")
@@ -181,7 +181,7 @@ _kube_ps1_file_newer_than() {
   local check_time=$2
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    mtime=$(stat -L +mtime "${file}")
+    mtime=$(zstat -L +mtime "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
     mtime=$(stat -L -c %Y "${file}")
