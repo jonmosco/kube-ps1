@@ -33,7 +33,9 @@ KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
 KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
+KUBE_PS1_CTX_TXT_EFFECT="${KUBE_PS1_CTX_TXT_EFFECT}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
+KUBE_PS1_NS_TXT_EFFECT="${KUBE_PS1_NS_TXT_EFFECT}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
@@ -135,6 +137,19 @@ _kube_ps1_color_bg() {
     fi
   fi
   echo ${OPEN_ESC}${KUBE_PS1_BG_CODE}${CLOSE_ESC}
+}
+
+_kube_ps1_txt_effect() {
+  local KUBE_PS1_TXT_CODE
+  case "${1}" in
+    bold) KUBE_PS1_TXT_CODE=$'\033[1m';;
+    underline) KUBE_PS1_TXT_CODE=$'\033[4m';;
+    blink) KUBE_PS1_TXT_CODE=$'\033[5m';;
+    invert) KUBE_PS1_TXT_CODE=$'\033[7m';;
+    *) KUBE_PS1_TXT_CODE=''
+  esac
+
+  echo ${_KUBE_PS1_OPEN_ESC}${KUBE_PS1_TXT_CODE}${_KUBE_PS1_CLOSE_ESC}
 }
 
 _kube_ps1_binary_check() {
@@ -328,14 +343,16 @@ kube_ps1() {
   fi
 
   # Context
-  KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  KUBE_PS1+="$(_kube_ps1_txt_effect $KUBE_PS1_CTX_TXT_EFFECT)$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  KUBE_PS1+=$'\033[0m'
 
   # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     if [[ -n "${KUBE_PS1_DIVIDER}" ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
     fi
-    KUBE_PS1+="$(_kube_ps1_color_fg ${KUBE_PS1_NS_COLOR})${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="$(_kube_ps1_txt_effect $KUBE_PS1_NS_TXT_EFFECT)$(_kube_ps1_color_fg ${KUBE_PS1_NS_COLOR})${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+=$'\033[0m'
   fi
 
   # Suffix

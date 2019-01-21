@@ -170,6 +170,14 @@ black, red, green, yellow, blue, magenta, cyan
 256 colors are available by specifying the numerical value as the variable
 argument.
 
+# Text Effects
+
+The following text effects are available for the context and the namespace:
+
+```
+blink, bold, invert, underline
+```
+
 ### Bug Reports and shell configuration
 
 Due to the vast ways of customizing the shell, please try the prompt with a
