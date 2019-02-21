@@ -6,7 +6,7 @@
 
 ## 0.7.0 (2/21/19)
 
-* Merged [#47] to allow modification of cluster and namespace with user
+* Merged #47 to allow modification of cluster and namespace with user
   supplied functions
 * Color handling now takes named arguments properly for base colors and integer
   values for 256 colors
