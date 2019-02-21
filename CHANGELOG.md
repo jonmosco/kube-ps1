@@ -20,4 +20,4 @@
 
 ### BUG FIXES:
 
-* kubeon and kubeoff: Fix state on already running shells  [GH-37]
+* kubeon and kubeoff: Fix state on already running shells  ([#37](https://github.com/jonmosco/kube-ps1/issues/37))
