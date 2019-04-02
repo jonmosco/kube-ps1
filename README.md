@@ -29,6 +29,9 @@ $ brew install kube-ps1
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
+### Arch Linux
+AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
+
 Zsh:
 ```sh
 source /path/to/kube-ps1.sh
