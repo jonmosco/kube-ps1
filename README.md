@@ -24,13 +24,16 @@ Homebrew package manager:
 $ brew update
 $ brew install kube-ps1
 ```
+
+### Linux
+
+### Arch Linux
+AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
+
 ### From Source
 
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
-
-### Arch Linux
-AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
 
 Zsh:
 ```sh
@@ -154,6 +157,8 @@ The default colors are set with the following environment variables:
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
 | `KUBE_PS1_BG_COLOR` | `null` | Set default color of the prompt background |
+| `KUBE_PS1_PREFIX_COLOR` | `default` | Set default color of the prefix |
+| `KUBE_PS1_SUFFIX_COLOR` | `default` | Set default color of the suffix |
 
 Blue was used for the default symbol to match the Kubernetes color as closely
 as possible. Red was chosen as the cluster name to stand out, and cyan for the
