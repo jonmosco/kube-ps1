@@ -260,8 +260,10 @@ _kube_ps1_get_context_ns() {
   fi
 }
 
-# Set kube-ps1 shell defaults
-_kube_ps1_init
+if [[ -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ _kube_ps1_update_cache ]]; then
+    # Set kube-ps1 shell defaults
+    _kube_ps1_init
+fi
 
 _kubeon_usage() {
   cat <<"EOF"
