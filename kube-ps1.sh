@@ -68,7 +68,9 @@ _kube_ps1_init() {
       _KUBE_PS1_CLOSE_ESC=$'\002'
       _KUBE_PS1_DEFAULT_BG=$'\033[49m'
       _KUBE_PS1_DEFAULT_FG=$'\033[39m'
-      PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
+      if [[ ! ${PROMPT_COMMAND} =~ _kube_ps1_update_cache ]]; then
+        PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
+      fi
       ;;
   esac
 }
@@ -260,10 +262,8 @@ _kube_ps1_get_context_ns() {
   fi
 }
 
-if [[ -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ _kube_ps1_update_cache ]]; then
-    # Set kube-ps1 shell defaults
-    _kube_ps1_init
-fi
+# Set kube-ps1 shell defaults
+_kube_ps1_init
 
 _kubeon_usage() {
   cat <<"EOF"
