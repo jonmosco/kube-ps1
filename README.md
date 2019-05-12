@@ -116,6 +116,19 @@ kubeoff    : turn off kube-ps1 status for this shell. Takes precedence over
 kubeoff -g : turn off kube-ps1 status globally
 ```
 
+It is also possible to disable the display of the kube-ps1 status based on
+custom conditions by setting the `KUBE_PS1_HIDE_FUNCTION` variable to the name
+of a function. When that function returns a value of `0`, the entire Kubernetes
+status remains hidden.
+
+```sh
+# Example: keep kube-ps1 status hidden when current context equals 'minikube'
+hide_kube_ps1() {
+    [[ "$KUBE_PS1_CONTEXT" == 'minikube' ]]
+}
+KUBE_PS1_HIDE_FUNCTION=hide_kube_ps1
+```
+
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
@@ -132,8 +145,10 @@ the following environment variables:
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between cluster and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
-| `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
-| `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_CLUSTER_FUNCTION` | (none)\* | Function to customize how cluster is displayed |
+| `KUBE_PS1_NAMESPACE_FUNCTION` | (none)\* | Function to customize how namespace is displayed |
+
+\* _must be user supplied_
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.

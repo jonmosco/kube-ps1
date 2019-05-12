@@ -326,6 +326,7 @@ kubeoff() {
 # Build our prompt
 kube_ps1() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
+  [[ -n "${KUBE_PS1_HIDE_FUNCTION}" ]] && $KUBE_PS1_HIDE_FUNCTION && return
   [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
 
   local KUBE_PS1
