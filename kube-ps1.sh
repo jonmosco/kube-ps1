@@ -69,7 +69,10 @@ _kube_ps1_init() {
       _KUBE_PS1_CLOSE_ESC=$'\002'
       _KUBE_PS1_DEFAULT_BG=$'\033[49m'
       _KUBE_PS1_DEFAULT_FG=$'\033[39m'
-      PROMPT_COMMAND="${PROMPT_COMMAND:-:};_kube_ps1_update_cache"
+      if [[ -n $PROMPT_COMMAND ]] && [[ $PROMPT_COMMAND != *\; ]]; then
+        PROMPT_COMMAND="${PROMPT_COMMAND};"
+      fi
+      PROMPT_COMMAND="${PROMPT_COMMAND} _kube_ps1_update_cache"
       ;;
   esac
 }
