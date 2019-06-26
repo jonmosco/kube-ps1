@@ -26,20 +26,25 @@ KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
+# Controls whether the namespace is shown
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
+# Controls whether the context is shown
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
+# Controls whether the cluster is shown
+KUBE_PS1_CLUSTER_ENABLE="${KUBE_PS1_CLUSTER_ENABLE:-false}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
+KUBE_PS1_CLUST_COLOR="${KUBE_PS1_NS_COLOR-magenta}"
 KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
-KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
+KUBE_PS1_CONTEXT_FUNCTION="${KUBE_PS1_CONTEXT_FUNCTION}"
 KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
 
 # Determine our shell
@@ -234,10 +239,18 @@ _kube_ps1_get_context() {
     KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
-
-    if [[ ! -z "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
-      KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
+  
+    if [[ ! -z "${KUBE_PS1_CONTEXT_FUNCTION}" ]]; then
+      KUBE_PS1_CONTEXT=$($KUBE_PS1_CONTEXT_FUNCTION $KUBE_PS1_CONTEXT)
     fi
+  fi
+}
+
+_kube_ps1_get_cluster() {
+  if [[ "${KUBE_PS1_CLUSTER_ENABLE}" == true ]]; then
+    KUBE_PS1_CLUSTER="$(${KUBE_PS1_BINARY} config view --minify  --output 'jsonpath={.clusters.*.name}' 2>/dev/null)"
+    # Set namespace to 'N/A' if it is not defined
+    KUBE_PS1_CLUSTER="${KUBE_PS1_CLUSTER:-N/A}"
   fi
 }
 
@@ -267,6 +280,7 @@ _kube_ps1_get_context_ns() {
 
   _kube_ps1_get_context
   _kube_ps1_get_ns
+  _kube_ps1_get_cluster
 }
 
 # Set kube-ps1 shell defaults
@@ -348,14 +362,22 @@ kube_ps1() {
     KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
   fi
 
+  # Cluster
+  if [[ "${KUBE_PS1_CLUSTER_ENABLE}" == true ]]; then
+    KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CLUST_COLOR)${KUBE_PS1_CLUSTER}${KUBE_PS1_RESET_COLOR}"
+  fi
+
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
+    if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CLUSTER_ENABLE}" == true ]]; then
+      KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    fi
     KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Namespace
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
+    if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true || "${KUBE_PS1_CLUSTER_ENABLE}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
     fi
     KUBE_PS1+="$(_kube_ps1_color_fg ${KUBE_PS1_NS_COLOR})${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"

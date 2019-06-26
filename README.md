@@ -1,16 +1,19 @@
 kube-ps1: Kubernetes prompt for bash and zsh
 ============================================
 
-A script that lets you add the current Kubernetes context and namespace
-configured on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
+A script that lets you add the current Kubernetes cluster, context, and namespace configured
+on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
 
 Inspired by several tools used to simplify usage of `kubectl`.
 
-![prompt](img/screenshot2.png)
+Showing cluster, context, and namespace.
+![prompt](img/screenshot_show_all.png)
 
-![prompt_sol_light](img/screenshot-sol-light.png)
+Showing context and namespace
+![prompt_sol_light](img/screenshot_context_ns.png)
 
-![prompt_img](img/screenshot-img.png)
+Showing namespace
+![prompt_img](img/screenshot_ns.png)
 
 ![prompt demo](img/kube-ps1.gif)
 
@@ -91,13 +94,13 @@ tmux, and like the functionality provided by kube-ps1, checkout the
 The default prompt layout is:
 
 ```
-(<symbol>|<context>:<namespace>)
+(<symbol>|<cluster>:<context>:<namespace>)
 ```
 
 If the current-context is not set, kube-ps1 will return the following:
 
 ```
-(<symbol>|N/A:N/A)
+(<symbol>|N/A:N/A:N/A)
 ```
 
 ## Enabling/Disabling
@@ -129,10 +132,10 @@ the following environment variables:
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
 | `KUBE_PS1_SYMBOL_USE_IMG` | `false` | ☸️  ,  Unicode `\u2638` as the prompt symbol |
-| `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and context name |
-| `KUBE_PS1_DIVIDER` | `:` | Separator between context and namespace |
+| `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and cluster name |
+| `KUBE_PS1_DIVIDER` | `:` | Separator between cluster, context, and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
-| `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
+| `KUBE_PS1_CONTEXT_FUNCTION` | No default, must be user supplied | Function to customize how cluster context is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
@@ -151,12 +154,13 @@ The default colors are set with the following environment variables:
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
-| `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the context |
-| `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the namespace |
+| `KUBE_PS1_CLUST_COLOR` | `magenta` | Set default color of the cluster name |
+| `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the cluster context |
+| `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the cluster namespace |
 | `KUBE_PS1_BG_COLOR` | `null` | Set default color of the prompt background |
 
 Blue was used for the default symbol to match the Kubernetes color as closely
-as possible. Red was chosen as the context name to stand out, and cyan for the
+as possible. Red was chosen as the cluster context to stand out, and cyan for the
 namespace.
 
 Set the variable to an empty string if you do not want color for each
@@ -175,15 +179,13 @@ black, red, green, yellow, blue, magenta, cyan
 256 colors are available by specifying the numerical value as the variable
 argument.
 
-## Customize display of cluster name and namespace
+## Customize display of cluster context and namespace
 
-You can change how the cluster name and namespace are displayed using the
-`KUBE_PS1_CLUSTER_FUNCTION` and `KUBE_PS1_NAMESPACE_FUNCTION` variables
-respectively.
+You can change how the cluster context and namespace are displayed using the `KUBE_PS1_CONTEXT_FUNCTION` and `KUBE_PS1_NAMESPACE_FUNCTION` variables respectively.
 
 For the following examples let's assume the following:
 
-cluster name: `sandbox.k8s.example.com`
+context name: `sandbox.k8s.example.com`
 namespace: `alpha`
 
 If you're using domain style cluster names, your prompt will get quite long
@@ -195,7 +197,7 @@ function get_cluster_short() {
   echo "$1" | cut -d . -f1
 }
 
-KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+KUBE_PS1_CONTEXT_FUNCTION=get_cluster_short
 ```
 
 The same pattern can be followed to customize the display of the namespace.
