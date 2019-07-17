@@ -199,6 +199,8 @@ _kube_ps1_file_newer_than() {
 _kube_ps1_update_cache() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
 
+  local return_code=$?
+
   if ! _kube_ps1_binary_check "${KUBE_PS1_BINARY}"; then
     # No ability to fetch context/namespace; display N/A.
     KUBE_PS1_CONTEXT="BINARY-N/A"
@@ -223,6 +225,8 @@ _kube_ps1_update_cache() {
       return
     fi
   done
+
+  return $return_code
 }
 
 _kube_ps1_get_context() {
@@ -230,7 +234,7 @@ _kube_ps1_get_context() {
     KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
-  
+
     if [[ ! -z "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
       KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
     fi
