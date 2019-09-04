@@ -256,7 +256,7 @@ _kube_ps1_get_ns() {
 _kube_ps1_get_context_ns() {
   # Set the command time
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
-    if ((BASH_VERSINFO[0] >= 4)); then
+    if ((BASH_VERSINFO[0] >= 4 && BASH_VERSINFO[1] >= 2)); then
       KUBE_PS1_LAST_TIME=$(printf '%(%s)T')
     else
       KUBE_PS1_LAST_TIME=$(date +%s)
