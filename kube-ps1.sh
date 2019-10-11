@@ -152,7 +152,7 @@ _kube_ps1_symbol() {
       if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
         KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
         # KUBE_PS1_SYMBOL=$'\u2388 '
-        KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+        KUBE_PS1_SYMBOL_IMG=$'\u2638\ufe0f '
       else
         KUBE_PS1_SYMBOL=$'\xE2\x8E\x88 '
         KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
