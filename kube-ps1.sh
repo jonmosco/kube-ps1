@@ -41,6 +41,7 @@ KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
 KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
 KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
+KUBE_PS1_ENV_CACHEFILE="${HOME}/.kube-ps1.envs"
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -63,6 +64,7 @@ _kube_ps1_init() {
       add-zsh-hook precmd _kube_ps1_update_cache
       zmodload -F zsh/stat b:zstat
       zmodload zsh/datetime
+      _kube_load_vars_from_file
       ;;
     "bash")
       _KUBE_PS1_OPEN_ESC=$'\001'
@@ -72,6 +74,20 @@ _kube_ps1_init() {
       [[ $PROMPT_COMMAND =~ _kube_ps1_update_cache ]] || PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
       ;;
   esac
+}
+
+_kube_load_vars_from_file() {
+  if test -f "$KUBE_PS1_ENV_CACHEFILE"; then
+    source "$KUBE_PS1_ENV_CACHEFILE"
+  fi
+}
+
+_kube_ps1_update_cachefile() {
+  # Cache has been updated, write to file.
+  echo "KUBE_PS1_CONTEXT=$KUBE_PS1_CONTEXT" > $KUBE_PS1_ENV_CACHEFILE
+  echo "KUBE_PS1_KUBECONFIG_CACHE=$KUBE_PS1_KUBECONFIG_CACHE" >> $KUBE_PS1_ENV_CACHEFILE
+  echo "KUBE_PS1_LAST_TIME=$KUBE_PS1_LAST_TIME" >> $KUBE_PS1_ENV_CACHEFILE
+  echo "KUBE_PS1_NAMESPACE=$KUBE_PS1_NAMESPACE" >> $KUBE_PS1_ENV_CACHEFILE
 }
 
 _kube_ps1_color_fg() {
@@ -212,6 +228,7 @@ _kube_ps1_update_cache() {
     # User changed KUBECONFIG; unconditionally refetch.
     KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
     _kube_ps1_get_context_ns
+    _kube_ps1_update_cachefile
     return
   fi
 
@@ -222,6 +239,7 @@ _kube_ps1_update_cache() {
     [[ -r "${conf}" ]] || continue
     if _kube_ps1_file_newer_than "${conf}" "${KUBE_PS1_LAST_TIME}"; then
       _kube_ps1_get_context_ns
+      _kube_ps1_update_cachefile
       return
     fi
   done
