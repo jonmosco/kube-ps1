@@ -235,6 +235,12 @@ _kube_ps1_get_context() {
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
+    # Format AWS EKS cluster
+    regex="^arn:aws:eks:[a-z0-9-]+:[0-9]+:cluster\/[0-9A-Za-z][A-Za-z0-9\-_]*"
+    if [[ $KUBE_PS1_CONTEXT =~ "$regex" ]]; then
+      KUBE_PS1_CONTEXT=${KUBE_PS1_CONTEXT#*cluster/}
+    fi
+
     if [[ ! -z "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
       KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
     fi
