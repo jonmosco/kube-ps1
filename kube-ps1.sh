@@ -231,7 +231,7 @@ _kube_ps1_update_cache() {
 
 _kube_ps1_get_context() {
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
+    KUBE_PS1_CONTEXT="$(grep 'current-context' "${KUBECONFIG:-${HOME}/.kube/config}" | awk '{print $2}' 2>/dev/null)"
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
