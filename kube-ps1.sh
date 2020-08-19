@@ -157,7 +157,7 @@ _kube_ps1_symbol() {
       if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
         KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
         # KUBE_PS1_SYMBOL=$'\u2388 '
-        KUBE_PS1_SYMBOL_IMG=$'\u2638 '
+        KUBE_PS1_SYMBOL_IMG=$'\u2638\ufe0f '
       else
         KUBE_PS1_SYMBOL=$'\xE2\x8E\x88 '
         KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
@@ -189,7 +189,7 @@ _kube_ps1_file_newer_than() {
   local check_time=$2
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    mtime=$(zstat -L +mtime "${file}")
+    mtime=$(zstat +mtime "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
     mtime=$(stat -L -c %Y "${file}")
