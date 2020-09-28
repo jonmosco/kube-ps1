@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
