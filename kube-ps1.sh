@@ -185,7 +185,7 @@ _kube_ps1_file_newer_than() {
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(zstat +mtime "${file}")
-    ctime=0
+    ctime=$(zstat +ctime "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
     stats=$(stat -L -c "%Y:%Z" "${file}")
