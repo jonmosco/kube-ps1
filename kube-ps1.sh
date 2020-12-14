@@ -185,15 +185,24 @@ _kube_ps1_file_newer_than() {
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
     mtime=$(zstat +mtime "${file}")
+    ctime=0
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
-    mtime=$(stat -L -c %Y "${file}")
+    stats=$(stat -L -c "%Y:%Z" "${file}")
+    mtime=$(echo $stats | cut -f1 -d:)
+    ctime=$(echo $stats | cut -f2 -d:)
   else
     # BSD stat
-    mtime=$(stat -L -f %m "$file")
+    stats=$(stat -L -f "%m:%c" "$file")
+    mtime=$(echo $stats | cut -f1 -d:)
+    ctime=$(echo $stats | cut -f2 -d:)
   fi
 
-  [[ "${mtime}" -gt "${check_time}" ]]
+  if [[ "${mtime}" -gt "${check_time}" ]]; then
+    return $?
+  fi
+
+  [[ "${ctime}" -gt "${check_time}" ]];
 }
 
 _kube_ps1_update_cache() {
