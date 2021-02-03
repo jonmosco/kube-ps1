@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2019 Jon Mosco
+# Copyright 2021 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
-KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
+KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388'}
+KUBE_PS1_SYMBOL_PADDING="${KUBE_PS1_SYMBOL_PADDING:-true}"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
@@ -32,10 +33,12 @@ KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
+
 KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
 KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
+
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
@@ -149,18 +152,17 @@ _kube_ps1_symbol() {
 
   case "${KUBE_PS1_SHELL}" in
     bash)
-      if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388 ' != "\\u2388 " ]]; then
+      if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
         KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
-        # KUBE_PS1_SYMBOL=$'\u2388 '
-        KUBE_PS1_SYMBOL_IMG=$'\u2638\ufe0f '
+        KUBE_PS1_SYMBOL_IMG=$'\u2638\ufe0f'
       else
-        KUBE_PS1_SYMBOL=$'\xE2\x8E\x88 '
-        KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8 '
+        KUBE_PS1_SYMBOL=$'\xE2\x8E\x88'
+        KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8'
       fi
       ;;
     zsh)
       KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_DEFAULT}"
-      KUBE_PS1_SYMBOL_IMG="\u2638 ";;
+      KUBE_PS1_SYMBOL_IMG="\u2638";;
     *)
       KUBE_PS1_SYMBOL="k8s"
   esac
@@ -169,7 +171,12 @@ _kube_ps1_symbol() {
     KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_IMG}"
   fi
 
-  echo "${KUBE_PS1_SYMBOL}"
+  if [[ "${KUBE_PS1_SYMBOL_PADDING}" == true ]]; then
+    echo "${KUBE_PS1_SYMBOL} "
+  else
+    echo "${KUBE_PS1_SYMBOL}"
+  fi
+
 }
 
 _kube_ps1_split() {

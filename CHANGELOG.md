@@ -2,6 +2,8 @@
 
 ## (UNRELEASED)
 
+* Added option to turn off image padding.  Defaults to `true`.  There were some troubles with terminals overlapping the symbol ([#126]https://github.com/jonmosco/kube-ps1/issues/126)
+
 ### IMPROVEMENTS
 
 ## 0.7.0 (2/21/19)

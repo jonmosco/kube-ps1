@@ -136,6 +136,7 @@ the following environment variables:
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
+| `KUBE_PS1_SYMBOL_PADDING` | `true` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
 | `KUBE_PS1_SYMBOL_USE_IMG` | `false` | ☸️  ,  Unicode `\u2638` as the prompt symbol |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and context name |
