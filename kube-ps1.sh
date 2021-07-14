@@ -144,6 +144,15 @@ _kube_ps1_color_bg() {
 }
 
 _kube_ps1_binary_check() {
+  # Check the scenario where kubectl uses alias
+  if [ -n "`command -V $1 | grep 'an alias for'`" -a "$KUBE_PS1_BINARY" = "kubectl" ]; then
+    echo "PLEASE Use KUBE_PS1_BINARY to SUPPORT the command 'alias kubectl' -- `alias kubectl`"
+    echo "And reopen shell"
+    command=`command -V $1|awk -F 'for ' '{print $2}'`
+    echo "EXAMPLE: echo KUBE_PS1_BINARY='$command'>>.zshrc"
+    # exit 1
+    return 1
+  fi
   command -v $1 >/dev/null
 }
 
@@ -222,6 +231,11 @@ _kube_ps1_update_cache() {
     return
   fi
 
+  # Indicates that there is no kube environment variable
+  if [ -z "${KUBECONFIG}" -a ! -f "${KUBECONFIG:-${HOME}/.kube/config}" ]; then
+    echo "You need set either KUBECONFIG or ${HOME}/.kube/config"
+    return 1
+  fi
   # kubectl will read the environment variable $KUBECONFIG
   # otherwise set it to ~/.kube/config
   local conf
