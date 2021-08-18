@@ -334,8 +334,21 @@ kubeoff() {
   KUBE_PS1_ENABLED=off
 }
 
+# make sure we have a configuration available
+kubeconfig_avail() {
+  if [[ -f "${HOME}/.kube/config" ]] || [[ -n "${KUBECONFIG}" ]]; then
+      echo 0
+  else
+      echo 1
+  fi
+}
+
 # Build our prompt
 kube_ps1() {
+  local kubeconfig_exists
+  kubeconfig_exists=$(kubeconfig_avail)
+  [[ "${kubeconfig_exists}" == 1 ]] && return
+
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
   [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
 
