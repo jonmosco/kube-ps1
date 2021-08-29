@@ -1,7 +1,8 @@
-### kube-ps1 project CHANGELOG
+## kube-ps1 project CHANGELOG
 
-## (UNRELEASED)
+### [UNRELEASED]
 
+* Added ability to change the color of `KUBE_PS1_PREFIX` and `KUBE_PS1_SUFFIX` ([#79](https://github.com/jonmosco/kube-ps1/issues/79))
 * Added option to turn off image padding.  Defaults to `true`.  There were some troubles with terminals overlapping the symbol ([#126](https://github.com/jonmosco/kube-ps1/issues/126))
 
 ### IMPROVEMENTS
