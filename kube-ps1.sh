@@ -346,7 +346,11 @@ kube_ps1() {
   [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="$(_kube_ps1_color_bg ${KUBE_PS1_BG_COLOR})"
 
   # Prefix
-  [[ -n "${KUBE_PS1_PREFIX}" ]] && KUBE_PS1+="${KUBE_PS1_PREFIX}"
+  if [[ -z "${KUBE_PS1_PREFIX_COLOR:-}" ]] && [[ -n "${KUBE_PS1_PREFIX}" ]]; then
+      KUBE_PS1+="${KUBE_PS1_PREFIX}"
+  else
+      KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_PREFIX_COLOR)${KUBE_PS1_PREFIX}${KUBE_PS1_RESET_COLOR}"
+  fi
 
   # Symbol
   KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_SYMBOL_COLOR)$(_kube_ps1_symbol)${KUBE_PS1_RESET_COLOR}"
@@ -369,7 +373,11 @@ kube_ps1() {
   fi
 
   # Suffix
-  [[ -n "${KUBE_PS1_SUFFIX}" ]] && KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  if [[ -z "${KUBE_PS1_SUFFIX_COLOR:-}" ]] && [[ -n "${KUBE_PS1_SUFFIX}" ]]; then
+      KUBE_PS1+="${KUBE_PS1_SUFFIX}"
+  else
+      KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_SUFFIX_COLOR)${KUBE_PS1_SUFFIX}${KUBE_PS1_RESET_COLOR}"
+  fi
 
   # Close Background color if defined
   [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_BG}${_KUBE_PS1_CLOSE_ESC}"

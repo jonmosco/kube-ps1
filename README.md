@@ -160,8 +160,10 @@ The default colors are set with the following environment variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
+| `KUBE_PS1_PREFIX_COLOR` | `null` | Set default color of the prompt prefix |
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the context |
+| `KUBE_PS1_SUFFIX_COLOR` | `null` | Set default color of the prompt suffix |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the namespace |
 | `KUBE_PS1_BG_COLOR` | `null` | Set default color of the prompt background |
 
