@@ -45,7 +45,7 @@ PS1='[\u@\h \W $(kube_ps1)]\$ '
 
 ### Zsh Plugin Managers
 
-#### Using [zplugin](https://github.com/zdharma/zplugin)
+#### Using [zinit](https://github.com/zdharma-continuum/zinit)
 
 Update `.zshrc` with:
 ```sh
