@@ -49,7 +49,7 @@ PS1='[\u@\h \W $(kube_ps1)]\$ '
 
 Update `.zshrc` with:
 ```sh
-zplugin light jonmosco/kube-ps1
+zinit light jonmosco/kube-ps1
 PROMPT='$(kube_ps1)'$PROMPT
 ```
 
