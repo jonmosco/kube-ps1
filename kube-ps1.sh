@@ -34,6 +34,16 @@ KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
+KUBE_PS1_ENABLED_IN_PATH="${KUBE_PS1_ENABLED_IN_PATH}"
+
+KUBE_PS1_CONTEXT_COMPARE_ENABLE="${KUBE_PS1_CONTEXT_COMPARE_ENABLE:-false}"
+KUBE_PS1_CONTEXT_COMPARE_COMMAND="${KUBE_PS1_CONTEXT_COMPARE_COMMAND}"
+KUBE_PS1_CONTEXT_COMPARE_VISIBLE="${KUBE_PS1_CONTEXT_COMPARE_VISIBLE:-true}"
+KUBE_PS1_CONTEXT_COMPARE_SUCCESS_COLOR="${KUBE_PS1_CONTEXT_COMPARE_SUCCESS_COLOR:-green}"
+KUBE_PS1_CONTEXT_COMPARE_FAILED_COLOR="${KUBE_PS1_CONTEXT_COMPARE_FAILED_COLOR:-red}"
+KUBE_PS1_CONTEXT_COMPARE_SEPARATOR="${KUBE_PS1_CONTEXT_COMPARE_SEPARATOR:-/}"
+KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE="${KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE}"
+
 KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
 KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
@@ -42,6 +52,7 @@ KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
+KUBE_PS1_LAST_TIME_CONTEXT_COMPARE=0
 KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
 KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
 
@@ -204,6 +215,17 @@ _kube_ps1_file_newer_than() {
 }
 
 _kube_ps1_update_cache() {
+  _kube_ps1_update_cache_kubeconfig
+  local return_code=$?
+
+  if [[ "${KUBE_PS1_CONTEXT_COMPARE_ENABLE}" == true ]]; then 
+    _kube_ps1_update_cache_compare || return $?
+    _kube_ps1_update_context_color
+  fi
+  return $return_code
+}
+
+_kube_ps1_update_cache_kubeconfig() {
   local return_code=$?
 
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return $return_code
@@ -234,6 +256,31 @@ _kube_ps1_update_cache() {
   done
 
   return $return_code
+}
+
+_kube_ps1_update_cache_compare() {
+  if [[ -z "${KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE}" ]] || _kube_ps1_file_newer_than "${KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE}" "${KUBE_PS1_LAST_TIME_CONTEXT_COMPARE}"; then 
+    if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
+      if ((BASH_VERSINFO[0] >= 4 && BASH_VERSINFO[1] >= 2)); then
+        KUBE_PS1_LAST_TIME_CONTEXT_COMPARE=$(printf '%(%s)T')
+      else
+        KUBE_PS1_LAST_TIME_CONTEXT_COMPARE=$(date +%s)
+      fi
+    elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
+      KUBE_PS1_LAST_TIME_CONTEXT_COMPARE=$EPOCHSECONDS
+    fi
+    KUBE_PS1_CONTEX_COMPARE_VALUE=$(eval ${KUBE_PS1_CONTEXT_COMPARE_COMMAND[@]})
+    KUBE_PS1_CONTEX_COMPARE_VALUE="${KUBE_PS1_CONTEX_COMPARE_VALUE:-N/A}"
+    return
+  fi
+}
+
+_kube_ps1_update_context_color(){
+  if [[ "${KUBE_PS1_CONTEXT}" == *"${KUBE_PS1_CONTEX_COMPARE_VALUE}"* ]]; then
+    KUBE_PS1_CTX_COLOR="${KUBE_PS1_CONTEXT_COMPARE_SUCCESS_COLOR}"
+  else 
+    KUBE_PS1_CTX_COLOR="${KUBE_PS1_CONTEXT_COMPARE_FAILED_COLOR}"
+  fi
 }
 
 _kube_ps1_get_context() {
@@ -338,6 +385,7 @@ kubeoff() {
 kube_ps1() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
   [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
+  [[ -n "${KUBE_PS1_ENABLED_IN_PATH}" ]] && [[ ! $(pwd) == "${KUBE_PS1_ENABLED_IN_PATH}"* ]] && return
 
   local KUBE_PS1
   local KUBE_PS1_RESET_COLOR="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_FG}${_KUBE_PS1_CLOSE_ESC}"
@@ -357,6 +405,14 @@ kube_ps1() {
 
   if [[ -n "${KUBE_PS1_SEPARATOR}" ]] && [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
     KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
+  fi
+
+  # Compare command value
+  if [[ "${KUBE_PS1_CONTEXT_COMPARE_ENABLE}" == true ]] && [[ "${KUBE_PS1_CONTEXT_COMPARE_VISIBLE}" == true ]]; then
+    KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEX_COMPARE_VALUE}${KUBE_PS1_RESET_COLOR}"
+    if [[ -n "${KUBE_PS1_CONTEXT_COMPARE_SEPARATOR}" ]]; then
+      KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT_COMPARE_SEPARATOR}${KUBE_PS1_RESET_COLOR}"
+    fi
   fi
 
   # Context

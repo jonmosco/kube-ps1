@@ -144,6 +144,14 @@ the following environment variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_CONTEXT_COMPARE_ENABLE` | `false` | Enable comparing context name to output of some command |
+| `KUBE_PS1_CONTEXT_COMPARE_COMMAND` | No default, must be user supplied | Command that will be executed that output will be compared to the context name |
+| `KUBE_PS1_CONTEXT_COMPARE_VISIBLE` | `true` | Displays output of defined command in prompt |
+| `KUBE_PS1_CONTEXT_COMPARE_SUCCESS_COLOR` | `green` | Color of context in output of command will be found in context name, overrides `KUBE_PS1_CTX_COLOR` |
+| `KUBE_PS1_CONTEXT_COMPARE_FAILED_COLOR` | `red` | Color of context if output of command won't be found in context name, overrides `KUBE_PS1_CTX_COLOR` |
+| `KUBE_PS1_CONTEXT_COMPARE_SEPARATOR` | `/` | Separator between output and context | 
+| `KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE` | No default, must be user supplied | Filename of command trigger. If set command will be only executed when modification time of this file will change |
+| `KUBE_PS1_ENABLED_IN_PATH` | No default, must be user supplied | Display the whole prompt only when the current working directory is under this path |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.
@@ -223,6 +231,24 @@ export KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_upper
 ```
 
 In both cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
+
+## Change Context color if it contains some string.
+
+Sometimes it could be useful to change the color of the prompt to alert that current context does not match your expectation. It could sometimes protect you against unattended changes on production infrastructure when you meant to only test something elsewhere.
+
+In order to enable this feature you need to add to your `~/.bashrc` or `~/.zshrc` file at least the first two of following variables:
+```
+KUBE_PS1_CONTEXT_COMPARE_ENABLE=true
+KUBE_PS1_CONTEXT_COMPARE_COMMAND="cat $HOME/desired_context"
+KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE=$HOME/desired_context
+```
+
+In this example, the context part of the prompt will change color, by default to green, if the content of file `$HOME/desired_context` will be found in the context name.
+It is optional to use `KUBE_PS1_CONTEXT_COMPARE_TRIGGER_FILE` but it is recommended as it allows the use of cached value instead of command execution on each prompt. As always it is only a simple example and this feature is meant for something bigger. Althrou when you will have to use pipes and output redirections in your command it is better to create alias that will be passed as command.
+
+```
+alias desired-context="some-fancy-context-getter.sh 2>/dev/null | awk {print $1}"
+KUBE_PS1_CONTEXT_COMPARE_COMMAND="desired-context"
 
 ### Bug Reports and shell configuration
 
