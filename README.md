@@ -143,7 +143,9 @@ the following environment variables:
 | `KUBE_PS1_DIVIDER` | `:` | Separator between context and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
+| `KUBE_PS1_CLUSTER_COLOR_FUNCTION` | No default, must be user supplied | Function to determine the color for the cluster |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_NAMESPACE_COLOR_FUNCTION` | No default, must be user supplied | Function to determine the color for the namespace |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.
@@ -222,7 +224,44 @@ function get_namespace_upper() {
 export KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_upper
 ```
 
-In both cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
+There are similar `KUBE_PS1_CLUSTER_COLOR_FUNCTION` and `KUBE_PS1_NAMESPACE_COLOR_FUNCTION` variables used in the same way  
+These fuctions will receive the cluster or namespace, and expect a single color back(limited to the 8 colors supported)  
+
+```sh
+function get_namespace_color() {
+  case $1 in
+    *alpha-*)
+      #alpha namespace is safe..
+      echo green;;
+    *prod*)
+      echo red;;
+    *)
+      echo cyan;;
+  esac
+}
+export KUBE_PS1_NAMESPACE_COLOR_FUNCTION=get_namespace_color
+```
+
+In all cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
+
+
+
+
+
+
+### Bug Reports and shell configuration
+
+Due to the vast ways of customizing the shell, please try the prompt with a
+
+
+
+
+In all cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
+
+
+
+
+
 
 ### Bug Reports and shell configuration
 

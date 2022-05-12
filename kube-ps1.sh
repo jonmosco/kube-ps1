@@ -43,7 +43,9 @@ KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
 KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
+KUBE_PS1_CLUSTER_COLOR_FUNCTION="${KUBE_PS1_CLUSTER_COLOR_FUNCTION}"
 KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
+KUBE_PS1_NAMESPACE_COLOR_FUNCTION="${KUBE_PS1_NAMESPACE_COLOR_FUNCTION}"
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -361,6 +363,10 @@ kube_ps1() {
 
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
+
+    if [[ ! -z "${KUBE_PS1_CLUSTER_COLOR_FUNCTION}" ]]; then
+      KUBE_PS1_CTX_COLOR=$($KUBE_PS1_CLUSTER_COLOR_FUNCTION $KUBE_PS1_CONTEXT) #this function returns a color name...
+    fi
     KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   fi
 
@@ -368,6 +374,9 @@ kube_ps1() {
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
     if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    fi
+    if [[ ! -z "${KUBE_PS1_NAMESPACE_COLOR_FUNCTION}" ]]; then
+      KUBE_PS1_NS_COLOR=$($KUBE_PS1_NAMESPACE_COLOR_FUNCTION $KUBE_PS1_NAMESPACE) #this function returns a color name...
     fi
     KUBE_PS1+="$(_kube_ps1_color_fg ${KUBE_PS1_NS_COLOR})${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
   fi
