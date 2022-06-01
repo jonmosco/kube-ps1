@@ -1,7 +1,7 @@
 kube-ps1: Kubernetes prompt for bash and zsh
 ============================================
 
-A script that lets you add the current Kubernetes context and namespace
+A script that lets you add the current Kubernetes context, user and namespace
 configured on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
 
 Inspired by several tools used to simplify usage of `kubectl`.
@@ -134,6 +134,7 @@ the following environment variables:
 | :------- | :-----: | ------- |
 | `KUBE_PS1_BINARY` | `kubectl` | Default Kubernetes binary |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
+| `KUBE_PS1_USER_ENABLE` | `true` | Display current user |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_PADDING` | `true` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
@@ -144,6 +145,7 @@ the following environment variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_USER_FUNCTION` | No default, must be user supplied | Function to customize how user is displayed |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.
@@ -164,6 +166,7 @@ The default colors are set with the following environment variables:
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Set default color of the Kubernetes symbol |
 | `KUBE_PS1_CTX_COLOR` | `red` | Set default color of the context |
 | `KUBE_PS1_SUFFIX_COLOR` | `null` | Set default color of the prompt suffix |
+| `KUBE_PS1_USR_COLOR` | `cyan` | Set default color of the user |
 | `KUBE_PS1_NS_COLOR` | `cyan` | Set default color of the namespace |
 | `KUBE_PS1_BG_COLOR` | `null` | Set default color of the prompt background |
 

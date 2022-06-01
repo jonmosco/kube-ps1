@@ -29,6 +29,7 @@ KUBE_PS1_SYMBOL_PADDING="${KUBE_PS1_SYMBOL_PADDING:-true}"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
+KUBE_PS1_USER_ENABLE="${KUBE_PS1_USER_ENABLE:-true}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
@@ -37,6 +38,7 @@ KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
 KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
 KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
+KUBE_PS1_USR_COLOR="${KUBE_PS1_USR_COLOR-cyan}"
 KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
 
 KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
@@ -44,6 +46,7 @@ KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 KUBE_PS1_LAST_TIME=0
 KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
 KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
+KUBE_PS1_USER_FUNCTION="${KUBE_PS1_USER_FUNCTION}"
 
 # Determine our shell
 if [ "${ZSH_VERSION-}" ]; then
@@ -260,6 +263,18 @@ _kube_ps1_get_ns() {
   fi
 }
 
+_kube_ps1_get_user() {
+  if [[ "${KUBE_PS1_USER_ENABLE}" == true ]]; then
+    KUBE_PS1_USER="$(${KUBE_PS1_BINARY} config view -o=jsonpath="{.contexts[?(@.name==\"$(${KUBE_PS1_BINARY} config current-context)\")].context.user}" 2>/dev/null)"
+    
+    KUBE_PS1_USER="${KUBE_PS1_USER:-N/A}"
+
+    if [[ ! -z "${KUBE_PS1_USER_FUNCTION}" ]]; then
+        KUBE_PS1_USER=$($KUBE_PS1_USER_FUNCTION $KUBE_PS1_USER)
+    fi
+  fi
+}
+
 _kube_ps1_get_context_ns() {
   # Set the command time
   if [[ "${KUBE_PS1_SHELL}" == "bash" ]]; then
@@ -274,6 +289,7 @@ _kube_ps1_get_context_ns() {
 
   _kube_ps1_get_context
   _kube_ps1_get_ns
+  _kube_ps1_get_user
 }
 
 # Set kube-ps1 shell defaults
@@ -362,6 +378,14 @@ kube_ps1() {
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
     KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+  fi
+
+  # User
+  if [[ "${KUBE_PS1_USER_ENABLE}" == true ]]; then
+    if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_USER_ENABLE}" == true ]]; then
+      KUBE_PS1+="${KUBE_PS1_DIVIDER}"
+    fi
+    KUBE_PS1+="$(_kube_ps1_color_fg ${KUBE_PS1_USR_COLOR})${KUBE_PS1_USER}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Namespace
