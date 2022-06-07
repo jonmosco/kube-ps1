@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2021 Jon Mosco
+# Copyright 2022 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -191,7 +191,7 @@ _kube_ps1_file_newer_than() {
   local check_time=$2
 
   if [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    mtime=$(zstat +mtime "${file}")
+    mtime=$(zstat +mtime -F %s.%N "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
     mtime=$(stat -L -c %Y "${file}")
@@ -269,7 +269,7 @@ _kube_ps1_get_context_ns() {
       KUBE_PS1_LAST_TIME=$(date +%s)
     fi
   elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    KUBE_PS1_LAST_TIME=$EPOCHSECONDS
+    KUBE_PS1_LAST_TIME=$EPOCHREALTIME
   fi
 
   _kube_ps1_get_context
