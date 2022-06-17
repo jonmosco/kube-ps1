@@ -24,6 +24,15 @@ Homebrew package manager:
 $ brew update
 $ brew install kube-ps1
 ```
+
+### Fig
+
+[Fig](https://fig.io) adds apps, shortcuts, and autocomplete to your existing terminal.
+
+Install `kube-ps1` in zsh, bash, or fish with one click.
+
+<a href="https://fig.io/plugins/other/kube-ps1" target="_blank"><img src="https://fig.io/badges/install-with-fig.svg" /></a>
+
 ### From Source
 
 1. Clone this repository
