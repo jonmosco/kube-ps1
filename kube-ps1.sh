@@ -285,7 +285,7 @@ Toggle kube-ps1 prompt on
 
 Usage: kubeon [-g | --global] [-h | --help]
 
-With no arguments, turn off kube-ps1 status for this shell instance (default).
+With no arguments, turn oon kube-ps1 status for this shell instance (default).
 
   -g --global  turn on kube-ps1 status globally
   -h --help    print this message
