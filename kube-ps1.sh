@@ -140,7 +140,7 @@ _kube_ps1_color_bg() {
       KUBE_PS1_BG_CODE="${DEFAULT_BG}"
     fi
   fi
-  echo ${OPEN_ESC}${KUBE_PS1_BG_CODE}${CLOSE_ESC}
+  echo ${_KUBE_PS1_OPEN_ESC}${KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}
 }
 
 _kube_ps1_binary_check() {
