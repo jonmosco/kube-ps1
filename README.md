@@ -1,5 +1,4 @@
-kube-ps1: Kubernetes prompt for bash and zsh
-============================================
+# kube-ps1: Kubernetes prompt for bash and zsh
 
 A script that lets you add the current Kubernetes context and namespace
 configured on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
@@ -16,13 +15,41 @@ Inspired by several tools used to simplify usage of `kubectl`.
 
 ## Installing
 
-### MacOS
+### Package managers
+
+### MacOS Brew Ports
 
 Homebrew package manager:
 
 ```
 $ brew update
 $ brew install kube-ps1
+```
+
+### Arch Linux
+AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
+
+### Oh My Zsh
+
+https://github.com/ohmyzsh/ohmyzsh
+
+kube-ps1 is included as a plugin in the oh-my-zsh project.  To enable it, edit your `~/.zshrc` and
+add the plugin:
+
+```bash
+plugins=(
+  kube-ps1
+)
+```
+
+## Zsh Plugin Managers
+
+### Using [zinit](https://github.com/zdharma-continuum/zinit)
+
+Update `.zshrc` with:
+```sh
+zinit light jonmosco/kube-ps1
+PROMPT='$(kube_ps1)'$PROMPT
 ```
 
 ### Fig
@@ -38,9 +65,6 @@ Install `kube-ps1` in zsh, bash, or fish with one click.
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
-### Arch Linux
-AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
-
 #### Zsh
 ```sh
 source /path/to/kube-ps1.sh
@@ -52,15 +76,6 @@ source /path/to/kube-ps1.sh
 PS1='[\u@\h \W $(kube_ps1)]\$ '
 ```
 
-### Zsh Plugin Managers
-
-#### Using [zinit](https://github.com/zdharma-continuum/zinit)
-
-Update `.zshrc` with:
-```sh
-zinit light jonmosco/kube-ps1
-PROMPT='$(kube_ps1)'$PROMPT
-```
 
 ## Requirements
 
@@ -241,18 +256,18 @@ minimal configuration before submitting a bug report.
 This can be done as follows for each shell before loading kube-ps1:
 
 Bash:
-```bash
+```sh
 bash --norc
 ```
 
 Zsh:
-```bash
+```sh
 zsh -f
 or
 zsh --no-rcs
 ```
 
-## Contributors
+### Contributors
 
 * [Ahmet Alp Balkan](https://github.com/ahmetb)
 * Jared Yanovich
