@@ -153,7 +153,7 @@ If the sybol is not available, it will display an empty set of brackets or simil
  
 ```
 
-Below is a screenshot of the OpenShift symbol using the Inconsolta font from Nerd Fonts:
+Below is a screenshot of the OpenShift symbol using the Inconsolata font from Nerd Fonts:
 
 ![prompt openshift](img/screenshot-oc.png)
 
