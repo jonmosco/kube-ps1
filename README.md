@@ -135,7 +135,7 @@ If the current-context is not set, kube-ps1 will return the following:
 ## Symbols
 
 The default symbols are UTF8 and should work with most fonts. Due to differences
-in terminal spacing, a 'padding' option is available to provide an extra space
+in font and terminal spacing, a `KUBE_PS1_SYMBOL_PADDING` option is available to provide an extra space
 after the symbol.  
 
 In order to have the OpenShift icon, a patched font that contains the glyph must
@@ -152,6 +152,8 @@ If the sybol is not available, it will display an empty set of brackets or simil
  echo -n "\ue7b7"
  
 ```
+
+Below is a screenshot of the OpenShift symbol using the Inconsolta font from Nerd Fonts:
 
 ![prompt openshift](img/screenshot-oc.png)
 
