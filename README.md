@@ -76,7 +76,6 @@ source /path/to/kube-ps1.sh
 PS1='[\u@\h \W $(kube_ps1)]\$ '
 ```
 
-
 ## Requirements
 
 The default prompt assumes you have the `kubectl` command line utility installed.
@@ -87,7 +86,7 @@ Official installation instructions and binaries are available:
 If using this with OpenShift, the `oc` tool needs installed.  It can be obtained
 from brew ports:
 
-```
+```sh
 brew install openshift-cli
 ```
 or the source can be downloaded:
@@ -96,13 +95,13 @@ or the source can be downloaded:
 
 Set the binary to `oc` with the following environment variable:
 
-```
+```sh
 KUBE_PS1_BINARY=oc
 ```
 
 If neither binary is available, the prompt will print the following:
 
-```
+```sh
 (<symbol>|BINARY-N/A:N/A)
 ```
 
@@ -131,6 +130,21 @@ If the current-context is not set, kube-ps1 will return the following:
 
 ```
 (<symbol>|N/A:N/A)
+```
+
+## Symbol
+
+The default symbols are UTF8 and should work with most fonts. Due to differences
+in terminal spacing, a 'padding' option is available to provide an extra space
+after the symbol.  
+
+In order to have the OpenShift icon, a patched font that contains the glyph must
+be installed.  [Nerd Fonts](https://www.nerdfonts.com/) provides an OpenShift icon. 
+Follow the install directions (out of scope for this project) to install a patched
+font.  Once installed and activated, test to see if the symbol is available:
+
+```sh
+ echo -n "\ue7b7"
 ```
 
 ## Enabling/Disabling

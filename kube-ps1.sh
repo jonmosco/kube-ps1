@@ -27,6 +27,11 @@ KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388'}
 KUBE_PS1_SYMBOL_PADDING="${KUBE_PS1_SYMBOL_PADDING:-false}"
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
+
+# KUBE_PS1_SYMBOL_OC="${KUBE_PS1_SYMBOL_OC:-}"
+KUBE_PS1_SYMBOL_OC=${KUBE_PS1_SYMBOL_OC:-$'\ue7b7'}
+KUBE_PS1_SYMBOL_OC_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
+
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
 KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
@@ -169,6 +174,13 @@ _kube_ps1_symbol() {
 
   if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
     KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_IMG}"
+  fi
+
+  # OpenShift glyph
+  # NOTE: this requires a patched "Nerd" font to work
+  # https://www.nerdfonts.com/
+  if [[ "${KUBE_PS1_SYMBOL_OC_IMG}" == true ]]; then
+    KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_OC}"
   fi
 
   if [[ "${KUBE_PS1_SYMBOL_PADDING}" == true ]]; then
