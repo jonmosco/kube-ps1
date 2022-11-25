@@ -2,6 +2,14 @@
 
 ### [UNRELEASED]
 
+## 0.8.0 (11/22/22)
+
+Lots of updates and changes in this long overdue release.  Hopefully this summary will include the major
+changes over the last few years.
+
+* function name updates to be more descriptive
+* added openshift glyph option ([#164](https://github.com/jonmosco/kube-ps1/issues/164))
+* Improve caching to account for deleted/missing kube config files ([#118](https://github.com/jonmosco/kube-ps1/issues/118))
 * Added ability to change the color of `KUBE_PS1_PREFIX` and `KUBE_PS1_SUFFIX` ([#79](https://github.com/jonmosco/kube-ps1/issues/79))
 * Added option to turn off image padding.  Defaults to `true`.  There were some troubles with terminals overlapping the symbol ([#126](https://github.com/jonmosco/kube-ps1/issues/126))
 

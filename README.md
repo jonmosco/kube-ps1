@@ -187,7 +187,6 @@ the following environment variables:
 | `KUBE_PS1_SYMBOL_PADDING` | `false` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
 | `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
 | `KUBE_PS1_SYMBOL_USE_IMG` | `false` | ☸️  ,  Unicode `\u2638` as the prompt symbol |
-| `KUBE_PS1_SYMBOL_OC` | ` ` | OpenShift symbol. Unicode `\ue7b7`. Available with a patched font |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and context name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between context and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
