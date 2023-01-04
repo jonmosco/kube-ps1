@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2022 Jon Mosco
+# Copyright 2023 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
