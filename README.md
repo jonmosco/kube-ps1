@@ -147,7 +147,7 @@ Once installed and the font is made active in a terminal session, test to see if
 
 ![prompt openshift na](img/screenshot-oc-na.png)
 
-If the sybol is not available, it will display an empty set of brackets or similar:
+If the symbol is not available, it will display an empty set of brackets or similar:
 ```sh
  echo -n "\ue7b7"
  
