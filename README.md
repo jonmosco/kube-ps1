@@ -40,7 +40,10 @@ add the plugin:
 plugins=(
   kube-ps1
 )
+
+PROMPT='$(kube_ps1)'$PROMPT
 ```
+
 
 ## Zsh Plugin Managers
 
@@ -91,7 +94,7 @@ brew install openshift-cli
 ```
 or the source can be downloaded:
 
-[OC Client Tools](https://www.openshift.org/download.html)
+[OC Client Tools](https://github.com/okd-project/okd/releases)
 
 Set the binary to `oc` with the following environment variable:
 
