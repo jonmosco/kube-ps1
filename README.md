@@ -41,7 +41,7 @@ plugins=(
   kube-ps1
 )
 
-PROMPT='$(kube_ps1)'$PROMPT
+PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 
 
@@ -52,7 +52,7 @@ PROMPT='$(kube_ps1)'$PROMPT
 Update `.zshrc` with:
 ```sh
 zinit light jonmosco/kube-ps1
-PROMPT='$(kube_ps1)'$PROMPT
+PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 
 ### Fig
@@ -71,7 +71,7 @@ Install `kube-ps1` in zsh, bash, or fish with one click.
 #### Zsh
 ```sh
 source /path/to/kube-ps1.sh
-PROMPT='$(kube_ps1)'$PROMPT
+PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 #### Bash
 ```sh
