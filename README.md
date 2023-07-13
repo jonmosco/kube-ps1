@@ -21,9 +21,9 @@ Inspired by several tools used to simplify usage of `kubectl`.
 
 Homebrew package manager:
 
-```
-$ brew update
-$ brew install kube-ps1
+```sh
+brew update
+brew install kube-ps1
 ```
 
 ### Arch Linux
