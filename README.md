@@ -139,12 +139,12 @@ If the current-context is not set, kube-ps1 will return the following:
 
 The default symbols are UTF8 and should work with most fonts. Due to differences
 in font and terminal spacing, a `KUBE_PS1_SYMBOL_PADDING` option is available to provide an extra space
-after the symbol.  
+after the symbol.
 
 In order to have the OpenShift icon, a patched font that contains the glyph must
-be installed.  [Nerd Fonts](https://www.nerdfonts.com/) provides an OpenShift icon. 
+be installed.  [Nerd Fonts](https://www.nerdfonts.com/) provides an OpenShift icon.
 Follow the install directions (out of scope for this project) to install a patched
-font.  
+font.
 
 Once installed and the font is made active in a terminal session, test to see if the symbol is available:
 
@@ -153,7 +153,7 @@ Once installed and the font is made active in a terminal session, test to see if
 If the symbol is not available, it will display an empty set of brackets or similar:
 ```sh
  echo -n "\ue7b7"
- 
+
 ```
 
 Below is a screenshot of the OpenShift symbol using the Inconsolata font from Nerd Fonts:
@@ -195,6 +195,7 @@ the following environment variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_EKS_SHORT_MODE` | `false` | Set to true to display cluster-name instead of arn/cluster-name |
 
 For terminals that do not support UTF-8, the symbol will be replaced with the
 string `k8s`.

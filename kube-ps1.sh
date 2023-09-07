@@ -263,7 +263,13 @@ _kube_ps1_prompt_update() {
 
 _kube_ps1_get_context() {
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
+    KUBE_EKS_SHORT_MODE="${KUBE_EKS_SHORT_MODE:-false}"
+    if [[ "${KUBE_EKS_MODE_ENABLED}" == true ]]; then
+      FORMATTING="cut -d'/' -f 2"
+    else
+      FORMATTING="xargs echo"
+    fi
+    KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context | (eval "$FORMATTING") 2>/dev/null)"
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
