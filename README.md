@@ -96,7 +96,7 @@ or the source can be downloaded:
 
 [OC Client Tools](https://github.com/okd-project/okd/releases)
 
-Set the binary to `oc` with the following environment variable:
+Set the binary to `oc` with the following variable:
 
 ```sh
 KUBE_PS1_BINARY=oc
@@ -179,7 +179,7 @@ kubeoff -g : turn off kube-ps1 status globally
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
-the following environment variables:
+the following variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
@@ -207,7 +207,7 @@ KUBE_PS1_SEPARATOR=''
 
 ## Colors
 
-The default colors are set with the following environment variables:
+The default colors are set with the following variables:
 
 | Variable | Default | Meaning |
 | :------- | :-----: | ------- |
