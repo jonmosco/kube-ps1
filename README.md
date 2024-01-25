@@ -79,6 +79,20 @@ source /path/to/kube-ps1.sh
 PS1='[\u@\h \W $(kube_ps1)]\$ '
 ```
 
+#### Bash - Cygwin (Windows)
+
+You must clone the repo disabling autocrlf:
+```sh
+git config --global core.autocrlf false
+```
+
+You must set the KUBECONFIG envvar before sourcing kube-ps1.
+
+```sh
+# Replace Administrator by your current windows user:
+KUBECONFIG="/cygdrive/c/Users/Administrator/.kube/config"
+```
+
 ## Requirements
 
 The default prompt assumes you have the `kubectl` command line utility installed.
