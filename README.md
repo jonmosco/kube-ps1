@@ -150,7 +150,7 @@ Once the font is installed and active in your terminal session, you can test if 
 | default (empty string) | ⎈      | Default symbol (Unicode `\u2388`) |
 | img           | ☸️      | Symbol often used to represent Kubernetes (Unicode `\u2638`) |
 | oc            |  | Symbol representing OpenShift (Unicode `\ue7b7`) |
-| k8s           | 󱃾 | Symbol representing Kubernetes (Unicode `\ue7b7`) |
+| k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
 
