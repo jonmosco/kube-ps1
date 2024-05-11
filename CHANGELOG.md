@@ -2,6 +2,11 @@
 
 ### [UNRELEASED]
 
+* symbol is configurable.  The arguments to customize the symbol used can be
+passed in at runtime as an argument to kube_ps1, or set in the environment. The default is `⎈`.
+* cleanup of the codebase to reduce environment variables
+* Some README cleanups.
+
 ## 0.8.0 (11/22/22)
 
 Lots of updates and changes in this long overdue release.  Hopefully this summary will include the major

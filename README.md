@@ -1,5 +1,7 @@
 # kube-ps1: Kubernetes prompt for bash and zsh
 
+![GitHub Release](https://img.shields.io/github/v/release/jonmosco/kube-ps1)
+
 A script that lets you add the current Kubernetes context and namespace
 configured on `kubectl` to your Bash/Zsh prompt strings (i.e. the `$PS1`).
 
@@ -15,7 +17,7 @@ Inspired by several tools used to simplify usage of `kubectl`.
 
 ## Installing
 
-### Package managers
+### Packages
 
 ### MacOS Brew Ports
 
@@ -44,8 +46,7 @@ plugins=(
 PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 
-
-## Zsh Plugin Managers
+## Zsh zinit plugin
 
 ### Using [zinit](https://github.com/zdharma-continuum/zinit)
 
@@ -63,17 +64,19 @@ Install `kube-ps1` in zsh, bash, or fish with one click.
 
 <a href="https://fig.io/plugins/other/kube-ps1" target="_blank"><img src="https://fig.io/badges/install-with-fig.svg" /></a>
 
-### From Source
+### From Source (git clone)
 
 1. Clone this repository
 2. Source the kube-ps1.sh in your `~/.zshrc` or your `~/.bashrc`
 
 #### Zsh
+
 ```sh
 source /path/to/kube-ps1.sh
 PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 #### Bash
+
 ```sh
 source /path/to/kube-ps1.sh
 PS1='[\u@\h \W $(kube_ps1)]\$ '
@@ -135,30 +138,30 @@ If the current-context is not set, kube-ps1 will return the following:
 (<symbol>|N/A:N/A)
 ```
 
-## Symbols
+## Symbol
 
-The default symbols are UTF8 and should work with most fonts. Due to differences
-in font and terminal spacing, a `KUBE_PS1_SYMBOL_PADDING` option is available to provide an extra space
-after the symbol.  
+The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
 
-In order to have the OpenShift icon, a patched font that contains the glyph must
-be installed.  [Nerd Fonts](https://www.nerdfonts.com/) provides an OpenShift icon. 
-Follow the install directions (out of scope for this project) to install a patched
-font.  
+Once the font is installed and active in your terminal session, you can test if the glyph is available by running:
 
-Once installed and the font is made active in a terminal session, test to see if the symbol is available:
+`KUBE_PS1_SYMBOL` options
+| Options | Symbol | Description |
+| ------------- | ------ | ----------- |
+| default (empty string) | ⎈      | Default symbol (Unicode `\u2388`) |
+| img           | ☸️      | Symbol often used to represent Kubernetes (Unicode `\u2638`) |
+| oc            | ![oc](img/openshift.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
+| k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
-![prompt openshift na](img/screenshot-oc-na.png)
+To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
 
-If the symbol is not available, it will display an empty set of brackets or similar:
+![kube-ps1-symbols](img/kube-ps1-symbols.gif)
+
+If the font is not properly installed, and the glyph is not available, it will display an empty set of brackets or similar:
+
 ```sh
  echo -n "\ue7b7"
  
 ```
-
-Below is a screenshot of the OpenShift symbol using the Inconsolata font from Nerd Fonts:
-
-![prompt openshift](img/screenshot-oc.png)
 
 ## Enabling/Disabling
 
@@ -188,8 +191,7 @@ the following variables:
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_PADDING` | `false` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
-| `KUBE_PS1_SYMBOL_DEFAULT` | `⎈ ` | Default prompt symbol. Unicode `\u2388` |
-| `KUBE_PS1_SYMBOL_USE_IMG` | `false` | ☸️  ,  Unicode `\u2638` as the prompt symbol |
+| `KUBE_PS1_SYMBOL_CUSTOM` | `⎈ ` | Change the Default prompt symbol. Unicode `\u2388`.  Options are `k8s`, `img`, `oc` |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and context name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between context and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
