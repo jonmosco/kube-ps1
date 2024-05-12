@@ -52,8 +52,6 @@ PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 
 ### Fig
 
-[Fig](https://fig.io) adds apps, shortcuts, and autocomplete to your existing terminal.
-
 Install `kube-ps1` in zsh, bash, or fish with one click.
 
 <a href="https://fig.io/plugins/other/kube-ps1" target="_blank"><img src="https://fig.io/badges/install-with-fig.svg" /></a>
@@ -168,7 +166,7 @@ PS1='[\u@\h \W $(kube_ps1 k8s)]\$ '
 ```
 
 ```sh
-PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
+PROMPT='$(kube_ps1 oc)'$PROMPT
 ```
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
