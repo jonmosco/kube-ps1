@@ -148,65 +148,57 @@ _kube_ps1_binary_check() {
 }
 
 _kube_ps1_symbol() {
+  # Exit early if symbol display is disabled
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  if [[ -n "${KUBE_PS1_SYMBOL_CUSTOM}" ]]; then
-      symbol_arg="${KUBE_PS1_SYMBOL_CUSTOM}"
-  fi
+  local symbol_arg="${KUBE_PS1_SYMBOL_CUSTOM:-$1}"
 
-  local symbol
-  local symbol_arg="$1"
+  local symbol=""
   local symbol_default=$'\u2388'
-  local symbol_img
+  local symbol_img="☸️" 
   local k8s_glyph=$'\Uf10fe'
   local k8s_symbol_color=blue
   local oc_glyph=$'\ue7b7'
   local oc_symbol_color=red
 
-  if [[ -n "${symbol_arg}" ]]; then
-    case "${symbol_arg}" in
-      "img")
-        symbol="${symbol_img}"
-        ;;
-      "k8s")
-        symbol="$(_kube_ps1_color_fg ${k8s_symbol_color})${k8s_glyph}${KUBE_PS1_RESET_COLOR}"
-        ;;
-      "oc")
-        symbol="$(_kube_ps1_color_fg ${oc_symbol_color})${oc_glyph}${KUBE_PS1_RESET_COLOR}"
-        ;;
-      *)
-        ;;
-    esac
-  fi
-
-  if [[ -z "$symbol" ]]; then
-    case "$(_kube_ps1_shell_type)" in
-      bash)
-        if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
+  # Choose the symbol based on the provided argument or environment variable
+  case "${symbol_arg}" in
+    "img")
+      symbol="${symbol_img}"
+      ;;
+    "k8s")
+      symbol="$(_kube_ps1_color_fg ${k8s_symbol_color})${k8s_glyph}${KUBE_PS1_RESET_COLOR}"
+      ;;
+    "oc")
+      symbol="$(_kube_ps1_color_fg ${oc_symbol_color})${oc_glyph}${KUBE_PS1_RESET_COLOR}"
+      ;;
+    *)
+      case "$(_kube_ps1_shell_type)" in
+        bash)
+          if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
+            symbol="$(_kube_ps1_color_fg $k8s_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
+            symbol_img=$'\u2638\ufe0f'
+          else
+            symbol=$'\xE2\x8E\x88'
+            symbol_img=$'\xE2\x98\xB8'
+          fi
+          ;;
+        zsh)
           symbol="$(_kube_ps1_color_fg $k8s_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
-          symbol_img=$'\u2638\ufe0f'
-        else
-          symbol=$'\xE2\x8E\x88'
-          symbol_img=$'\xE2\x98\xB8'
-        fi
-        ;;
-      zsh)
-        symbol="$(_kube_ps1_color_fg $k8s_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
-        symbol_img="☸️ "
-        ;;
-      *)
-        symbol="k8s"
-    esac
-  fi
+          symbol_img="☸️"
+          ;;
+        *)
+          symbol="k8s"
+      esac
+  esac
 
-  # Add padding if enabled
+  # Append padding if enabled
   if [[ "${KUBE_PS1_SYMBOL_PADDING}" == true ]]; then
     echo "${symbol} "
   else
     echo "${symbol}"
   fi
 }
-
 _kube_ps1_split_config() {
   type setopt >/dev/null 2>&1 && setopt SH_WORD_SPLIT
   local IFS=$1

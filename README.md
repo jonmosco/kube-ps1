@@ -23,6 +23,7 @@ brew install kube-ps1
 ```
 
 ### Arch Linux
+
 AUR Package available at [https://aur.archlinux.org/packages/kube-ps1/](https://aur.archlinux.org/packages/kube-ps1/).
 
 ### Oh My Zsh
@@ -36,7 +37,6 @@ add the plugin:
 plugins=(
   kube-ps1
 )
-
 PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
 
@@ -162,7 +162,7 @@ The default symbols are UTF8 and should work with most fonts. If you want to use
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
 
-![kube-ps1-symbols](img/kube-ps1-symbols.gif)
+![kube-ps1-symbols](img/kube-ps1-symbol-demo.gif)
 
 If the font is not properly installed, and the glyph is not available, it will display an empty set of brackets or similar:
 
