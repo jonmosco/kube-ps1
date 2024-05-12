@@ -160,6 +160,17 @@ The default symbols are UTF8 and should work with most fonts. If you want to use
 | oc            | ![openshift-glyph](img/openshift-glyph.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
 | k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
+
+To set the symbol to the Kubernetes glyph, add the following to your `~/.bashrc` or `~/.zshrc`:
+
+```sh
+PS1='[\u@\h \W $(kube_ps1 k8s)]\$ '
+```
+
+```sh
+PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
+```
+
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
 
 ![kube-ps1-symbols](img/kube-ps1-symbol-demo.gif)
