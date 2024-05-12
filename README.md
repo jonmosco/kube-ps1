@@ -13,7 +13,7 @@ Inspired by several tools used to simplify usage of `kubectl`.
 
 ![prompt_img](img/screenshot-img.png)
 
-![prompt demo](img/kube-ps1.gif)
+![prompt demo](img/kube-ps1-demo.gif)
 
 ## Installing
 
@@ -138,6 +138,22 @@ If the current-context is not set, kube-ps1 will return the following:
 (<symbol>|N/A:N/A)
 ```
 
+## Enabling/Disabling
+
+If you want to stop showing Kubernetes status on your prompt string temporarily
+run `kubeoff`. To disable the prompt for all shell sessions, run `kubeoff -g`.
+You can enable it again in the current shell by running `kubeon`, and globally
+with `kubeon -g`.
+
+```
+kubeon     : turn on kube-ps1 status for this shell.  Takes precedence over
+             global setting for current session
+kubeon -g  : turn on kube-ps1 status globally
+kubeoff    : turn off kube-ps1 status for this shell. Takes precedence over
+             global setting for current session
+kubeoff -g : turn off kube-ps1 status globally
+```
+
 ## Symbol
 
 The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
@@ -161,22 +177,6 @@ If the font is not properly installed, and the glyph is not available, it will d
  
 ```
 
-## Enabling/Disabling
-
-If you want to stop showing Kubernetes status on your prompt string temporarily
-run `kubeoff`. To disable the prompt for all shell sessions, run `kubeoff -g`.
-You can enable it again in the current shell by running `kubeon`, and globally
-with `kubeon -g`.
-
-```
-kubeon     : turn on kube-ps1 status for this shell.  Takes precedence over
-             global setting for current session
-kubeon -g  : turn on kube-ps1 status globally
-kubeoff    : turn off kube-ps1 status for this shell. Takes precedence over
-             global setting for current session
-kubeoff -g : turn off kube-ps1 status globally
-```
-
 ## Customization
 
 The default settings can be overridden in `~/.bashrc` or `~/.zshrc` by setting
@@ -195,9 +195,6 @@ the following variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
-
-For terminals that do not support UTF-8, the symbol will be replaced with the
-string `k8s`.
 
 To disable a feature, set it to an empty string:
 
@@ -294,9 +291,9 @@ or
 zsh --no-rcs
 ```
 
-For the OpenShift symbol, a patched font that contains the icon must be installed.
+For the prompt symbol, a patched font that contains the glyphs must be installed.
 [Nerd Fonts Downloads](https://www.nerdfonts.com/font-downloads) provides patched
-fonts containing the symbol.  Please consult their documentation for this, support
+fonts containing the glyphs.  Please consult their documentation for this, support
 is out of scope for this project.
 
 ### Contributors
