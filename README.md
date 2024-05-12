@@ -142,14 +142,12 @@ If the current-context is not set, kube-ps1 will return the following:
 
 The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
 
-Once the font is installed and active in your terminal session, you can test if the glyph is available by running:
-
-`KUBE_PS1_SYMBOL` options
+`KUBE_PS1_SYMBOL_CUSTOM` options
 | Options | Symbol | Description |
 | ------------- | ------ | ----------- |
 | default (empty string) | ⎈      | Default symbol (Unicode `\u2388`) |
 | img           | ☸️      | Symbol often used to represent Kubernetes (Unicode `\u2638`) |
-| oc            |  | Symbol representing OpenShift (Unicode `\ue7b7`) |
+| oc            | ![openshift-glyph](img/openshift-glyph.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
 | k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
