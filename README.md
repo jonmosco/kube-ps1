@@ -163,15 +163,16 @@ glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts]
 To set the symbol to one of the custom glyphs, add the following to your `~/.bashrc` or `~/.zshrc`:
 
 ```sh
+# bash
 PS1='[\u@\h \W $(kube_ps1 k8s)]\$ '
-```
 
-```sh
+# zsh
 PROMPT='$(kube_ps1 oc)'$PROMPT
 ```
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
 
+Heres a demo of the symbols in action:
 ![kube-ps1-symbols](img/kube-ps1-symbol-demo.gif)
 
 If the font is not properly installed, and the glyph is not available, it will display an empty set of brackets or similar:
