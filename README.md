@@ -148,7 +148,8 @@ kubeoff -g : turn off kube-ps1 status globally
 
 ## Symbol
 
-The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
+The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift
+glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
 
 `KUBE_PS1_SYMBOL_CUSTOM` options
 | Options | Symbol | Description |
@@ -159,7 +160,7 @@ The default symbols are UTF8 and should work with most fonts. If you want to use
 | k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
 
-To set the symbol to the Kubernetes glyph, add the following to your `~/.bashrc` or `~/.zshrc`:
+To set the symbol to one of the custom glyphs, add the following to your `~/.bashrc` or `~/.zshrc`:
 
 ```sh
 PS1='[\u@\h \W $(kube_ps1 k8s)]\$ '
@@ -201,7 +202,7 @@ the following variables:
 
 To disable a feature, set it to an empty string:
 
-```
+```sh
 KUBE_PS1_SEPARATOR=''
 ```
 
@@ -225,7 +226,7 @@ namespace.
 Set the variable to an empty string if you do not want color for each
 prompt section:
 
-```
+```sh
 KUBE_PS1_CTX_COLOR=''
 ```
 
@@ -283,11 +284,13 @@ minimal configuration before submitting a bug report.
 This can be done as follows for each shell before loading kube-ps1:
 
 Bash:
+
 ```sh
 bash --norc
 ```
 
 Zsh:
+
 ```sh
 zsh -f
 or
