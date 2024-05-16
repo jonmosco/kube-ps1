@@ -2,8 +2,9 @@
 
 ### [UNRELEASED]
 
-* symbol is configurable.  The arguments to customize the symbol used can be
-passed in at runtime as an argument to kube_ps1, or set in the environment. The default is `⎈`.
+* symbol function cleanup and simplification ([#165](https://github.com/jonmosco/kube-ps1/issues/165))
+* Added 2 new glyphs for the symbol
+* The arguments to customize the symbol used can be passed in at runtime as an argument to kube_ps1, or set in the environment. The default is `⎈`.
 * cleanup of the codebase to reduce environment variables
 * Some README cleanups.
 

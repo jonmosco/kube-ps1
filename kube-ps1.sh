@@ -151,7 +151,7 @@ _kube_ps1_symbol() {
   # Exit early if symbol display is disabled
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  local symbol_arg="${KUBE_PS1_SYMBOL_CUSTOM:-$1}"
+  local symbol_arg="${KUBE_PS1_SYMBOL_CUSTOM}"
 
   local symbol=""
   local symbol_default=$'\u2388'
@@ -391,7 +391,7 @@ kube_ps1() {
   fi
 
   # Symbol
-  KUBE_PS1+="$(_kube_ps1_symbol "${KUBE_PS1_SYMBOL_CUSTOM:-$1}")"
+  KUBE_PS1+="$(_kube_ps1_symbol)"
 
   if [[ -n "${KUBE_PS1_SEPARATOR}" ]] && [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
     KUBE_PS1+="${KUBE_PS1_SEPARATOR}"

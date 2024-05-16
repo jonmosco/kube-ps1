@@ -159,15 +159,10 @@ glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts]
 | oc            | ![openshift-glyph](img/openshift-glyph.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
 | k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
-
 To set the symbol to one of the custom glyphs, add the following to your `~/.bashrc` or `~/.zshrc`:
 
 ```sh
-# bash
-PS1='[\u@\h \W $(kube_ps1 k8s)]\$ '
-
-# zsh
-PROMPT='$(kube_ps1 oc)'$PROMPT
+KUBE_PS1_SYMBOL_CUSTOM=img
 ```
 
 To set the symbol to the default, set the `KUBE_PS1_SYMBOL` to an empty string.
