@@ -196,6 +196,7 @@ _kube_ps1_symbol() {
     echo "${symbol}"
   fi
 }
+
 _kube_ps1_split_config() {
   type setopt >/dev/null 2>&1 && setopt SH_WORD_SPLIT
   local IFS=$1
