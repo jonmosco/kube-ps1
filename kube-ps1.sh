@@ -33,9 +33,6 @@ KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
-KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
-KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
-
 _KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 _KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 _KUBE_PS1_LAST_TIME=0
@@ -100,14 +97,14 @@ _kube_ps1_color_fg() {
     _KUBE_PS1_FG_CODE="%F{$_KUBE_PS1_FG_CODE}"
   elif [[ "$(_kube_ps1_shell_type)" == "bash" ]]; then
     if tput setaf 1 &> /dev/null; then
-      _KUBE_PS1_FG_CODE="$(tput setaf ${_KUBE_PS1_FG_CODE})"
+      _KUBE_PS1_FG_CODE="$(tput setaf "${_KUBE_PS1_FG_CODE}")"
     elif [[ $_KUBE_PS1_FG_CODE -ge 0 ]] && [[ $_KUBE_PS1_FG_CODE -le 256 ]]; then
       _KUBE_PS1_FG_CODE="\033[38;5;${_KUBE_PS1_FG_CODE}m"
     else
       _KUBE_PS1_FG_CODE="${_KUBE_PS1_DEFAULT_FG}"
     fi
   fi
-  echo ${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_FG_CODE}${_KUBE_PS1_CLOSE_ESC}
+  echo "${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_FG_CODE}${_KUBE_PS1_CLOSE_ESC}"
 }
 
 _kube_ps1_color_bg() {
@@ -133,14 +130,14 @@ _kube_ps1_color_bg() {
     _KUBE_PS1_BG_CODE="%K{$_KUBE_PS1_BG_CODE}"
   elif [[ "$(_kube_ps1_shell_type)" == "bash" ]]; then
     if tput setaf 1 &> /dev/null; then
-      _KUBE_PS1_BG_CODE="$(tput setab ${_KUBE_PS1_BG_CODE})"
+      _KUBE_PS1_BG_CODE="$(tput setab "${_KUBE_PS1_BG_CODE}")"
     elif [[ $_KUBE_PS1_BG_CODE -ge 0 ]] && [[ $_KUBE_PS1_BG_CODE -le 256 ]]; then
       _KUBE_PS1_BG_CODE="\033[48;5;${_KUBE_PS1_BG_CODE}m"
     else
       _KUBE_PS1_BG_CODE="${DEFAULT_BG}"
     fi
   fi
-  echo ${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}
+  echo "${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}"
 }
 
 _kube_ps1_binary_check() {
@@ -272,7 +269,7 @@ _kube_ps1_get_context() {
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
     if [[ -n "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
-      KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
+      KUBE_PS1_CONTEXT="$("${KUBE_PS1_CLUSTER_FUNCTION}" "${KUBE_PS1_CONTEXT}")"
     fi
   fi
 }
@@ -283,7 +280,7 @@ _kube_ps1_get_ns() {
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-N/A}"
 
     if [[ -n "${KUBE_PS1_NAMESPACE_FUNCTION}" ]]; then
-        KUBE_PS1_NAMESPACE=$($KUBE_PS1_NAMESPACE_FUNCTION $KUBE_PS1_NAMESPACE)
+        KUBE_PS1_NAMESPACE="$("${KUBE_PS1_NAMESPACE_FUNCTION}" "${KUBE_PS1_NAMESPACE}")"
     fi
   fi
 }
@@ -399,7 +396,7 @@ kube_ps1() {
 
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_CTX_COLOR}")${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_CTX_COLOR:-red}")${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Namespace
@@ -407,7 +404,7 @@ kube_ps1() {
     if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
     fi
-    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_NS_COLOR}")${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_NS_COLOR:-cyan}")${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Suffix
