@@ -190,6 +190,7 @@ the following variables:
 | `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_PADDING` | `false` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
 | `KUBE_PS1_SYMBOL_CUSTOM` | `⎈ ` | Change the Default prompt symbol. Unicode `\u2388`.  Options are `k8s`, `img`, `oc` |
+| `KUBE_PS1_SYMBOL_COLOR` | `blue` | Change the Default symbol color. |
 | `KUBE_PS1_SEPARATOR` | &#124; | Separator between symbol and context name |
 | `KUBE_PS1_DIVIDER` | `:` | Separator between context and namespace |
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |

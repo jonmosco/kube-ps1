@@ -25,6 +25,7 @@
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_PADDING="${KUBE_PS1_SYMBOL_PADDING:-false}"
+KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR:-}"
 
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
@@ -157,6 +158,7 @@ _kube_ps1_symbol() {
   local k8s_symbol_color=blue
   local oc_glyph=$'\ue7b7'
   local oc_symbol_color=red
+  local custom_symbol_color="${KUBE_PS1_SYMBOL_COLOR:-$k8s_symbol_color}"
 
   # Choose the symbol based on the provided argument or environment variable
   case "${symbol_arg}" in
@@ -164,7 +166,7 @@ _kube_ps1_symbol() {
       symbol="${symbol_img}"
       ;;
     "k8s")
-      symbol="$(_kube_ps1_color_fg ${k8s_symbol_color})${k8s_glyph}${KUBE_PS1_RESET_COLOR}"
+      symbol="$(_kube_ps1_color_fg "${custom_symbol_color}")${k8s_glyph}${KUBE_PS1_RESET_COLOR}"
       ;;
     "oc")
       symbol="$(_kube_ps1_color_fg ${oc_symbol_color})${oc_glyph}${KUBE_PS1_RESET_COLOR}"
@@ -173,7 +175,7 @@ _kube_ps1_symbol() {
       case "$(_kube_ps1_shell_type)" in
         bash)
           if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
-            symbol="$(_kube_ps1_color_fg $k8s_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
+            symbol="$(_kube_ps1_color_fg $custom_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
             symbol_img=$'\u2638\ufe0f'
           else
             symbol=$'\xE2\x8E\x88'
@@ -181,7 +183,7 @@ _kube_ps1_symbol() {
           fi
           ;;
         zsh)
-          symbol="$(_kube_ps1_color_fg $k8s_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
+          symbol="$(_kube_ps1_color_fg $custom_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
           symbol_img="☸️"
           ;;
         *)

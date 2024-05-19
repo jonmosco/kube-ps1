@@ -4,9 +4,10 @@
 
 * symbol function cleanup and simplification ([#165](https://github.com/jonmosco/kube-ps1/issues/165))
 * Added 2 new glyphs for the symbol
-* The arguments to customize the symbol used can be passed in at runtime as an argument to kube_ps1, or set in the environment. The default is `⎈`.
-* cleanup of the codebase to reduce environment variables
+* The arguments to customize the symbol now include `k8s`, `oc`, and `img`.  The default is `⎈`.
+* cleanup of the codebase to reduce environment variable clutter
 * Some README cleanups.
+* Start of a testing framework
 
 ## 0.8.0 (11/22/22)
 
