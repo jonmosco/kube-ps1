@@ -22,6 +22,12 @@ load common
   [ ! -f "$_KUBE_PS1_DISABLE_PATH" ]
 }
 
+@test "kubeon with invalid flag" {
+  run kubeon --invalid
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"error: unrecognized flag --invalid"* ]]
+}
+
 @test "kubeoff with no arguments" {
   run bash -c 'kubeooff; echo "$KUBE_PS1_ENABLED"'
   [ "$status" -eq 0 ]
@@ -40,11 +46,11 @@ load common
   [ -f "$_KUBE_PS1_DISABLE_PATH" ]
 }
 
-# @test "kubeoff with invalid flag" {
-#   run kubeoff --invalid
-#   [ "$status" -ne 0 ]
-#   [[ "$output" == *"error: unrecognized flag --invalid"* ]]
-# }
+@test "kubeoff with invalid flag" {
+  run kubeoff --invalid
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"error: unrecognized flag --invalid"* ]]
+}
 
 @test "kube_ps1_shell_type returns correct shell type" {
   # Simulate bash
@@ -73,7 +79,33 @@ load common
 
 @test "_kube_ps1_symbol returns the default symbol" {
   run _kube_ps1_symbol
-  assert_output --regexp '⎈'
+  [ "$status" -eq 0 ]
+  echo "$output"
+  [[ "$output" == *"⎈"* ]]
+}
+
+@test "export KUBE_PS1_SYMBOL=k8s returns 󱃾" {
+  export KUBE_PS1_SYMBOL_CUSTOM=k8s
+  run _kube_ps1_symbol
+  [ "$status" -eq 0 ]
+  echo "$output"
+  [[ "$output" == *"󱃾"* ]]
+}
+
+@test "export KUBE_PS1_SYMBOL=img returns ☸️" {
+  export KUBE_PS1_SYMBOL_CUSTOM=img
+  run _kube_ps1_symbol
+  [ "$status" -eq 0 ]
+  echo "$output"
+  [[ "$output" == *"☸️"* ]]
+}
+
+@test "export KUBE_PS1_SYMBOL=oc returns " {
+  export KUBE_PS1_SYMBOL_CUSTOM=oc
+  run _kube_ps1_symbol
+  [ "$status" -eq 0 ]
+  echo "$output"
+  [[ "$output" == *""* ]]
 }
 
 @test "kube_ps1 returns correct prompt when enabled" {

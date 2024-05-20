@@ -7,7 +7,7 @@
 * The arguments to customize the symbol now include `k8s`, `oc`, and `img`.  The default is `⎈`.
 * cleanup of the codebase to reduce environment variable clutter
 * Some README cleanups.
-* Start of a testing framework
+* Implemented testing with bats
 
 ## 0.8.0 (11/22/22)
 
