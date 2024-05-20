@@ -15,4 +15,4 @@ jobs:
         uses: actions/checkout@v1
 
       - name: kube-ps1 test
-        run: bats tests/kube-ps1.bats 
+        run: bats test/kube-ps1.bats 
