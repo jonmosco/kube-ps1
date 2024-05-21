@@ -302,5 +302,9 @@ is out of scope for this project.
 
 ### Contributors
 
-* [Ahmet Alp Balkan](https://github.com/ahmetb)
-* Jared Yanovich
+Thank you to everyone in the community for their contributions to kube-ps1! 
+
+<a href="https://github.com/jonmosco/kube-ps1/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jonmosco/kube-ps1" />
+</a>
+
