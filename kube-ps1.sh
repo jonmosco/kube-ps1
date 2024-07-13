@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2023 Jon Mosco
+# Copyright 2024 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,11 +24,8 @@
 # Override these values in ~/.zshrc or ~/.bashrc
 KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
-_KUBE_PS1_SYMBOL_DEFAULT=${_KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388'}
 KUBE_PS1_SYMBOL_PADDING="${KUBE_PS1_SYMBOL_PADDING:-false}"
-KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
-KUBE_PS1_SYMBOL_OC_IMG="${KUBE_PS1_SYMBOL_OC_IMG:-false}"
-_KUBE_PS1_SYMBOL_OC=${KUBE_PS1_SYMBOL_OC:-$'\ue7b7'}
+KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR:-}"
 
 KUBE_PS1_NS_ENABLE="${KUBE_PS1_NS_ENABLE:-true}"
 KUBE_PS1_CONTEXT_ENABLE="${KUBE_PS1_CONTEXT_ENABLE:-true}"
@@ -36,14 +33,6 @@ KUBE_PS1_PREFIX="${KUBE_PS1_PREFIX-(}"
 KUBE_PS1_SEPARATOR="${KUBE_PS1_SEPARATOR-|}"
 KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
-
-KUBE_PS1_SYMBOL_COLOR="${KUBE_PS1_SYMBOL_COLOR-blue}"
-KUBE_PS1_CTX_COLOR="${KUBE_PS1_CTX_COLOR-red}"
-KUBE_PS1_NS_COLOR="${KUBE_PS1_NS_COLOR-cyan}"
-KUBE_PS1_BG_COLOR="${KUBE_PS1_BG_COLOR}"
-
-KUBE_PS1_CLUSTER_FUNCTION="${KUBE_PS1_CLUSTER_FUNCTION}"
-KUBE_PS1_NAMESPACE_FUNCTION="${KUBE_PS1_NAMESPACE_FUNCTION}"
 
 _KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 _KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
@@ -109,14 +98,14 @@ _kube_ps1_color_fg() {
     _KUBE_PS1_FG_CODE="%F{$_KUBE_PS1_FG_CODE}"
   elif [[ "$(_kube_ps1_shell_type)" == "bash" ]]; then
     if tput setaf 1 &> /dev/null; then
-      _KUBE_PS1_FG_CODE="$(tput setaf ${_KUBE_PS1_FG_CODE})"
+      _KUBE_PS1_FG_CODE="$(tput setaf "${_KUBE_PS1_FG_CODE}")"
     elif [[ $_KUBE_PS1_FG_CODE -ge 0 ]] && [[ $_KUBE_PS1_FG_CODE -le 256 ]]; then
       _KUBE_PS1_FG_CODE="\033[38;5;${_KUBE_PS1_FG_CODE}m"
     else
       _KUBE_PS1_FG_CODE="${_KUBE_PS1_DEFAULT_FG}"
     fi
   fi
-  echo ${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_FG_CODE}${_KUBE_PS1_CLOSE_ESC}
+  echo "${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_FG_CODE}${_KUBE_PS1_CLOSE_ESC}"
 }
 
 _kube_ps1_color_bg() {
@@ -142,14 +131,14 @@ _kube_ps1_color_bg() {
     _KUBE_PS1_BG_CODE="%K{$_KUBE_PS1_BG_CODE}"
   elif [[ "$(_kube_ps1_shell_type)" == "bash" ]]; then
     if tput setaf 1 &> /dev/null; then
-      _KUBE_PS1_BG_CODE="$(tput setab ${_KUBE_PS1_BG_CODE})"
+      _KUBE_PS1_BG_CODE="$(tput setab "${_KUBE_PS1_BG_CODE}")"
     elif [[ $_KUBE_PS1_BG_CODE -ge 0 ]] && [[ $_KUBE_PS1_BG_CODE -le 256 ]]; then
       _KUBE_PS1_BG_CODE="\033[48;5;${_KUBE_PS1_BG_CODE}m"
     else
       _KUBE_PS1_BG_CODE="${DEFAULT_BG}"
     fi
   fi
-  echo ${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}
+  echo "${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}"
 }
 
 _kube_ps1_binary_check() {
@@ -157,42 +146,57 @@ _kube_ps1_binary_check() {
 }
 
 _kube_ps1_symbol() {
+  # Exit early if symbol display is disabled
   [[ "${KUBE_PS1_SYMBOL_ENABLE}" == false ]] && return
 
-  case "$(_kube_ps1_shell_type)" in
-    bash)
-      if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
-        KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_DEFAULT}"
-        KUBE_PS1_SYMBOL_IMG=$'\u2638\ufe0f'
-      else
-        KUBE_PS1_SYMBOL=$'\xE2\x8E\x88'
-        KUBE_PS1_SYMBOL_IMG=$'\xE2\x98\xB8'
-      fi
+  local symbol_arg="${KUBE_PS1_SYMBOL_CUSTOM}"
+
+  local symbol=""
+  local symbol_default=$'\u2388'
+  local symbol_img="☸️" 
+  local k8s_glyph=$'\Uf10fe'
+  local k8s_symbol_color=blue
+  local oc_glyph=$'\ue7b7'
+  local oc_symbol_color=red
+  local custom_symbol_color="${KUBE_PS1_SYMBOL_COLOR:-$k8s_symbol_color}"
+
+  # Choose the symbol based on the provided argument or environment variable
+  case "${symbol_arg}" in
+    "img")
+      symbol="${symbol_img}"
       ;;
-    zsh)
-      KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_DEFAULT}"
-      KUBE_PS1_SYMBOL_IMG="\u2638";;
+    "k8s")
+      symbol="$(_kube_ps1_color_fg "${custom_symbol_color}")${k8s_glyph}${KUBE_PS1_RESET_COLOR}"
+      ;;
+    "oc")
+      symbol="$(_kube_ps1_color_fg ${oc_symbol_color})${oc_glyph}${KUBE_PS1_RESET_COLOR}"
+      ;;
     *)
-      KUBE_PS1_SYMBOL="k8s"
+      case "$(_kube_ps1_shell_type)" in
+        bash)
+          if ((BASH_VERSINFO[0] >= 4)) && [[ $'\u2388' != "\\u2388" ]]; then
+            symbol="$(_kube_ps1_color_fg $custom_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
+            symbol_img=$'\u2638\ufe0f'
+          else
+            symbol=$'\xE2\x8E\x88'
+            symbol_img=$'\xE2\x98\xB8'
+          fi
+          ;;
+        zsh)
+          symbol="$(_kube_ps1_color_fg $custom_symbol_color)${symbol_default}${KUBE_PS1_RESET_COLOR}"
+          symbol_img="☸️"
+          ;;
+        *)
+          symbol="k8s"
+      esac
   esac
 
-  if [[ "${KUBE_PS1_SYMBOL_USE_IMG}" == true ]]; then
-    KUBE_PS1_SYMBOL="${KUBE_PS1_SYMBOL_IMG}"
-  fi
-
-  # OpenShift glyph
-  # NOTE: this requires a patched "Nerd" font to work
-  # https://www.nerdfonts.com/
-  if [[ "${KUBE_PS1_SYMBOL_OC_IMG}" == true ]]; then
-    KUBE_PS1_SYMBOL="${_KUBE_PS1_SYMBOL_OC}"
-  fi
-
+  # Append padding if enabled
   if [[ "${KUBE_PS1_SYMBOL_PADDING}" == true ]]; then
-    echo "${KUBE_PS1_SYMBOL} "
+    echo "${symbol} "
   else
-    echo "${KUBE_PS1_SYMBOL}"
+    echo "${symbol}"
   fi
-
 }
 
 _kube_ps1_split_config() {
@@ -268,7 +272,7 @@ _kube_ps1_get_context() {
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
     if [[ -n "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
-      KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
+      KUBE_PS1_CONTEXT="$("${KUBE_PS1_CLUSTER_FUNCTION}" "${KUBE_PS1_CONTEXT}")"
     fi
   fi
 }
@@ -279,7 +283,7 @@ _kube_ps1_get_ns() {
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-N/A}"
 
     if [[ -n "${KUBE_PS1_NAMESPACE_FUNCTION}" ]]; then
-        KUBE_PS1_NAMESPACE=$($KUBE_PS1_NAMESPACE_FUNCTION $KUBE_PS1_NAMESPACE)
+        KUBE_PS1_NAMESPACE="$("${KUBE_PS1_NAMESPACE_FUNCTION}" "${KUBE_PS1_NAMESPACE}")"
     fi
   fi
 }
@@ -377,22 +381,17 @@ kube_ps1() {
   local KUBE_PS1_RESET_COLOR="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_FG}${_KUBE_PS1_CLOSE_ESC}"
 
   # Background Color
-  [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="$(_kube_ps1_color_bg ${KUBE_PS1_BG_COLOR})"
+  [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="$(_kube_ps1_color_bg "${KUBE_PS1_BG_COLOR}")"
 
   # Prefix
   if [[ -z "${KUBE_PS1_PREFIX_COLOR:-}" ]] && [[ -n "${KUBE_PS1_PREFIX}" ]]; then
       KUBE_PS1+="${KUBE_PS1_PREFIX}"
   else
-      KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_PREFIX_COLOR)${KUBE_PS1_PREFIX}${KUBE_PS1_RESET_COLOR}"
+      KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_PREFIX_COLOR}")${KUBE_PS1_PREFIX}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Symbol
-  if [[ "${KUBE_PS1_SYMBOL_OC_IMG}" == true ]]; then
-    local _KUBE_PS1_OC_SYMBOL_COLOR=red
-    KUBE_PS1+="$(_kube_ps1_color_fg $_KUBE_PS1_OC_SYMBOL_COLOR)$(_kube_ps1_symbol)${KUBE_PS1_RESET_COLOR}"
-  else
-    KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_SYMBOL_COLOR)$(_kube_ps1_symbol)${KUBE_PS1_RESET_COLOR}"
-  fi
+  KUBE_PS1+="$(_kube_ps1_symbol)"
 
   if [[ -n "${KUBE_PS1_SEPARATOR}" ]] && [[ "${KUBE_PS1_SYMBOL_ENABLE}" == true ]]; then
     KUBE_PS1+="${KUBE_PS1_SEPARATOR}"
@@ -400,7 +399,7 @@ kube_ps1() {
 
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_CTX_COLOR)${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_CTX_COLOR:-red}")${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Namespace
@@ -408,14 +407,14 @@ kube_ps1() {
     if [[ -n "${KUBE_PS1_DIVIDER}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
       KUBE_PS1+="${KUBE_PS1_DIVIDER}"
     fi
-    KUBE_PS1+="$(_kube_ps1_color_fg ${KUBE_PS1_NS_COLOR})${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
+    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_NS_COLOR:-cyan}")${KUBE_PS1_NAMESPACE}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Suffix
   if [[ -z "${KUBE_PS1_SUFFIX_COLOR:-}" ]] && [[ -n "${KUBE_PS1_SUFFIX}" ]]; then
       KUBE_PS1+="${KUBE_PS1_SUFFIX}"
   else
-      KUBE_PS1+="$(_kube_ps1_color_fg $KUBE_PS1_SUFFIX_COLOR)${KUBE_PS1_SUFFIX}${KUBE_PS1_RESET_COLOR}"
+      KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_SUFFIX_COLOR}")${KUBE_PS1_SUFFIX}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Close Background color if defined

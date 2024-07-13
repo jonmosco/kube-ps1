@@ -2,6 +2,13 @@
 
 ### [UNRELEASED]
 
+* symbol function cleanup and simplification ([#165](https://github.com/jonmosco/kube-ps1/issues/165))
+* Added 2 new glyphs for the symbol
+* The arguments to customize the symbol now include `k8s`, `oc`, and `img`.  The default is `⎈`.
+* cleanup of the codebase to reduce environment variable clutter
+* Some README cleanups.
+* Implemented testing with bats
+
 ## 0.8.0 (11/22/22)
 
 Lots of updates and changes in this long overdue release.  Hopefully this summary will include the major
