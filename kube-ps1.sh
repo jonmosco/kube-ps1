@@ -37,6 +37,8 @@ KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 _KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 _KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 _KUBE_PS1_LAST_TIME=0
+_KUBE_PS1_NEEDS_REBUILD=true
+_KUBE_PS1=""
 
 # Determine our shell
 _kube_ps1_shell_type() {
@@ -62,6 +64,7 @@ _kube_ps1_init() {
       setopt PROMPT_SUBST
       autoload -U add-zsh-hook
       add-zsh-hook precmd _kube_ps1_prompt_update
+      add-zsh-hook precmd _build_ps1_prompt
       zmodload -F zsh/stat b:zstat
       zmodload zsh/datetime
       ;;
@@ -70,7 +73,7 @@ _kube_ps1_init() {
       _KUBE_PS1_CLOSE_ESC=$'\002'
       _KUBE_PS1_DEFAULT_BG=$'\033[49m'
       _KUBE_PS1_DEFAULT_FG=$'\033[39m'
-      [[ $PROMPT_COMMAND =~ _kube_ps1_prompt_update ]] || PROMPT_COMMAND="_kube_ps1_prompt_update;${PROMPT_COMMAND:-:}"
+      [[ $PROMPT_COMMAND =~ "_kube_ps1_prompt_update;_build_ps1_prompt" ]] || PROMPT_COMMAND="_kube_ps1_prompt_update;_build_ps1_prompt;${PROMPT_COMMAND:-:}"
       ;;
   esac
 }
@@ -153,7 +156,7 @@ _kube_ps1_symbol() {
 
   local symbol=""
   local symbol_default=$'\u2388'
-  local symbol_img="☸️" 
+  local symbol_img="☸️"
   local k8s_glyph=$'\Uf10fe'
   local k8s_symbol_color=blue
   local oc_glyph=$'\ue7b7'
@@ -233,6 +236,7 @@ _kube_ps1_prompt_update() {
     # No ability to fetch context/namespace; display N/A.
     KUBE_PS1_CONTEXT="BINARY-N/A"
     KUBE_PS1_NAMESPACE="N/A"
+    _KUBE_PS1_NEEDS_REBUILD=true
     return $return_code
   fi
 
@@ -240,6 +244,7 @@ _kube_ps1_prompt_update() {
     # User changed KUBECONFIG; unconditionally refetch.
     _KUBE_PS1_KUBECONFIG_CACHE=${KUBECONFIG}
     _kube_ps1_get_context_ns
+    _KUBE_PS1_NEEDS_REBUILD=true
     return $return_code
   fi
 
@@ -253,12 +258,14 @@ _kube_ps1_prompt_update() {
     config_file_cache+=":${conf}"
     if _kube_ps1_file_newer_than "${conf}" "${_KUBE_PS1_LAST_TIME}"; then
       _kube_ps1_get_context_ns
+      _KUBE_PS1_NEEDS_REBUILD=true
       return $return_code
     fi
   done
 
   if [[ "${config_file_cache}" != "${_KUBE_PS1_CFGFILES_READ_CACHE}" ]]; then
     _kube_ps1_get_context_ns
+    _KUBE_PS1_NEEDS_REBUILD=true
     return $return_code
   fi
 
@@ -343,39 +350,13 @@ With no arguments, turn off kube-ps1 status for this shell instance (default).
 EOF
 }
 
-kubeon() {
-  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
-    _kubeon_usage
-  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
-    rm -f -- "${_KUBE_PS1_DISABLE_PATH}"
-  elif [[ "$#" -ne 0 ]]; then
-    echo -e "error: unrecognized flag ${1}\\n"
-    _kubeon_usage
-    return
-  fi
-
-  KUBE_PS1_ENABLED=on
-}
-
-kubeoff() {
-  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
-    _kubeoff_usage
-  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
-    mkdir -p -- "$(dirname "${_KUBE_PS1_DISABLE_PATH}")"
-    touch -- "${_KUBE_PS1_DISABLE_PATH}"
-  elif [[ $# -ne 0 ]]; then
-    echo "error: unrecognized flag ${1}" >&2
-    _kubeoff_usage
-    return
-  fi
-
-  KUBE_PS1_ENABLED=off
-}
-
 # Build our prompt
-kube_ps1() {
-  [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
-  [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
+_build_ps1_prompt() {
+  local return_code=$?
+
+  [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return "$return_code"
+  [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return "$return_code"
+  [[ "${_KUBE_PS1_NEEDS_REBUILD}" == "true" ]] || return "$return_code"
 
   local KUBE_PS1
   local KUBE_PS1_RESET_COLOR="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_FG}${_KUBE_PS1_CLOSE_ESC}"
@@ -420,5 +401,42 @@ kube_ps1() {
   # Close Background color if defined
   [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_DEFAULT_BG}${_KUBE_PS1_CLOSE_ESC}"
 
-  echo "${KUBE_PS1}"
+  _KUBE_PS1_NEEDS_REBUILD=false
+  _KUBE_PS1="${KUBE_PS1}"
+}
+
+kubeon() {
+  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+    _kubeon_usage
+  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
+    rm -f -- "${_KUBE_PS1_DISABLE_PATH}"
+  elif [[ "$#" -ne 0 ]]; then
+    echo -e "error: unrecognized flag ${1}\\n"
+    _kubeon_usage
+    return
+  fi
+
+  KUBE_PS1_ENABLED=on
+}
+
+kubeoff() {
+  if [[ "${1}" == '-h' || "${1}" == '--help' ]]; then
+    _kubeoff_usage
+  elif [[ "${1}" == '-g' || "${1}" == '--global' ]]; then
+    mkdir -p -- "$(dirname "${_KUBE_PS1_DISABLE_PATH}")"
+    touch -- "${_KUBE_PS1_DISABLE_PATH}"
+  elif [[ $# -ne 0 ]]; then
+    echo "error: unrecognized flag ${1}" >&2
+    _kubeoff_usage
+    return
+  fi
+
+  KUBE_PS1_ENABLED=off
+}
+
+kube_ps1() {
+  [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
+  [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
+
+  echo "${_KUBE_PS1}"
 }
