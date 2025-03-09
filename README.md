@@ -197,6 +197,7 @@ the following variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_HIDE_IF_NOCONTEXT` | `false` | Hide the kube-ps1 prompt if no context is set |
 
 To disable a feature, set it to an empty string:
 
