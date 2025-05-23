@@ -147,6 +147,11 @@ kubeoff    : turn off kube-ps1 status for this shell. Takes precedence over
 kubeoff -g : turn off kube-ps1 status globally
 ```
 
+### Direnv Integration
+
+If you only want to show the ps1 only when working in a specific directory while using a `.envrc` file from [direnv](https://github.com/direnv/direnv) disable it globally with `kubeoff -g`.
+However setting the `kubeon` cmd in `.envrc` will not work, because it is a shell function. The solution for this problem is simply setting `export KUBE_PS1_ENABLED=on`. 
+
 ## Symbol
 
 The default symbols are UTF8 and should work with most fonts. If you want to use the Kubernetes and OpenShift
