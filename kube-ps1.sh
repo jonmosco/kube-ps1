@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2024 Jon Mosco
+# Copyright 2025 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -378,7 +378,7 @@ kubeoff() {
 kube_ps1() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
   [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
-  [[ "${KUBE_PS1_CONTEXT}" == "N/A" ]] && [[ ${KUBE_PS1_HIDE_IF_NOCONTEXT} == false ]] && return
+  [[ "${KUBE_PS1_CONTEXT}" == "N/A" ]] && [[ ${KUBE_PS1_HIDE_IF_NOCONTEXT} == true ]] && return
 
 
   local KUBE_PS1
