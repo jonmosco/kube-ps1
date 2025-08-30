@@ -198,6 +198,7 @@ the following variables:
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
 | `KUBE_PS1_HIDE_IF_NOCONTEXT` | `false` | Hide the kube-ps1 prompt if no context is set |
+| `KUBE_PS1_KUBECONFIG_SYMLINK` | `false` | Treat `KUBECONFIG` and `~/.kube/config` files as symbolic links |
 
 To disable a feature, set it to an empty string:
 

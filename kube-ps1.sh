@@ -35,6 +35,7 @@ KUBE_PS1_DIVIDER="${KUBE_PS1_DIVIDER-:}"
 KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
 KUBE_PS1_HIDE_IF_NOCONTEXT="${KUBE_PS1_HIDE_IF_NOCONTEXT:-false}"
+KUBE_PS1_KUBECONFIG_SYMLINK="${KUBE_PS1_KUBECONFIG_SYMLINK:-false}"
 
 _KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 _KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
@@ -212,15 +213,28 @@ _kube_ps1_file_newer_than() {
   local file=$1
   local check_time=$2
 
-  if [[ "$(_kube_ps1_shell_type)" == "zsh" ]]; then
-    # Use zstat '-F %s.%s' to make it compatible with low zsh version (eg: 5.0.2)
-    mtime=$(zstat +mtime -F %s.%s "${file}")
-  elif stat -c "%s" /dev/null &> /dev/null; then
-    # GNU stat
-    mtime=$(stat -L -c %Y "${file}")
+  if [[ "${KUBE_PS1_KUBECONFIG_SYMLINK}" == "true" ]]; then
+    if [[ "$(_kube_ps1_shell_type)" == "zsh" ]]; then
+      # Use zstat '-F %s.%s' to make it compatible with low zsh version (eg: 5.0.2)
+      mtime=$(zstat -L +mtime -F %s.%s "${file}")
+    elif stat -c "%s" /dev/null &> /dev/null; then
+      # GNU stat
+      mtime=$(stat -c %Y "${file}")
+    else
+      # BSD stat
+      mtime=$(stat -f %m "$file")
+    fi
   else
-    # BSD stat
-    mtime=$(stat -L -f %m "$file")
+    if [[ "$(_kube_ps1_shell_type)" == "zsh" ]]; then
+      # Use zstat '-F %s.%s' to make it compatible with low zsh version (eg: 5.0.2)
+      mtime=$(zstat +mtime -F %s.%s "${file}")
+    elif stat -c "%s" /dev/null &> /dev/null; then
+      # GNU stat
+      mtime=$(stat -L -c %Y "${file}")
+    else
+      # BSD stat
+      mtime=$(stat -L -f %m "$file")
+    fi
   fi
 
   [[ "${mtime}" -gt "${check_time}" ]]
