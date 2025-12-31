@@ -127,7 +127,7 @@ The default prompt layout is:
 
 If the current-context is not set, kube-ps1 will return the following:
 
-```
+```sh
 (<symbol>|N/A:N/A)
 ```
 
@@ -138,7 +138,7 @@ run `kubeoff`. To disable the prompt for all shell sessions, run `kubeoff -g`.
 You can enable it again in the current shell by running `kubeon`, and globally
 with `kubeon -g`.
 
-```
+```sh
 kubeon     : turn on kube-ps1 status for this shell.  Takes precedence over
              global setting for current session
 kubeon -g  : turn on kube-ps1 status globally
@@ -197,6 +197,7 @@ the following variables:
 | `KUBE_PS1_SUFFIX` | `)` | Prompt closing character |
 | `KUBE_PS1_CLUSTER_FUNCTION` | No default, must be user supplied | Function to customize how cluster is displayed |
 | `KUBE_PS1_NAMESPACE_FUNCTION` | No default, must be user supplied | Function to customize how namespace is displayed |
+| `KUBE_PS1_CTX_COLOR_FUNCTION` | No default, must be user supplied | Function to customize context color based on context name |
 | `KUBE_PS1_HIDE_IF_NOCONTEXT` | `false` | Hide the kube-ps1 prompt if no context is set |
 
 To disable a feature, set it to an empty string:
@@ -231,7 +232,7 @@ KUBE_PS1_CTX_COLOR=''
 
 Names are usable for the following colors:
 
-```
+```text
 black, red, green, yellow, blue, magenta, cyan
 ```
 
@@ -275,6 +276,45 @@ export KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_upper
 
 In both cases, the variable is set to the name of the function, and you must have defined the function in your shell configuration before kube_ps1 is called. The function must accept a single parameter and echo out the final value.
 
+## Dynamic Context Colors
+
+You can set different colors for different contexts using the
+`KUBE_PS1_CTX_COLOR_FUNCTION` variable. This is useful for color-coding
+contexts to make production environments stand out visually.
+
+For example, to make production contexts red and development contexts green:
+
+```sh
+function kube_ps1_ctx_color() {
+  local context="$1"
+
+  case "$context" in
+    *prod*)
+      echo "red"
+      ;;
+    *dev*)
+      echo "green"
+      ;;
+    *staging*|*stg*)
+      echo "yellow"
+      ;;
+    *)
+      echo "cyan"  # default color for other contexts
+      ;;
+  esac
+}
+
+export KUBE_PS1_CTX_COLOR_FUNCTION=kube_ps1_ctx_color
+```
+
+The function receives the context name as the first parameter and should echo
+the desired color name. All color options supported by `KUBE_PS1_CTX_COLOR` are
+available, including named colors (black, red, green, yellow, blue, magenta,
+cyan, white) and 256-color codes (0-256).
+
+If `KUBE_PS1_CTX_COLOR_FUNCTION` is not set, kube-ps1 will use the value of
+`KUBE_PS1_CTX_COLOR` (default: red).
+
 ### Bug Reports and shell configuration
 
 Due to the vast ways of customizing the shell, please try the prompt with a
@@ -308,4 +348,3 @@ Thank you to everyone in the community for their contributions to kube-ps1!
 <a href="https://github.com/jonmosco/kube-ps1/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=jonmosco/kube-ps1" />
 </a>
-

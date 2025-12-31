@@ -2,6 +2,7 @@
 
 ### [UNRELEASED]
 
+* Added `KUBE_PS1_CTX_COLOR_FUNCTION` to customize context color based on context name
 * symbol function cleanup and simplification ([#165](https://github.com/jonmosco/kube-ps1/issues/165))
 * Added 2 new glyphs for the symbol
 * The arguments to customize the symbol now include `k8s`, `oc`, and `img`.  The default is `⎈`.

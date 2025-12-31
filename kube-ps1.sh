@@ -403,7 +403,14 @@ kube_ps1() {
 
   # Context
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1+="$(_kube_ps1_color_fg "${KUBE_PS1_CTX_COLOR:-red}")${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
+    local ctx_color="${KUBE_PS1_CTX_COLOR:-red}"
+
+    # Allow custom function to override color based on context
+    if [[ -n "${KUBE_PS1_CTX_COLOR_FUNCTION}" ]]; then
+      ctx_color="$("${KUBE_PS1_CTX_COLOR_FUNCTION}" "${KUBE_PS1_CONTEXT}")"
+    fi
+
+    KUBE_PS1+="$(_kube_ps1_color_fg "${ctx_color}")${KUBE_PS1_CONTEXT}${KUBE_PS1_RESET_COLOR}"
   fi
 
   # Namespace
