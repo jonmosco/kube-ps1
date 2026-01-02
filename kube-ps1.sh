@@ -3,7 +3,7 @@
 # Kubernetes prompt helper for bash/zsh
 # Displays current context and namespace
 
-# Copyright 2025 Jon Mosco
+# Copyright 2026 Jon Mosco
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -214,7 +214,7 @@ _kube_ps1_file_newer_than() {
 
   if [[ "$(_kube_ps1_shell_type)" == "zsh" ]]; then
     # Use zstat '-F %s.%s' to make it compatible with low zsh version (eg: 5.0.2)
-    mtime=$(zstat +mtime -F %s.%s "${file}")
+    mtime=$(zstat -L +mtime -F %s.%s "${file}")
   elif stat -c "%s" /dev/null &> /dev/null; then
     # GNU stat
     mtime=$(stat -L -c %Y "${file}")
