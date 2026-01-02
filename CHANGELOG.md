@@ -2,6 +2,7 @@
 
 ### [UNRELEASED]
 
+* Fixed symlink handling in config file modification time checks by adding `-L` flag to zstat for zsh ([#204](https://github.com/jonmosco/kube-ps1/pull/204))
 * Fixed `KUBE_PS1_BG_COLOR` overriding text colors by ensuring background color is also reset when needed ([#208](https://github.com/jonmosco/kube-ps1/issues/208))
 * Added `KUBE_PS1_CTX_COLOR_FUNCTION` to customize context color based on context name
 * symbol function cleanup and simplification ([#165](https://github.com/jonmosco/kube-ps1/issues/165))
