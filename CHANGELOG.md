@@ -1,6 +1,6 @@
-## kube-ps1 project CHANGELOG
+# kube-ps1 project CHANGELOG
 
-### [UNRELEASED]
+## [UNRELEASED]
 
 * Fixed symlink handling in config file modification time checks by adding `-L` flag to zstat for zsh ([#204](https://github.com/jonmosco/kube-ps1/pull/204))
 * Fixed `KUBE_PS1_BG_COLOR` overriding text colors by ensuring background color is also reset when needed ([#208](https://github.com/jonmosco/kube-ps1/issues/208))
@@ -23,22 +23,22 @@ changes over the last few years.
 * Added ability to change the color of `KUBE_PS1_PREFIX` and `KUBE_PS1_SUFFIX` ([#79](https://github.com/jonmosco/kube-ps1/issues/79))
 * Added option to turn off image padding.  Defaults to `true`.  There were some troubles with terminals overlapping the symbol ([#126](https://github.com/jonmosco/kube-ps1/issues/126))
 
-### IMPROVEMENTS
+## IMPROVEMENTS
 
-## 0.7.0 (2/21/19)
+### 0.7.0 (2/21/19)
 
 * Merged ([#47](https://github.com/jonmosco/kube-ps1/pull/47)) to allow modification of cluster and namespace with user
   supplied functions
 * Color handling now takes named arguments properly for base colors and integer
   values for 256 colors
 
-### BUG FIXES:
+### BUG FIXES
 
 * For zsh, stat module is loaded with `zmodload -F zsh/stat b:zstat` to avoid
   conflict with system or user `stat`
 
-## 0.6.0 (2/25/18)
+### 0.6.0 (2/25/18)
 
-### BUG FIXES:
+## BUG FIXES
 
 * kubeon and kubeoff: Fix state on already running shells  ([#37](https://github.com/jonmosco/kube-ps1/issues/37))

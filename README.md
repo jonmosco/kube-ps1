@@ -191,7 +191,7 @@ the following variables:
 | :------- | :-----: | ------- |
 | `KUBE_PS1_BINARY` | `kubectl` | Default Kubernetes binary |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
-| `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
+| `KUBE_PS1_PREFIX` | `(` | Prompt opening character |
 | `KUBE_PS1_SYMBOL_ENABLE` | `true` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_PADDING` | `false` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
 | `KUBE_PS1_SYMBOL_CUSTOM` | `⎈ ` | Change the Default prompt symbol. Unicode `\u2388`.  Options are `k8s`, `img`, `oc` |
