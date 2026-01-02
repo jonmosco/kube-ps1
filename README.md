@@ -46,6 +46,7 @@ PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ### Using [zinit](https://github.com/zdharma-continuum/zinit)
 
 Update `.zshrc` with:
+
 ```sh
 zinit light jonmosco/kube-ps1
 PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
@@ -68,6 +69,7 @@ Install `kube-ps1` in zsh, bash, or fish with one click.
 source /path/to/kube-ps1.sh
 PROMPT='$(kube_ps1)'$PROMPT # or RPROMPT='$(kube_ps1)'
 ```
+
 #### Bash
 
 ```sh
@@ -88,6 +90,7 @@ from brew ports:
 ```sh
 brew install openshift-cli
 ```
+
 or the source can be downloaded:
 
 [OC Client Tools](https://github.com/okd-project/okd/releases)
@@ -121,7 +124,7 @@ tmux, and like the functionality provided by kube-ps1, checkout the
 
 The default prompt layout is:
 
-```
+```sh
 (<symbol>|<context>:<namespace>)
 ```
 
@@ -153,12 +156,13 @@ The default symbols are UTF8 and should work with most fonts. If you want to use
 glyphs, you need to install a patched font that contains the glyph. [Nerd Fonts](https://www.nerdfonts.com/) provides both glyphs. Follow their installation instructions to install the patched font.
 
 `KUBE_PS1_SYMBOL_CUSTOM` options
+
 | Options | Symbol | Description |
 | ------------- | ------ | ----------- |
-| default (empty string) | ⎈      | Default symbol (Unicode `\u2388`) |
-| img           | ☸️      | Symbol often used to represent Kubernetes (Unicode `\u2638`) |
-| oc            | ![openshift-glyph](img/openshift-glyph.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
-| k8s           | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
+| default (empty string) | ⎈ | Default symbol (Unicode `\u2388`) |
+| img | ☸️ | Symbol often used to represent Kubernetes (Unicode `\u2638`) |
+| oc | ![openshift-glyph](img/openshift-glyph.png) | Symbol representing OpenShift (Unicode `\ue7b7`) |
+| k8s | ![k8s-glyph](img/k8s-glyph.png) | Symbol representing Kubernetes (Unicode `\ue7b7`) |
 
 To set the symbol to one of the custom glyphs, add the following to your `~/.bashrc` or `~/.zshrc`:
 
@@ -188,7 +192,7 @@ the following variables:
 | `KUBE_PS1_BINARY` | `kubectl` | Default Kubernetes binary |
 | `KUBE_PS1_NS_ENABLE` | `true` | Display the namespace. If set to `false`, this will also disable `KUBE_PS1_DIVIDER` |
 | `KUBE_PS1_PREFIX` | `(` | Prompt opening character  |
-| `KUBE_PS1_SYMBOL_ENABLE` | `true ` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
+| `KUBE_PS1_SYMBOL_ENABLE` | `true` | Display the prompt Symbol. If set to `false`, this will also disable `KUBE_PS1_SEPARATOR` |
 | `KUBE_PS1_SYMBOL_PADDING` | `false` | Adds a space (padding) after the symbol to prevent clobbering prompt characters |
 | `KUBE_PS1_SYMBOL_CUSTOM` | `⎈ ` | Change the Default prompt symbol. Unicode `\u2388`.  Options are `k8s`, `img`, `oc` |
 | `KUBE_PS1_SYMBOL_COLOR` | `blue` | Change the Default symbol color. |
@@ -343,7 +347,7 @@ is out of scope for this project.
 
 ### Contributors
 
-Thank you to everyone in the community for their contributions to kube-ps1! 
+Thank you to everyone in the community for their contributions to kube-ps1!
 
 <a href="https://github.com/jonmosco/kube-ps1/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=jonmosco/kube-ps1" />
