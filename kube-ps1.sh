@@ -58,6 +58,13 @@ _kube_ps1_init() {
   # Detect shell type once and cache it
   _KUBE_PS1_SHELL="$(_kube_ps1_shell_type)"
 
+  # Check tput availability once
+  if tput setaf 1 &> /dev/null; then
+    _KUBE_PS1_TPUT_AVAILABLE=true
+  else
+    _KUBE_PS1_TPUT_AVAILABLE=false
+  fi
+
   case "${_KUBE_PS1_SHELL}" in
     "zsh")
       _KUBE_PS1_OPEN_ESC="%{"
@@ -102,7 +109,7 @@ _kube_ps1_color_fg() {
   elif [[ "${_KUBE_PS1_SHELL}" == "zsh" ]]; then
     _KUBE_PS1_FG_CODE="%F{$_KUBE_PS1_FG_CODE}"
   elif [[ "${_KUBE_PS1_SHELL}" == "bash" ]]; then
-    if tput setaf 1 &> /dev/null; then
+    if [[ "${_KUBE_PS1_TPUT_AVAILABLE}" == "true" ]]; then
       _KUBE_PS1_FG_CODE="$(tput setaf "${_KUBE_PS1_FG_CODE}")"
     elif [[ $_KUBE_PS1_FG_CODE -ge 0 ]] && [[ $_KUBE_PS1_FG_CODE -le 256 ]]; then
       _KUBE_PS1_FG_CODE="\033[38;5;${_KUBE_PS1_FG_CODE}m"
@@ -135,12 +142,12 @@ _kube_ps1_color_bg() {
   elif [[ "${_KUBE_PS1_SHELL}" == "zsh" ]]; then
     _KUBE_PS1_BG_CODE="%K{$_KUBE_PS1_BG_CODE}"
   elif [[ "${_KUBE_PS1_SHELL}" == "bash" ]]; then
-    if tput setaf 1 &> /dev/null; then
+    if [[ "${_KUBE_PS1_TPUT_AVAILABLE}" == "true" ]]; then
       _KUBE_PS1_BG_CODE="$(tput setab "${_KUBE_PS1_BG_CODE}")"
     elif [[ $_KUBE_PS1_BG_CODE -ge 0 ]] && [[ $_KUBE_PS1_BG_CODE -le 256 ]]; then
       _KUBE_PS1_BG_CODE="\033[48;5;${_KUBE_PS1_BG_CODE}m"
     else
-      _KUBE_PS1_BG_CODE="${DEFAULT_BG}"
+      _KUBE_PS1_BG_CODE="${_KUBE_PS1_DEFAULT_BG}"
     fi
   fi
   echo "${_KUBE_PS1_OPEN_ESC}${_KUBE_PS1_BG_CODE}${_KUBE_PS1_CLOSE_ESC}"
