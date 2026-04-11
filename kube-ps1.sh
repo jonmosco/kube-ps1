@@ -356,7 +356,7 @@ _kube_ps1_set_env_ctx() {
 
   for ctx in prod test dev stg; do
     if grep -qE "${KUBE_PS1_ENV[${ctx}_re]}" <<< "${KUBE_PS1_CONTEXT}"; then
-      sed -E "s/${KUBE_PS1_ENV[${ctx}_re]}//g" <<< "${KUBE_PS1_CONTEXT}" > /dev/null
+      KUBE_PS1_CONTEXT="$(sed -E "s/${KUBE_PS1_ENV[${ctx}_re]}//g" <<< "${KUBE_PS1_CONTEXT}")"
       ctx_color="$(_kube_ps1_color_fg "${KUBE_PS1_ENV[${ctx}_color]}")"
       ctx_label="${KUBE_PS1_ENV[${ctx}_label]}"
     fi
