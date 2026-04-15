@@ -36,6 +36,31 @@ KUBE_PS1_SUFFIX="${KUBE_PS1_SUFFIX-)}"
 
 KUBE_PS1_HIDE_IF_NOCONTEXT="${KUBE_PS1_HIDE_IF_NOCONTEXT:-false}"
 
+# Kube environment variables
+KUBE_PS1_ENV_CTX_ENABLE="${KUBE_PS1_ENV_CTX_ENABLE:-false}"
+KUBE_PS1_ENV_PADDING="${KUBE_PS1_ENV_PADDING:- }"
+
+KUBE_PS1_ENV_OPEN_SYMBOL="${KUBE_PS1_ENV_OPEN_SYMBOL:-[}"
+KUBE_PS1_ENV_CLOSE_SYMBOL="${KUBE_PS1_ENV_CLOSE_SYMBOL:-]}"
+
+declare -Ag KUBE_PS1_ENV=(
+    [prod_color]="${KUBE_PS1_ENV_PROD_COLOR:-red}"
+    [prod_label]="${KUBE_PS1_ENV_PROD_LABEL:-prod}"
+    [prod_re]="${KUBE_PS1_ENV_PROD_RE:-(production|prod)-}"
+
+    [stg_color]="${KUBE_PS1_ENV_STG_COLOR:-yellow}"
+    [stg_label]="${KUBE_PS1_ENV_STG_LABEL:-stag}"
+    [stg_re]="${KUBE_PS1_ENV_STG_RE:-(staging|stg)-}"
+
+    [test_color]="${KUBE_PS1_ENV_TEST_COLOR:-green}"
+    [test_label]="${KUBE_PS1_ENV_TEST_LABEL:-test}"
+    [test_re]="${KUBE_PS1_ENV_TEST_RE:-(testing|test)-}"
+
+    [dev_color]="${KUBE_PS1_ENV_DEV_COLOR:-blue}"
+    [dev_label]="${KUBE_PS1_ENV_DEV_LABEL:-dev}"
+    [dev_re]="${KUBE_PS1_ENV_DEV_RE:-dev(elop(ment)?)?-}"
+)
+
 _KUBE_PS1_KUBECONFIG_CACHE="${KUBECONFIG}"
 _KUBE_PS1_DISABLE_PATH="${HOME}/.kube/kube-ps1/disabled"
 _KUBE_PS1_LAST_TIME=0
@@ -165,7 +190,7 @@ _kube_ps1_symbol() {
 
   local symbol=""
   local symbol_default=$'\u2388'
-  local symbol_img="☸️" 
+  local symbol_img="☸️"
   local k8s_glyph=$'\Uf10fe'
   local k8s_symbol_color=blue
   local oc_glyph=$'\ue7b7'
@@ -326,6 +351,23 @@ _kube_ps1_get_context_ns() {
   _kube_ps1_get_ns
 }
 
+_kube_ps1_set_env_ctx() {
+  local ctx_color ctx_label
+
+  for ctx in prod test dev stg; do
+    if grep -qE "${KUBE_PS1_ENV[${ctx}_re]}" <<< "${KUBE_PS1_CONTEXT}"; then
+      KUBE_PS1_CONTEXT="$(sed -E "s/${KUBE_PS1_ENV[${ctx}_re]}//g" <<< "${KUBE_PS1_CONTEXT}")"
+      ctx_color="$(_kube_ps1_color_fg "${KUBE_PS1_ENV[${ctx}_color]}")"
+      ctx_label="${KUBE_PS1_ENV[${ctx}_label]}"
+    fi
+  done
+
+  [[ -z "${ctx_label}" ]] && return
+
+  KUBE_PS1+="${KUBE_PS1_ENV_PADDING}${KUBE_PS1_ENV_OPEN_SYMBOL}"${ctx_color}${ctx_label}${KUBE_PS1_RESET_COLOR}"${KUBE_PS1_ENV_CLOSE_SYMBOL}${KUBE_PS1_ENV_PADDING}"
+}
+
+
 # Set kube-ps1 shell defaults
 _kube_ps1_init
 
@@ -401,6 +443,11 @@ kube_ps1() {
 
   # Background Color
   [[ -n "${KUBE_PS1_BG_COLOR}" ]] && KUBE_PS1+="$(_kube_ps1_color_bg "${KUBE_PS1_BG_COLOR}")"
+
+  # Context Env
+  if [[ -n "${KUBE_PS1_ENV_CTX_ENABLE}" ]] && [[ "${KUBE_PS1_ENV_CTX_ENABLE}" == true ]]; then
+    _kube_ps1_set_env_ctx
+  fi
 
   # Prefix
   if [[ -z "${KUBE_PS1_PREFIX_COLOR:-}" ]] && [[ -n "${KUBE_PS1_PREFIX}" ]]; then
