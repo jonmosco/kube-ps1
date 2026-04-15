@@ -362,6 +362,8 @@ _kube_ps1_set_env_ctx() {
     fi
   done
 
+  [[ -z "${ctx_label}" ]] && return
+
   KUBE_PS1+="${KUBE_PS1_ENV_PADDING}${KUBE_PS1_ENV_OPEN_SYMBOL}"${ctx_color}${ctx_label}${KUBE_PS1_RESET_COLOR}"${KUBE_PS1_ENV_CLOSE_SYMBOL}${KUBE_PS1_ENV_PADDING}"
 }
 
