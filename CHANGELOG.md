@@ -2,6 +2,9 @@
 
 ## [UNRELEASED]
 
+* Emit actual ANSI escape bytes when tput is unavailable.
+* Preserve empty color settings and skip their color/reset sequences.
+* Use printf instead of echo for prompt output.
 * Cache GNU/BSD stat type detection at init time to avoid forking on every prompt
 
 ## 1.0.0

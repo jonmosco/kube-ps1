@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-# Kubernetes prompt helper for bash/zsh/fish
+# Kubernetes prompt info for bash, fish, and zsh
 # Displays current context and namespace
 
 # Copyright 2026 Jon Mosco
